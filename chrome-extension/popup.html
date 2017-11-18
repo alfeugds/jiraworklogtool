@@ -1,0 +1,173 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+
+<head>
+  <title>Jira Worklog Helper</title>
+  <style type="text/css">
+    body {
+      margin: 10px;
+      white-space: nowrap;
+    }
+
+    h1 {
+      font-size: 15px;
+    }
+
+    #container {
+      align-items: center;
+      /* display: flex; */
+      justify-content: space-between;
+      padding: 10px;
+      display: block;
+      /* margin-top: 30px; */
+    }
+
+    #container>* {
+      margin: 10px 0;
+    }
+
+    #container>*:first-child {
+      margin-top: 0px;
+    }
+
+    textarea {
+      min-width: 550px;
+      min-height: 150px;
+      font-size: 10px;
+    }
+
+    .tg {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    .tg td {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      padding: 10px 5px;
+      border-style: solid;
+      border-width: 1px;
+      overflow: hidden;
+      word-break: normal;
+    }
+
+    .tg th {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-weight: bold;
+      padding: 10px 5px;
+      border-style: solid;
+      border-width: 1px;
+      overflow: hidden;
+      word-break: normal;
+    }
+
+    .tg .tg-yw4l {
+      vertical-align: top
+    }
+
+    .tg .jira-number-column-item {
+      max-width: 70px;
+    }
+
+    .tg .time-spent-column-item {
+      max-width: 70px;
+    }
+
+    .tg .comment-column-item {
+      max-width: 220px;
+    }
+
+    .tg input {
+      width: 100%;
+      max-width: 70px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #loading {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+    }
+  </style>
+
+  <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+    -->
+  <script src="jira-helper.js"></script>
+  <script src="popup.js"></script>
+</head>
+
+<body>
+  <h1>Jira Worklog Tool</h1>
+  <div id="container">
+    <section>
+      <img id="loading" class="hidden" src="spinner-small.gif" aria-hidden="true" />
+      <label for="worklogDate">Worklog Date:</label>
+      <input type="date" id="worklogDate" />
+      <button id="getWorklogButton">Get Worklog</button>
+    </section>
+    <table class="tg "id="worklog-items">
+      <thead>
+        <tr>
+          <th class="tg-yw4l jira-number-column-item">Jira #</th>
+          <th class="tg-yw4l time-spent-column-item">Time Spent</th>
+          <th class="tg-yw4l comment-column-item">Comment</th>
+          <th class="tg-yw4l select-column-item">Select</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class='worklog'>
+          <td class="tg-yw4l jira-number-column-item">
+            <input type="text" value="CMS-123" />
+          </td>
+          <td class="tg-yw4l time-spent-column-item">
+            <input type="text" value="2h" />
+          </td>
+          <td class="tg-yw4l comment-column-item">
+            <input type="text" value="fixing layout bug" />
+          </td>
+          <td class="tg-yw4l select-column-item">
+            <input type="checkbox" name="selected">
+          </td>
+        </tr>
+        <tr class='worklog'>
+          <td class="tg-yw4l jira-number-column-item">
+            <input type="text" value="CMS-123" />
+          </td>
+          <td class="tg-yw4l time-spent-column-item">
+            <input type="text" value="2h" />
+          </td>
+          <td class="tg-yw4l comment-column-item">
+            <input type="text" value="fixing layout bug" />
+          </td>
+          <td class="tg-yw4l select-column-item">
+            <input type="checkbox" name="selected">
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+    <br/>
+    <label for="worklog">Paste your formatted worklog here</label>
+    <br/>
+    <textarea class="worklog-textarea" id="worklog"></textarea>
+    <br>
+    <button id="logWorkButton">Log Work</button>
+    <br />
+    <div id="status" class="hidden"></div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+{
+    "manifest_version": 2,
+
+    "name": "Jira Worklog Tool",
+    "description":
+        "This extension allows the user to log the work in Jira easily.",
+    "version": "0.1",
+    "options_page": "options.html",
+    "browser_action": {
+        "default_icon": "icon-time-task-512x512.png",
+        "default_popup": "popup.html",
+        "default_title": "Log Work"
+    },
+    "permissions": ["activeTab", "storage","cookies","<all_urls>"]
+    
+}
