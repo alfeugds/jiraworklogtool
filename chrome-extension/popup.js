@@ -53,125 +53,52 @@ function getCookies(domain, name, callback) {
     });
 }
 
-//TODO: move it to another meaningful place
-function formatDate(date) {
-    var d = date,
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
 
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-
-    return [year, month, day].join('-');
-}
-
-function setLoadingStatus(isLoading){
-    if (isLoading) {
-        document.getElementById("loading").classList.remove('hidden');
-    }else{
-        document.getElementById("loading").classList.add('hidden');
-    }
-}
-
-//TODO: work in progress...
-function clearRows(){
-    document.getElementsById('worklog-items');
-}
-
-function populateWorklogTable(worklogItems){
-    var worklogTableRowTemplate = `
-    <tr class="worklog">
-        <td class="tg-yw4l jira-number-column-item">
-            <input type="text" value="{{jiraNumber}}"/>
-        </td>
-        <td class="tg-yw4l time-spent-column-item">
-            <input type="text" value="{{timeSpent}}"/>
-        </td>
-        <td class="tg-yw4l comment-column-item">
-            <input type="text" value="{{comment}}"/>
-        </td>
-        <td class="tg-yw4l select-column-item">
-            <input type="checkbox" name="selected">
-        </td>
-        </tr>
-    <tr>`;
-
-    clearRows();
-    for (var i = 0; i < worklogItems.length; i++) {
-        var worklogItem = worklogItems[i];
-        addRow(worklogItem, worklogTableRowTemplate);        
-    }
-
-}
 
 document.addEventListener("DOMContentLoaded", () => {
     getCurrentTabUrl(url => {
-        var worklogInput = document.getElementById("worklog");
         var getWorklogButton = document.getElementById("getWorklogButton");
-        var logWorkButton = document.getElementById("logWorkButton");
-        var worklogDateInput = document.getElementById("worklogDate");
+        var worklogInput = document.getElementById("worklog");
+        var addWorklogsButton = document.getElementById("addWorklogs");
         
         //initialize date with today's date
-        worklogDate.value = formatDate(new Date());
+        //worklogDate.value = formatDate(new Date());
 
-        setLoadingStatus(true);
+        View.Main.setLoadingStatus(true);
 
-        //initialize jira url
-        //TODO: remove hard-coded url
-        chrome.storage.sync.get(
-            {
-                jiraUrl: "https://jira.coke.com/jira"
-            },
-            function(items) {
-                JiraHelper.setJiraUrl(items.jiraUrl);
-            }
-        );
+        View.Table.init();
+        Controller.LogController.init();
+
+        
 
         getWorklogButton.addEventListener("click", () => {
-            var worklogDate = worklogDateInput.value;
 
-            setLoadingStatus(true);
+            Controller.LogController.getWorklogsByDay();
 
-            JiraHelper.getWorklog(worklogDate).then((worklogItems) => {
-                console.log(worklogItems);
-                //populateWorklogTable(worklogItems);
-                //alert('done hue ' + worklogItems);
-                //jira, timeSpent, comment, started, logId
-                var worklogItemsText = '';
-                for (var i = 0; i < worklogItems.length; i++) {
-                    var worklogItem = worklogItems[i];
-                    worklogItemsText += `${worklogItem.jira} - ${worklogItem.timeSpent} - ${worklogItem.comment} \n`;
-                    
-                }
-                worklogInput.value = worklogItemsText;
-            }).catch(() => {
-                alert('Something went wrong.');
-            }).then(() => {
-                setLoadingStatus(false);
-            });
         });
 
-        logWorkButton.addEventListener("click", () => {
-            var requestParams = {
-                'worklogText': worklogInput.value,
-                'worklogDate': worklogDateInput.value
-            }
+        addWorklogsButton.addEventListener("click", () => {
+            // var requestParams = {
+            //     'worklogText': worklogInput.value,
+            //     'worklogDate': worklogDateInput.value
+            // }
 
-            setLoadingStatus(true);
+            //View.Main.setLoadingStatus(true);
+            
+            Controller.LogController.bulkInsert('');
 
-            JiraHelper.bulkInsertWorklog(requestParams).then((result) => {
-                console.log(result);
-                //alert('done hue ' + result);
-            }).catch((error) =>{
-                console.log(error);
-                alert('error hue ' + error);
-            }).then(() => {
-                setLoadingStatus(false);
-            });
+            // JiraHelper.bulkInsertWorklog(requestParams).then((result) => {
+            //     console.log(result);
+            //     //alert('done hue ' + result);
+            // }).catch((error) =>{
+            //     console.log(error);
+            //     alert('error hue ' + error);
+            // }).then(() => {
+            //     View.Main.setLoadingStatus(false);
+            // });
         });
 
-        setLoadingStatus(false);
+        View.Main.setLoadingStatus(false);
         
     });
 });

@@ -1,35 +1,30 @@
-const jiraParser = require("../jira-parser");
-
-test("adds 1 + 2 to equal 3", () => {
-    expect(jiraParser.sum(1, 2)).toBe(3);
-    expect(jiraParser.sum(1, 3)).toBe(4);
-});
+const jiraParser = require("../../chrome-extension/jira-parser");
 
 test("string should return a meaningful log object", done => {
     const testDataList = [
         {
             logText: "30m CMS-1234 - working on stuff",
             expectedObject: {
-                time: "30m",
-                jiraNumber: "CMS-1234",
-                worklog: "working on stuff"
+                timeSpent: "30m",
+                jira: "CMS-1234",
+                comment: "working on stuff"
             }
         },
         {
             logText: "1h 30m CMS-123 - testing - working on stuff",
             expectedObject: {
-                time: "1h 30m",
-                jiraNumber: "CMS-123",
-                worklog: "testing - working on stuff"
+                timeSpent: "1h 30m",
+                jira: "CMS-123",
+                comment: "testing - working on stuff"
             }
         },
         {
             logText:
                 "1h - [grooming] align with shira about grooming pending tasks and blocks / align with Dorte the grooming tasks and story overview",
             expectedObject: {
-                time: "1h",
-                jiraNumber: "",
-                worklog:
+                timeSpent: "1h",
+                jira: "",
+                comment:
                     "[grooming] align with shira about grooming pending tasks and blocks / align with Dorte the grooming tasks and story overview"
             }
         }

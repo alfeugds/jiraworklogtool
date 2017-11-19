@@ -37,7 +37,7 @@
 
     textarea {
       min-width: 550px;
-      min-height: 150px;
+      min-height: 50px;
       font-size: 10px;
     }
 
@@ -76,16 +76,15 @@
     }
 
     .tg .time-spent-column-item {
-      max-width: 70px;
+      max-width: 90px;
     }
 
     .tg .comment-column-item {
-      max-width: 220px;
+      width: 220px;
     }
 
     .tg input {
       width: 100%;
-      max-width: 70px;
     }
 
     .hidden {
@@ -106,6 +105,9 @@
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
     -->
   <script src="jira-helper.js"></script>
+  <script src="model.js"></script>
+  <script src="view.js"></script>
+  <script src="controller.js"></script>
   <script src="popup.js"></script>
 </head>
 
@@ -118,6 +120,7 @@
       <input type="date" id="worklogDate" />
       <button id="getWorklogButton">Get Worklog</button>
     </section>
+    
     <table class="tg "id="worklog-items">
       <thead>
         <tr>
@@ -159,12 +162,14 @@
 
       </tbody>
     </table>
+    <button id="deleteSelected">Delete Selected</button>
+    <button id="save">Save All</button>
     <br/>
     <label for="worklog">Paste your formatted worklog here</label>
     <br/>
     <textarea class="worklog-textarea" id="worklog"></textarea>
     <br>
-    <button id="logWorkButton">Log Work</button>
+    <button id="addWorklogs">Add Worklogs</button>
     <br />
     <div id="status" class="hidden"></div>
   </div>
