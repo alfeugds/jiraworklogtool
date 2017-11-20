@@ -1,4 +1,4 @@
-const jiraParser = require("../../chrome-extension/jira-parser");
+const jiraParser = require("../../chrome-extension/js/jira-parser");
 
 test("string should return a meaningful log object", done => {
     const testDataList = [

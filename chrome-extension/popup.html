@@ -87,6 +87,18 @@
       width: 100%;
     }
 
+    .worklog.worklog--edited {
+      background-color: #ffffd2;
+    }
+
+    .worklog.worklog--invalid {
+      background-color: #ff9b9b;
+    }
+
+    .worklog.worklog--saved {
+      background-color: #b1ffb8;
+    }
+
     .hidden {
       display: none;
     }
@@ -104,12 +116,13 @@
       -
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
     -->
-  <script src="jira-helper.js"></script>
-  <script src="jira-parser.js"></script>
-  <script src="model.js"></script>
-  <script src="view.js"></script>
-  <script src="controller.js"></script>
-  <script src="popup.js"></script>
+  <script src="lib/mediator.min.js" defer></script>
+  <script src="js/jira-helper.js"></script>
+  <script src="js/jira-parser.js"></script>
+  <script src="js/model.js"></script>
+  <script src="js/view.js"></script>
+  <script src="js/controller.js"></script>
+  <script src="js/popup.js"></script>
 </head>
 
 <body>
@@ -132,7 +145,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr class='worklog'>
+        <tr class='worklog worklog--edited'>
           <td class="tg-yw4l jira-number-column-item">
             <input type="text" value="CMS-123" />
           </td>
@@ -146,7 +159,7 @@
             <input type="checkbox" name="selected">
           </td>
         </tr>
-        <tr class='worklog'>
+        <tr class='worklog worklog--invalid'>
           <td class="tg-yw4l jira-number-column-item">
             <input type="text" value="CMS-123" />
           </td>
@@ -160,7 +173,20 @@
             <input type="checkbox" name="selected">
           </td>
         </tr>
-
+        <tr class='worklog worklog--saved'>
+          <td class="tg-yw4l jira-number-column-item">
+            <input type="text" value="CMS-123" />
+          </td>
+          <td class="tg-yw4l time-spent-column-item">
+            <input type="text" value="2h" />
+          </td>
+          <td class="tg-yw4l comment-column-item">
+            <input type="text" value="fixing layout bug" />
+          </td>
+          <td class="tg-yw4l select-column-item">
+            <input type="checkbox" name="selected">
+          </td>
+        </tr>
       </tbody>
     </table>
     <h2>Total: <span id="totalHours">2h</span></h2>
