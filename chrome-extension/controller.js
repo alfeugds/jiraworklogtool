@@ -51,18 +51,25 @@ window.Controller.LogController = (function () {
 
     function getFromText(worklogItemsText){
         //TODO: call parser method here
-        return [{
-            timeSpent: "1h",
-            jira: "CMS-1234",
-            comment:
-                "[grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview"
-        },
-        {
-            timeSpent: "2h 30m",
-            jira: "CMS-1211",
-            comment:
-                "working on stuff"
-        }];
+        var arr = worklogItemsText.split('\n');
+        var result = [];
+        for (var i = 0; i < arr.length; i++) {
+            var worklogText = arr[i];
+            result.push(JiraParser.parse(worklogText));            
+        }
+        // return [{
+        //     timeSpent: "1h",
+        //     jira: "CMS-1234",
+        //     comment:
+        //         "[grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview"
+        // },
+        // {
+        //     timeSpent: "2h 30m",
+        //     jira: "CMS-1211",
+        //     comment:
+        //         "working on stuff"
+        // }];
+        return result;
     }
 
     function bulkInsert(worklogItemsText) {

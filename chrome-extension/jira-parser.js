@@ -1,9 +1,22 @@
 var JiraParser = (function () {
+    const hoursAndMinutesRegex = /\b(\d+[hm](?:\s\d+[m])?)\b/,
+        jiraNumberRegex = /\b([A-Z]{3,4}-\d{3,4})\b/,
+        worklogRegex = /\s?-\s(.+)/;
+
+    function timeSpentToHours(timeSpent){
+        var result = 0;
+        if(timeSpent.indexOf('h') > -1){
+            var h = /\b(\d+)h\b/.exec(timeSpent)[1];
+            result = parseFloat(h.replace('h', ''));
+        }
+        if(timeSpent.indexOf('m') > -1){
+            var m = /\b(\d+)m\b/.exec(timeSpent)[1];
+            result += parseFloat(m.replace('m', '')) / 60;
+        }
+        return result;
+    }
 
     function parse(text) {
-        const hoursAndMinutesRegex = /\b(\d+[hm](?:\s\d+[m])?)\b/,
-            jiraNumberRegex = /\b([A-Z]{3,4}-\d{3,4})\b/,
-            worklogRegex = /\s?-\s(.+)/;
 
         let hoursAndMinutes = jiraNumber = worklog = '';
         try {
@@ -30,14 +43,11 @@ var JiraParser = (function () {
     }
 
     return {
-        parse: parse
+        parse: parse,
+        timeSpentToHours: timeSpentToHours
     };
 
 })();
 
-function sum(a, b) {
-    return a + b
-}
-
-if (module)
+if (typeof module !== 'undefined')
     module.exports = JiraParser;
