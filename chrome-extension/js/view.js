@@ -5,7 +5,8 @@ window.View.Main = (function () {
     var worklogDateInput,
         getWorklogButton,
         worklogInput,
-        addWorklogsButton;
+        addWorklogsButton,
+        totalHoursSpan;
 
     function init() {
 
@@ -15,24 +16,32 @@ window.View.Main = (function () {
 
         View.Table.init();
 
-        var getWorklogButton = document.getElementById("getWorklogButton");
-        var worklogInput = document.getElementById("worklog");
-        var addWorklogsButton = document.getElementById("addWorklogs");
+        getWorklogButton = document.getElementById("getWorklogButton");
+        worklogInput = document.getElementById("worklog");
+        addWorklogsButton = document.getElementById("addWorklogs");
+        totalHoursSpan = document.getElementById("totalHours");
 
         worklogDateInput = document.getElementById("worklogDate");
         //initialize date with today's date
         worklogDateInput.value = formatDate(new Date());
 
+        mediator.on('modal.totalHours.update', totalHours => {
+            totalHoursSpan.innerText = parseFloat(totalHours).toFixed(2) + 'h';
+        });
 
         getWorklogButton.addEventListener("click", () => {
-
-            Controller.LogController.getWorklogsByDay(worklogDateInput.value);
+            setLoadingStatus(true);
+            Controller.LogController.getWorklogsByDay(worklogDateInput.value).then(() => {
+                setLoadingStatus(false);
+            });
 
         });
 
         addWorklogsButton.addEventListener("click", () => {
-
-            Controller.LogController.bulkInsert(worklogInput.value);
+            setLoadingStatus(true);
+            Controller.LogController.bulkInsert(worklogInput.value).then(() => {
+                setLoadingStatus(false);
+            });
 
         });
         setLoadingStatus(false);

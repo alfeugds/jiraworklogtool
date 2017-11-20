@@ -17,17 +17,18 @@ window.Controller.LogController = (function () {
     }
 
     function getWorklogsByDay(worklogDate) {
+        return new Promise((resolve, reject) => {
 
-        View.Main.setLoadingStatus(true);
+            JiraHelper.getWorklog(worklogDate).then((worklogItems) => {
+                console.log(worklogItems);
+                Model.WorklogModel.setItems(worklogItems);
+            }).catch(() => {
+                alert('Something went wrong.');
+            }).then(() => {
+                resolve();
+            });
 
-        JiraHelper.getWorklog(worklogDate).then((worklogItems) => {
-            console.log(worklogItems);
-            Model.WorklogModel.setItems(worklogItems);
-        }).catch(() => {
-            alert('Something went wrong.');
-        }).then(() => {
-            View.Main.setLoadingStatus(false);
-        });
+        } );
     }
 
     function getFromText(worklogItemsText){
@@ -53,8 +54,11 @@ window.Controller.LogController = (function () {
     }
 
     function bulkInsert(worklogItemsText) {
-        var worklogItems = getFromText(worklogItemsText);
-        Model.WorklogModel.addAll(worklogItems);
+        return new Promise((resolve, reject) => {
+            var worklogItems = getFromText(worklogItemsText);
+            Model.WorklogModel.addAll(worklogItems);
+            resolve();
+        });
     }
 
     function save(params) {
