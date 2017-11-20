@@ -3,17 +3,24 @@ var JiraParser = (function () {
         jiraNumberRegex = /\b([A-Z]{3,4}-\d{3,4})\b/,
         worklogRegex = /\s?-\s(.+)/;
 
-    function timeSpentToHours(timeSpent){
+    function timeSpentToHours(timeSpent) {
         var result = 0;
-        if(timeSpent.indexOf('h') > -1){
+        if (timeSpent.indexOf('h') > -1) {
             var h = /\b(\d+)h\b/.exec(timeSpent)[1];
             result = parseFloat(h.replace('h', ''));
         }
-        if(timeSpent.indexOf('m') > -1){
+        if (timeSpent.indexOf('m') > -1) {
             var m = /\b(\d+)m\b/.exec(timeSpent)[1];
             result += parseFloat(m.replace('m', '')) / 60;
         }
         return result;
+    }
+
+    function isValidTimeSpentFormat(timeSpent) {
+        if (hoursAndMinutesRegex.exec(timeSpent))
+            return true;
+        else
+            return false;
     }
 
     function parse(text) {
@@ -44,7 +51,8 @@ var JiraParser = (function () {
 
     return {
         parse: parse,
-        timeSpentToHours: timeSpentToHours
+        timeSpentToHours: timeSpentToHours,
+        isValidTimeSpentFormat: isValidTimeSpentFormat
     };
 
 })();

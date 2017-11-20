@@ -64,8 +64,31 @@ test("timeSpent in text format should return numeric hour", done => {
         expect(result.toFixed(2)).toEqual(expected.toFixed(2));
         done();
     });
+});
 
-    
-
-    done();
+test("isValidTimeSpentFormat should validate timeSpent in text format", done => {
+    //arrange
+    const testDataList = [{
+        '2h': true
+    },
+    {
+        '1h 30m': true
+    }, 
+    {
+        '15min': false
+    }, {
+        '1h4m': false
+    }, {
+        '50m': true
+    },
+    ];
+    //act
+    testDataList.forEach(testData => {
+        let text = Object.keys(testData)[0];
+        let expected = testData[text];
+        let result = jiraParser.isValidTimeSpentFormat(text);
+        //assert
+        expect(result).toEqual(expected);
+        done();
+    });
 });
