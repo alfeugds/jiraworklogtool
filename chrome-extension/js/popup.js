@@ -57,31 +57,12 @@ function getCookies(domain, name, callback) {
 
 document.addEventListener("DOMContentLoaded", () => {
     getCurrentTabUrl(url => {
-        var getWorklogButton = document.getElementById("getWorklogButton");
-        var worklogInput = document.getElementById("worklog");
-        var addWorklogsButton = document.getElementById("addWorklogs");
         
-        View.Main.setLoadingStatus(true);
-
         window.mediator = new Mediator();
-        Controller.LogController.init();
+        
+        //Controller.LogController.init();
 
-
-        View.Table.init();
-
-        getWorklogButton.addEventListener("click", () => {
-
-            Controller.LogController.getWorklogsByDay();
-
-        });
-
-        addWorklogsButton.addEventListener("click", () => {
-            
-            Controller.LogController.bulkInsert(worklogInput.value);
-
-        });
-
-        View.Main.setLoadingStatus(false);
+        View.Main.init();
         
     });
 });

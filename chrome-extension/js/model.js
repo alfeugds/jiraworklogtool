@@ -6,6 +6,7 @@ window.Model.WorklogModel = (function(){
 
     function addAll(newItems){
         items = items.concat(newItems);
+        mediator.trigger('model.workloglist.updated', items);
     }
 
     function getItems(){
@@ -14,6 +15,7 @@ window.Model.WorklogModel = (function(){
 
     function setItems(newItems){
         items = newItems;
+        mediator.trigger('model.workloglist.updated', items);
     }
 
     function updateTotalHours(){

@@ -1,6 +1,59 @@
 window.View = window.View || {};
 
-window.View.Main = (function (){
+window.View.Main = (function () {
+
+    var worklogDateInput,
+        getWorklogButton,
+        worklogInput,
+        addWorklogsButton;
+
+    function init() {
+
+        setLoadingStatus(true);        
+        
+        Controller.LogController.init();
+
+        View.Table.init();
+
+        var getWorklogButton = document.getElementById("getWorklogButton");
+        var worklogInput = document.getElementById("worklog");
+        var addWorklogsButton = document.getElementById("addWorklogs");
+
+        worklogDateInput = document.getElementById("worklogDate");
+        //initialize date with today's date
+        worklogDateInput.value = formatDate(new Date());
+
+
+        getWorklogButton.addEventListener("click", () => {
+
+            Controller.LogController.getWorklogsByDay(worklogDateInput.value);
+
+        });
+
+        addWorklogsButton.addEventListener("click", () => {
+
+            Controller.LogController.bulkInsert(worklogInput.value);
+
+        });
+        setLoadingStatus(false);
+    }
+
+    function setWorklogDateInputValue(formattedDate) {
+
+    }
+
+    function formatDate(date) {
+        var d = date,
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
     function setLoadingStatus(isLoading) {
         if (isLoading) {
             document.getElementById("loading").classList.remove('hidden');
@@ -10,9 +63,10 @@ window.View.Main = (function (){
     }
 
     return {
+        init: init,
         setLoadingStatus: setLoadingStatus
     };
-    
+
 })();
 
 window.View.Table = (function () {
@@ -54,18 +108,20 @@ window.View.Table = (function () {
         tbody = new_tbody;
     }
 
-    function populateWorklogTable(worklogItems){
+    function populateWorklogTable(worklogItems) {
         clearRows();
 
         for (var i = 0; i < worklogItems.length; i++) {
             var worklogItem = worklogItems[i];
-            addRow(worklogItem);        
+            addRow(worklogItem);
         }
     }
 
-    function init(){
+    function init() {
         table = document.getElementById('worklog-items');
         tbody = table.getElementsByTagName('tbody')[0];
+
+        mediator.on('model.workloglist.updated', worklogItems => populateWorklogTable(worklogItems));
     }
 
     return {

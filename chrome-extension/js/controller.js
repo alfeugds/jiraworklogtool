@@ -1,12 +1,7 @@
 window.Controller = window.Controller || {};
 window.Controller.LogController = (function () {
 
-    var worklogDateInput;
-
     function init(){
-        worklogDateInput = document.getElementById("worklogDate");
-        //initialize date with today's date
-        worklogDateInput.value = formatDate(new Date());
         
         //initialize jira url
         //TODO: remove hard-coded url
@@ -21,27 +16,13 @@ window.Controller.LogController = (function () {
 
     }
 
-    function formatDate(date) {
-        var d = date,
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2) month = '0' + month;
-        if (day.length < 2) day = '0' + day;
-
-        return [year, month, day].join('-');
-    }
-
-    function getWorklogsByDay() {
-        var worklogDate = worklogDateInput.value;
+    function getWorklogsByDay(worklogDate) {
 
         View.Main.setLoadingStatus(true);
 
         JiraHelper.getWorklog(worklogDate).then((worklogItems) => {
             console.log(worklogItems);
             Model.WorklogModel.setItems(worklogItems);
-            View.Table.populateWorklogTable(Model.WorklogModel.getItems());
         }).catch(() => {
             alert('Something went wrong.');
         }).then(() => {
@@ -74,7 +55,6 @@ window.Controller.LogController = (function () {
     function bulkInsert(worklogItemsText) {
         var worklogItems = getFromText(worklogItemsText);
         Model.WorklogModel.addAll(worklogItems);
-        View.Table.populateWorklogTable(Model.WorklogModel.getItems());
     }
 
     function save(params) {
