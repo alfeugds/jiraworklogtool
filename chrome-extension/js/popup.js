@@ -61,15 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
         var worklogInput = document.getElementById("worklog");
         var addWorklogsButton = document.getElementById("addWorklogs");
         
-        //initialize date with today's date
-        //worklogDate.value = formatDate(new Date());
-
         View.Main.setLoadingStatus(true);
 
-        View.Table.init();
+        window.mediator = new Mediator();
         Controller.LogController.init();
 
-        
+
+        View.Table.init();
 
         getWorklogButton.addEventListener("click", () => {
 
@@ -78,24 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         addWorklogsButton.addEventListener("click", () => {
-            // var requestParams = {
-            //     'worklogText': worklogInput.value,
-            //     'worklogDate': worklogDateInput.value
-            // }
-
-            //View.Main.setLoadingStatus(true);
             
             Controller.LogController.bulkInsert(worklogInput.value);
 
-            // JiraHelper.bulkInsertWorklog(requestParams).then((result) => {
-            //     console.log(result);
-            //     //alert('done hue ' + result);
-            // }).catch((error) =>{
-            //     console.log(error);
-            //     alert('error hue ' + error);
-            // }).then(() => {
-            //     View.Main.setLoadingStatus(false);
-            // });
         });
 
         View.Main.setLoadingStatus(false);

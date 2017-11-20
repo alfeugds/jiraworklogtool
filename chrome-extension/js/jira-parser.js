@@ -27,14 +27,14 @@ var JiraParser = (function () {
     function parse(text) {
 
         let hoursAndMinutes = jiraNumber = worklog = '';
+                
+        let matches = worklogTextLineRegex.exec(text);
 
-        if(text){
-            let matches = worklogTextLineRegex.exec(text);
-    
+        if (matches) {
             jiraNumber = matches[1] || '';
             hoursAndMinutes = matches[2] || '';
             worklog = matches[3] || '';
-        }
+        }    
        
         let result = {
             'timeSpent': hoursAndMinutes,
