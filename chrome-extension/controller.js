@@ -50,7 +50,6 @@ window.Controller.LogController = (function () {
     }
 
     function getFromText(worklogItemsText){
-        //TODO: call parser method here
         var arr = worklogItemsText.split('\n');
         var result = [];
         for (var i = 0; i < arr.length; i++) {

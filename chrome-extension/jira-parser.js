@@ -1,7 +1,8 @@
 var JiraParser = (function () {
     const hoursAndMinutesRegex = /\b(\d+[hm](?:\s\d+[m])?)\b/,
         jiraNumberRegex = /\b([A-Z]{3,4}-\d{3,4})\b/,
-        worklogRegex = /\s?-\s(.+)/;
+        worklogRegex = /\s*-*\s+(.+)/,
+        worklogTextLineRegex = /\b([a-zA-Z]{2,5}-\d{2,5})?\b.*?\b(\d+[m]|\d+[h](?:\s\d+[m])?)\b[\s\-_;,]*(.+)$/;
 
     function timeSpentToHours(timeSpent) {
         var result = 0;
@@ -26,21 +27,15 @@ var JiraParser = (function () {
     function parse(text) {
 
         let hoursAndMinutes = jiraNumber = worklog = '';
-        try {
-            hoursAndMinutes = hoursAndMinutesRegex.exec(text)[1]
-        } catch (e) {
-        }
 
-        try {
-            jiraNumber = jiraNumberRegex.exec(text)[1]
-        } catch (e) {
-
+        if(text){
+            let matches = worklogTextLineRegex.exec(text);
+    
+            jiraNumber = matches[1] || '';
+            hoursAndMinutes = matches[2] || '';
+            worklog = matches[3] || '';
         }
-        try {
-            worklog = worklogRegex.exec(text)[1]
-        } catch (e) {
-
-        }
+       
         let result = {
             'timeSpent': hoursAndMinutes,
             'jira': jiraNumber,

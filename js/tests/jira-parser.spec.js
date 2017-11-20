@@ -3,7 +3,7 @@ const jiraParser = require("../../chrome-extension/jira-parser");
 test("string should return a meaningful log object", done => {
     const testDataList = [
         {
-            logText: "30m CMS-1234 - working on stuff",
+            logText: "CMS-1234; 30m-working on stuff",
             expectedObject: {
                 timeSpent: "30m",
                 jira: "CMS-1234",
@@ -11,7 +11,7 @@ test("string should return a meaningful log object", done => {
             }
         },
         {
-            logText: "1h 30m CMS-123 - testing - working on stuff",
+            logText: "CMS-123 1h 30m ,testing - working on stuff",
             expectedObject: {
                 timeSpent: "1h 30m",
                 jira: "CMS-123",
@@ -20,12 +20,22 @@ test("string should return a meaningful log object", done => {
         },
         {
             logText:
-            "1h - [grooming] align with shira about grooming pending tasks and blocks / align with Dorte the grooming tasks and story overview",
+            "1h - [grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview",
             expectedObject: {
                 timeSpent: "1h",
                 jira: "",
                 comment:
-                "[grooming] align with shira about grooming pending tasks and blocks / align with Dorte the grooming tasks and story overview"
+                "[grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview"
+            }
+        },
+        {
+            logText:
+            "ms-12345 1h 30m [grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview",
+            expectedObject: {
+                timeSpent: "1h 30m",
+                jira: "ms-12345",
+                comment:
+                "[grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview"
             }
         }
     ];

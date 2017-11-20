@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             //View.Main.setLoadingStatus(true);
             
-            Controller.LogController.bulkInsert('');
+            Controller.LogController.bulkInsert(worklogInput.value);
 
             // JiraHelper.bulkInsertWorklog(requestParams).then((result) => {
             //     console.log(result);
