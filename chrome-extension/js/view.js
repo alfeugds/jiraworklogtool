@@ -83,7 +83,7 @@ window.View.Table = (function () {
         tbody;
 
     var worklogTableRowTemplate = `
-    <tr class="worklog">
+    <tr class="worklog {{status}}">
         <td class="tg-yw4l jira-number-column-item">
             <input type="text" value="{{jiraNumber}}"/>
         </td>
@@ -93,17 +93,31 @@ window.View.Table = (function () {
         <td class="tg-yw4l comment-column-item">
             <input type="text" value="{{comment}}"/>
         </td>
+        <td class="tg-yw4l delete-column-item">
+            <a class='delete-button'></a>
+        </td>
         <td class="tg-yw4l select-column-item">
             <input type="checkbox" name="selected">
         </td>
         </tr>
     <tr>`;
 
+    var statusClassList = {
+        saved: 'worklog--saved',
+        invalid: 'worklog--invalid',
+        edited: 'worklog--edited'
+    };
+
+    function getStatusClass(status){
+        return statusClassList[status];
+    }
+
     function addRow(worklogItem) {
         var row = worklogTableRowTemplate
             .replace('{{jiraNumber}}', worklogItem.jira)
             .replace('{{timeSpent}}', worklogItem.timeSpent)
-            .replace('{{comment}}', worklogItem.comment);
+            .replace('{{comment}}', worklogItem.comment)
+            .replace('{{status}}', getStatusClass(worklogItem.status));
         tbody.innerHTML += row;
     }
 

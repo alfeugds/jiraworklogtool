@@ -84,7 +84,8 @@
                     'timeSpent': worklog.timeSpent,
                     'comment': worklog.comment,
                     'started': worklog.started,
-                    'logId': worklog.id
+                    'logId': worklog.id,
+                    'status': ['saved']
                 });
             })
             console.log(worklogObjectArray);

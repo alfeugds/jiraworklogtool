@@ -108,6 +108,29 @@
       right: 20px;
       top: 20px;
     }
+    .delete-button{
+      outline: none;
+      display: block;
+      /* margin-left: auto;
+      margin-right: auto; */
+      margin: auto;
+      width: 20px;
+      /* padding: 6px 0; */
+      /* text-align: center; */
+      border: 1px solid #ddd;
+      border-bottom: 1px solid #aaa; 
+      border-right: 1px solid #aaa;
+      background-color: #fff; 
+      background-repeat: no-repeat;
+      background-position: center;
+      font-size: 14px;
+      /* text-shadow: 1px 1px 1px #fff; */
+      /* font-weight: bold; */
+      height: 19px;
+      line-height: 1.5em;
+      /* margin-bottom: 6px; */
+      background-image: url(/ic_delete_black_24dp.png);
+    }
   </style>
 
   <!--
@@ -141,6 +164,7 @@
           <th class="tg-yw4l jira-number-column-item">Jira #</th>
           <th class="tg-yw4l time-spent-column-item">Time Spent</th>
           <th class="tg-yw4l comment-column-item">Comment</th>
+          <th class="tg-yw4l delete-column-item">Delete</th>
           <th class="tg-yw4l select-column-item">Select</th>
         </tr>
       </thead>
@@ -154,6 +178,9 @@
           </td>
           <td class="tg-yw4l comment-column-item">
             <input type="text" value="fixing layout bug" />
+          </td>
+          <td class="tg-yw4l delete-column-item">
+            <a class='delete-button'></a>
           </td>
           <td class="tg-yw4l select-column-item">
             <input type="checkbox" name="selected">
@@ -169,6 +196,9 @@
           <td class="tg-yw4l comment-column-item">
             <input type="text" value="fixing layout bug" />
           </td>
+          <td class="tg-yw4l delete-column-item">
+            <a class='delete-button'></a>
+          </td>
           <td class="tg-yw4l select-column-item">
             <input type="checkbox" name="selected">
           </td>
@@ -182,6 +212,9 @@
           </td>
           <td class="tg-yw4l comment-column-item">
             <input type="text" value="fixing layout bug" />
+          </td>
+          <td class="tg-yw4l delete-column-item">
+            <a class='delete-button'></a>
           </td>
           <td class="tg-yw4l select-column-item">
             <input type="checkbox" name="selected">
