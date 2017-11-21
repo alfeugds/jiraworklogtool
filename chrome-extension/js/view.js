@@ -83,15 +83,15 @@ window.View.Table = (function () {
         tbody;
 
     var worklogTableRowTemplate = `
-    <tr class="worklog {{status}}">
+    <tr class="worklog {{status-class}}" data-status="{{status}}" data-id="{{logId}}">
         <td class="tg-yw4l jira-number-column-item">
-            <input type="text" value="{{jiraNumber}}"/>
+            <input name="jira" type="text" value="{{jiraNumber}}"/>
         </td>
         <td class="tg-yw4l time-spent-column-item">
-            <input type="text" value="{{timeSpent}}"/>
+            <input name="timeSpent" type="text" value="{{timeSpent}}"/>
         </td>
         <td class="tg-yw4l comment-column-item">
-            <input type="text" value="{{comment}}"/>
+            <input name="comment" type="text" value="{{comment}}"/>
         </td>
         <td class="tg-yw4l delete-column-item">
             <a class='delete-button'></a>
@@ -99,8 +99,7 @@ window.View.Table = (function () {
         <td class="tg-yw4l select-column-item">
             <input type="checkbox" name="selected">
         </td>
-        </tr>
-    <tr>`;
+    </tr>`;
 
     var statusClassList = {
         saved: 'worklog--saved',
@@ -117,7 +116,9 @@ window.View.Table = (function () {
             .replace('{{jiraNumber}}', worklogItem.jira)
             .replace('{{timeSpent}}', worklogItem.timeSpent)
             .replace('{{comment}}', worklogItem.comment)
-            .replace('{{status}}', getStatusClass(worklogItem.status));
+            .replace('{{status}}', worklogItem.status)
+            .replace('{{logId}}', worklogItem.logId)
+            .replace('{{status-class}}', getStatusClass(worklogItem.status));
         tbody.innerHTML += row;
     }
 
@@ -140,6 +141,30 @@ window.View.Table = (function () {
         }
     }
 
+    function getWorklogItems(){
+
+        var items = [];
+        
+        for (var i = 0, row; row = tbody.rows[i]; i++) {
+            //iterate through rows
+            var status = row.getAttribute('data-status');
+            var logId = row.getAttribute('data-id');
+            var jira = row.querySelector('[name=jira]').value;
+            var timeSpent = row.querySelector('[name=timeSpent]').value;
+            var comment = row.querySelector('[name=comment]').value;
+            //var jira = row.get         
+            //...
+            items.push({
+                status: status,
+                jira: jira,
+                timeSpent: timeSpent,
+                comment: comment,
+                logId: logId
+            });
+        }
+        return items;
+    }
+
     function init() {
         table = document.getElementById('worklog-items');
         tbody = table.getElementsByTagName('tbody')[0];
@@ -152,6 +177,7 @@ window.View.Table = (function () {
         addRow: addRow,
         deleteRow: deleteRow,
         clearRows: clearRows,
-        populateWorklogTable: populateWorklogTable
+        populateWorklogTable: populateWorklogTable,
+        getWorklogItems: getWorklogItems
     };
 })();
