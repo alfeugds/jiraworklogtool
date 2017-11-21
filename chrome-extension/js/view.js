@@ -6,6 +6,7 @@ window.View.Main = (function () {
         getWorklogButton,
         worklogInput,
         addWorklogsButton,
+        saveButton,
         totalHoursSpan;
 
     function init() {
@@ -19,6 +20,7 @@ window.View.Main = (function () {
         getWorklogButton = document.getElementById("getWorklogButton");
         worklogInput = document.getElementById("worklog");
         addWorklogsButton = document.getElementById("addWorklogs");
+        saveButton = document.getElementById("save");
         totalHoursSpan = document.getElementById("totalHours");
 
         worklogDateInput = document.getElementById("worklogDate");
@@ -40,10 +42,26 @@ window.View.Main = (function () {
         addWorklogsButton.addEventListener("click", () => {
             setLoadingStatus(true);
             Controller.LogController.bulkInsert(worklogInput.value).then(() => {
+                worklogInput.value = '';
                 setLoadingStatus(false);
             });
 
         });
+
+        saveButton.addEventListener("click", () => {
+            setLoadingStatus(true);
+            var items = View.Table.getWorklogItems();
+            Controller.LogController.save(items, worklogDateInput.value).then(() => {
+                alert('Worklog saved.');
+                
+            }).catch(() => {
+                alert('Something went wrong');
+            }).then(() => {
+                setLoadingStatus(false);
+            });
+
+        });
+
         setLoadingStatus(false);
     }
 

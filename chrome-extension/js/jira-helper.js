@@ -126,14 +126,15 @@
         })
     }
 
-    function logWork(worklog){
+    function logWork(worklog, date){
         //TODO: remove after testing request accuracy
         worklog = worklog || {
-            'started': '2017-11-14T06:35:29.075+0000',
+            //'started': '2017-11-21',
             'comment': 'general activities',
             'timeSpent': '15m', 
             'jira': 'CMS-246'
         }
+        worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
 
         var url = `${jiraDomain}/rest/api/2/issue/${worklog.jira}/worklog`;
         var config = {

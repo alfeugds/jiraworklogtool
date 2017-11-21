@@ -61,8 +61,25 @@ window.Controller.LogController = (function () {
         });
     }
 
-    function save(params) {
-        
+    function save(items, date) {
+        return new Promise((resolve, reject) => {
+            console.log(items);
+            var promises = [];
+            for (var i = 0, item; item = items[i]; i++) {
+                var promise = JiraHelper.logWork(item, date);
+                promise.then(() =>{
+
+                }).catch((error) => {
+
+                }).then(() => {
+                    
+                });
+                promises.push(promise);                
+            }
+            Promise.all(promises).then(() => {
+                resolve();
+            });
+        });
     }
 
     return {
