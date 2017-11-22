@@ -24,11 +24,12 @@ window.Controller.LogController = (function () {
         return new Promise((resolve, reject) => {
             
             JiraHelper.getWorklog(worklogDate).then((worklogItems) => {
-                Model.WorklogModel.setItems(worklogItems);
-            }).catch(() => {
-                alert('Something went wrong.');
-            }).then(() => {
+                Model.WorklogModel.updateItemsFromJira(worklogItems);
                 resolve();
+            }).catch(() => {
+                reject();
+            }).then(() => {
+                
             });
 
         } );
@@ -71,8 +72,24 @@ window.Controller.LogController = (function () {
             console.log(items);
             var promises = [];
             for (var i = 0, item; item = items[i]; i++) {
+                var promise;
+                switch (item.status) {
+                    case 'saved':
+                        console.log('item already saved', item);
+                        break;
+                    case 'invalid':
+                        
+                        break;
+                    case 'edited':
+                        
+                        break;
+                    default:
+                        console.log('item ignored', item);
+                        break;
+                }
+
                 var promise = JiraHelper.logWork(item, date);
-                promise.then(() =>{
+                promise.then(result =>{
 
                 }).catch((error) => {
 
@@ -87,9 +104,18 @@ window.Controller.LogController = (function () {
         });
     }
 
+    function persistUnsavedData(date, items){
+        if (!items || items.length === 0) {
+            return Promise.resolve();
+        }
+
+        return Model.WorklogModel.persistUnsavedWorklogToLocal(date, items);
+    }
+
     return {
         getWorklogsByDay: getWorklogsByDay,
         bulkInsert: bulkInsert,
+        persistUnsavedData: persistUnsavedData,
         save: save,
         init: init
     };

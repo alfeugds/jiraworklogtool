@@ -1,99 +1,134 @@
 window.View = window.View || {};
 
-window.View.Main = (function () {
-
+window.View.Main = (function() {
     var worklogDateInput,
         getWorklogButton,
         worklogInput,
         addWorklogsButton,
         saveButton,
         totalHoursSpan;
+    var previousDate;
 
     function init() {
+        setLoadingStatus(true);
 
-        setLoadingStatus(true);        
-        
         Controller.LogController.init().then(() => {
             View.Table.init();
-    
+
             getWorklogButton = document.getElementById("getWorklogButton");
             worklogInput = document.getElementById("worklog");
             addWorklogsButton = document.getElementById("addWorklogs");
             saveButton = document.getElementById("save");
             totalHoursSpan = document.getElementById("totalHours");
-    
+
             worklogDateInput = document.getElementById("worklogDate");
             //initialize date with today's date
             worklogDateInput.value = formatDate(new Date());
-    
-            mediator.on('modal.totalHours.update', totalHours => {
-                totalHoursSpan.innerText = parseFloat(totalHours).toFixed(2) + 'h';
+            previousDate = worklogDateInput.value;
+
+            mediator.on("modal.totalHours.update", totalHours => {
+                totalHoursSpan.innerText =
+                    parseFloat(totalHours).toFixed(2) + "h";
             });
-    
-            getWorklogButton.addEventListener("click", getWorklogItemsFromDate);
-    
+
+            getWorklogButton.addEventListener("click", () => {
+                setLoadingStatus(true);
+                persistUnsavedData()
+                    .then(getWorklogItemsFromDate)
+                    .then(() => {
+                        setLoadingStatus(false);
+                    });
+            });
+
             addWorklogsButton.addEventListener("click", () => {
                 setLoadingStatus(true);
-                Controller.LogController.bulkInsert(worklogInput.value).then(() => {
-                    worklogInput.value = '';
-                    setLoadingStatus(false);
-                });
-    
+                Controller.LogController.bulkInsert(worklogInput.value).then(
+                    () => {
+                        worklogInput.value = "";
+                        setLoadingStatus(false);
+                    }
+                );
             });
-    
+
             saveButton.addEventListener("click", () => {
                 setLoadingStatus(true);
                 var items = View.Table.getWorklogItems();
-                Controller.LogController.save(items, worklogDateInput.value).then(() => {
-                    alert('Worklog saved.');
-                    
-                }).catch(() => {
-                    alert('Something went wrong');
-                }).then(() => {
-                    setLoadingStatus(false);
-                });
-    
+                Controller.LogController.save(items, worklogDateInput.value)
+                    .then(() => {
+                        alert("Worklog saved.");
+                    })
+                    .catch(() => {
+                        alert("Something went wrong");
+                    })
+                    .then(() => {
+                        setLoadingStatus(false);
+                    });
             });
 
-            worklogDateInput.addEventListener('input', () => {
-                console.log('date changed: ' + worklogDateInput.value);
-                getWorklogItemsFromDate();
-            }, true);
-    
-            getWorklogItemsFromDate();            
+            worklogDateInput.addEventListener(
+                "input",
+                () => {
+                    console.log("date changed: " + worklogDateInput.value);
+                    setLoadingStatus(true);
+                    getWorklogItemsFromDate()
+                        .then(() => {
+                            setLoadingStatus(false);
+                        });
+                },
+                true
+            );
+
+            getWorklogItemsFromDate().then(() => {
+                setLoadingStatus(false);
+            });
         });
-
     }
 
-    function getWorklogItemsFromDate(){
-        setLoadingStatus(true);
-        Controller.LogController.getWorklogsByDay(worklogDateInput.value).then(() => {
-            setLoadingStatus(false);
+    function persistUnsavedData(date) {
+        
+        
+        //first, persist unsaved data locally
+        var items = View.Table.getWorklogItems().filter(item => {
+            return item.status === 'new';
         });
+        return Controller.LogController.persistUnsavedData(date, items);
 
     }
 
-    function setWorklogDateInputValue(formattedDate) {
+    function getWorklogItemsFromDate() {
 
+        var promise =  Controller.LogController.getWorklogsByDay(worklogDateInput.value);
+        promise.then(() => {})
+            .catch(error => {
+                alert(
+                    "Something went wrong. Please make sure you are logged in Jira, and the Jira URL is correct."
+                );
+            })
+            .then(() => {
+                previousDate = worklogDateInput.value;
+            });
+        return promise;
     }
+
+    function setWorklogDateInputValue(formattedDate) {}
 
     function formatDate(date) {
         var d = date,
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
+            month = "" + (d.getMonth() + 1),
+            day = "" + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2) month = '0' + month;
-        if (day.length < 2) day = '0' + day;
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
 
-        return [year, month, day].join('-');
+        return [year, month, day].join("-");
     }
 
     function setLoadingStatus(isLoading) {
         if (isLoading) {
-            document.getElementById("loading").classList.remove('hidden');
+            document.getElementById("loading").classList.remove("hidden");
         } else {
-            document.getElementById("loading").classList.add('hidden');
+            document.getElementById("loading").classList.add("hidden");
         }
     }
 
@@ -101,12 +136,10 @@ window.View.Main = (function () {
         init: init,
         setLoadingStatus: setLoadingStatus
     };
-
 })();
 
-window.View.Table = (function () {
-    var table,
-        tbody;
+window.View.Table = (function() {
+    var table, tbody;
 
     var worklogTableRowTemplate = `
     <tr class="worklog {{status-class}}" data-status="{{status}}" data-id="{{logId}}">
@@ -128,23 +161,23 @@ window.View.Table = (function () {
     </tr>`;
 
     var statusClassList = {
-        saved: 'worklog--saved',
-        invalid: 'worklog--invalid',
-        edited: 'worklog--edited'
+        saved: "worklog--saved",
+        invalid: "worklog--invalid",
+        edited: "worklog--edited"
     };
 
-    function getStatusClass(status){
+    function getStatusClass(status) {
         return statusClassList[status];
     }
 
     function addRow(worklogItem) {
         var row = worklogTableRowTemplate
-            .replace('{{jiraNumber}}', worklogItem.jira)
-            .replace('{{timeSpent}}', worklogItem.timeSpent)
-            .replace('{{comment}}', worklogItem.comment)
-            .replace('{{status}}', worklogItem.status)
-            .replace('{{logId}}', worklogItem.logId)
-            .replace('{{status-class}}', getStatusClass(worklogItem.status));
+            .replace("{{jiraNumber}}", worklogItem.jira)
+            .replace("{{timeSpent}}", worklogItem.timeSpent)
+            .replace("{{comment}}", worklogItem.comment)
+            .replace("{{status}}", worklogItem.status)
+            .replace("{{logId}}", worklogItem.logId)
+            .replace("{{status-class}}", getStatusClass(worklogItem.status));
         tbody.innerHTML += row;
     }
 
@@ -153,7 +186,7 @@ window.View.Table = (function () {
     }
 
     function clearRows() {
-        var new_tbody = document.createElement('tbody');
+        var new_tbody = document.createElement("tbody");
         tbody.parentNode.replaceChild(new_tbody, tbody);
         tbody = new_tbody;
     }
@@ -167,18 +200,17 @@ window.View.Table = (function () {
         }
     }
 
-    function getWorklogItems(){
-
+    function getWorklogItems() {
         var items = [];
-        
-        for (var i = 0, row; row = tbody.rows[i]; i++) {
+
+        for (var i = 0, row; (row = tbody.rows[i]); i++) {
             //iterate through rows
-            var status = row.getAttribute('data-status');
-            var logId = row.getAttribute('data-id');
-            var jira = row.querySelector('[name=jira]').value;
-            var timeSpent = row.querySelector('[name=timeSpent]').value;
-            var comment = row.querySelector('[name=comment]').value;
-            //var jira = row.get         
+            var status = row.getAttribute("data-status");
+            var logId = row.getAttribute("data-id");
+            var jira = row.querySelector("[name=jira]").value;
+            var timeSpent = row.querySelector("[name=timeSpent]").value;
+            var comment = row.querySelector("[name=comment]").value;
+            //var jira = row.get
             //...
             items.push({
                 status: status,
@@ -192,10 +224,12 @@ window.View.Table = (function () {
     }
 
     function init() {
-        table = document.getElementById('worklog-items');
-        tbody = table.getElementsByTagName('tbody')[0];
+        table = document.getElementById("worklog-items");
+        tbody = table.getElementsByTagName("tbody")[0];
 
-        mediator.on('model.workloglist.updated', worklogItems => populateWorklogTable(worklogItems));
+        mediator.on("model.workloglist.updated", worklogItems =>
+            populateWorklogTable(worklogItems)
+        );
     }
 
     return {

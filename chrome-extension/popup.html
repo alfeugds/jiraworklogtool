@@ -105,9 +105,20 @@
 
     #loading {
       position: absolute;
-      right: 20px;
-      top: 20px;
+      margin: auto;
+      background-color: rgba(0, 0, 0, 0.28);
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
     }
+
+    #loading img {
+      margin: 200px auto;
+      display: block;
+    }
+
+
     .delete-button{
       outline: none;
       display: block;
@@ -152,7 +163,6 @@
   <h1>Jira Worklog Tool</h1>
   <div id="container">
     <section>
-      <img id="loading" class="hidden" src="spinner-small.gif" aria-hidden="true" />
       <label for="worklogDate">Worklog Date:</label>
       <input type="date" id="worklogDate" />
       <button id="getWorklogButton">Get Worklog</button>
@@ -233,6 +243,9 @@
     <button id="addWorklogs">Add Worklogs</button>
     <br />
     <div id="status" class="hidden"></div>
+  </div>
+  <div id="loading" class="hidden">
+    <img class="hidden" src="spinner-small.gif" aria-hidden="true" />
   </div>
 </body>
 

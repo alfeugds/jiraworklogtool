@@ -5,6 +5,10 @@ window.Model.WorklogModel = (function(){
     var totalHours = 0.0;
 
     function addAll(newItems){
+        newItems.forEach(function(item) {
+            item.status = 'new';
+        }, this);
+
         items = items.concat(newItems);
         mediator.trigger('model.workloglist.updated', items);
         updateTotalHours();
@@ -12,6 +16,16 @@ window.Model.WorklogModel = (function(){
 
     function getItems(){
         return items;
+    }
+
+    function updateItemsFromJira(newItems){
+        items = items.filter(item => {
+            return item.status !== 'saved' && item.status !== 'edited' && item.status !== 'deleted';
+        });
+
+        items = items.concat(newItems);
+        mediator.trigger('model.workloglist.updated', items);
+        updateTotalHours();
     }
 
     function setItems(newItems){
@@ -30,15 +44,61 @@ window.Model.WorklogModel = (function(){
         mediator.trigger('modal.totalHours.update', totalHours);
     }
 
+    function clearItems(){
+        items = [];
+    }
+
     function getTotalHours(){
         updateTotalHours();
         return totalHours;
     }
 
+    function persistUnsavedWorklogToLocal(date, worklogs){
+        return new Promise((resolve, reject) => {
+            getUnsavedWorklogFromLocal().then(persistedWorklogs => {
+                worklogs.forEach(function(item) {
+                    item.started = date;
+                }, this);
+                
+                persistedWorklogs = persistedWorklogs.filter(function(item) {
+                    return item.started !== date;
+                }, this);
+
+                persistedWorklogs = persistedWorklogs.concat(worklogs);
+                //...
+                chrome.storage.local.set({
+                    worklogs: persistedWorklogs
+                }, () => {
+                    resolve();
+                })
+            });
+            
+        });
+    }
+
+    function getUnsavedWorklogFromLocal(date){
+        return new Promise((resolve, reject) => {
+            chrome.storage.local.get({
+                worklogs: []
+            }, result => {
+                var worklogs = result.worklogs;
+                if (date) {
+                    worklogs = worklogs.filter(item => {
+                        return item.started === date;
+                    });
+                }
+                console.log('getUnsavedWorklogFromLocal() result:', worklogs);
+                resolve(worklogs);
+            });
+        });
+    }
+
     return {
         addAll: addAll,
         getItems: getItems,
-        setItems: setItems,
-        getTotalHours: getTotalHours
+        getTotalHours: getTotalHours,
+        updateItemsFromJira: updateItemsFromJira,
+        getUnsavedWorklogFromLocal: getUnsavedWorklogFromLocal,
+        persistUnsavedWorklogToLocal: persistUnsavedWorklogToLocal
     };
 })();
