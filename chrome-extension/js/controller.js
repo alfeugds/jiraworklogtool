@@ -2,25 +2,28 @@ window.Controller = window.Controller || {};
 window.Controller.LogController = (function () {
 
     function init(){
+        return new Promise((resolve, reject) => {
+            //initialize jira url
+            //TODO: remove hard-coded url
+            chrome.storage.sync.get(
+                {
+                    jiraUrl: "https://jira.coke.com/jira"
+                },
+                function(items) {
+                    JiraHelper.setJiraUrl(items.jiraUrl);
+                    resolve();
+                }
+            );
+
+        });
         
-        //initialize jira url
-        //TODO: remove hard-coded url
-        chrome.storage.sync.get(
-            {
-                jiraUrl: "https://jira.coke.com/jira"
-            },
-            function(items) {
-                JiraHelper.setJiraUrl(items.jiraUrl);
-            }
-        );
 
     }
 
     function getWorklogsByDay(worklogDate) {
         return new Promise((resolve, reject) => {
-
+            
             JiraHelper.getWorklog(worklogDate).then((worklogItems) => {
-                console.log(worklogItems);
                 Model.WorklogModel.setItems(worklogItems);
             }).catch(() => {
                 alert('Something went wrong.');
@@ -36,7 +39,9 @@ window.Controller.LogController = (function () {
         var result = [];
         for (var i = 0; i < arr.length; i++) {
             var worklogText = arr[i];
-            result.push(JiraParser.parse(worklogText));            
+            if (worklogText && worklogText.trim()) {
+                result.push(JiraParser.parse(worklogText));            
+            }
         }
         // return [{
         //     timeSpent: "1h",

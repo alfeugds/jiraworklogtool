@@ -37,6 +37,16 @@ test("string should return a meaningful log object", done => {
                 comment:
                 "[grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview"
             }
+        },
+        {
+            logText:
+            "working on dev stuff",
+            expectedObject: {
+                timeSpent: "",
+                jira: "",
+                comment:
+                "working on dev stuff"
+            }
         }
     ];
 

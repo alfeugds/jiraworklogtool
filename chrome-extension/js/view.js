@@ -13,56 +13,64 @@ window.View.Main = (function () {
 
         setLoadingStatus(true);        
         
-        Controller.LogController.init();
-
-        View.Table.init();
-
-        getWorklogButton = document.getElementById("getWorklogButton");
-        worklogInput = document.getElementById("worklog");
-        addWorklogsButton = document.getElementById("addWorklogs");
-        saveButton = document.getElementById("save");
-        totalHoursSpan = document.getElementById("totalHours");
-
-        worklogDateInput = document.getElementById("worklogDate");
-        //initialize date with today's date
-        worklogDateInput.value = formatDate(new Date());
-
-        mediator.on('modal.totalHours.update', totalHours => {
-            totalHoursSpan.innerText = parseFloat(totalHours).toFixed(2) + 'h';
-        });
-
-        getWorklogButton.addEventListener("click", () => {
-            setLoadingStatus(true);
-            Controller.LogController.getWorklogsByDay(worklogDateInput.value).then(() => {
-                setLoadingStatus(false);
+        Controller.LogController.init().then(() => {
+            View.Table.init();
+    
+            getWorklogButton = document.getElementById("getWorklogButton");
+            worklogInput = document.getElementById("worklog");
+            addWorklogsButton = document.getElementById("addWorklogs");
+            saveButton = document.getElementById("save");
+            totalHoursSpan = document.getElementById("totalHours");
+    
+            worklogDateInput = document.getElementById("worklogDate");
+            //initialize date with today's date
+            worklogDateInput.value = formatDate(new Date());
+    
+            mediator.on('modal.totalHours.update', totalHours => {
+                totalHoursSpan.innerText = parseFloat(totalHours).toFixed(2) + 'h';
+            });
+    
+            getWorklogButton.addEventListener("click", getWorklogItemsFromDate);
+    
+            addWorklogsButton.addEventListener("click", () => {
+                setLoadingStatus(true);
+                Controller.LogController.bulkInsert(worklogInput.value).then(() => {
+                    worklogInput.value = '';
+                    setLoadingStatus(false);
+                });
+    
+            });
+    
+            saveButton.addEventListener("click", () => {
+                setLoadingStatus(true);
+                var items = View.Table.getWorklogItems();
+                Controller.LogController.save(items, worklogDateInput.value).then(() => {
+                    alert('Worklog saved.');
+                    
+                }).catch(() => {
+                    alert('Something went wrong');
+                }).then(() => {
+                    setLoadingStatus(false);
+                });
+    
             });
 
+            worklogDateInput.addEventListener('input', () => {
+                console.log('date changed: ' + worklogDateInput.value);
+                getWorklogItemsFromDate();
+            }, true);
+    
+            getWorklogItemsFromDate();            
         });
 
-        addWorklogsButton.addEventListener("click", () => {
-            setLoadingStatus(true);
-            Controller.LogController.bulkInsert(worklogInput.value).then(() => {
-                worklogInput.value = '';
-                setLoadingStatus(false);
-            });
+    }
 
+    function getWorklogItemsFromDate(){
+        setLoadingStatus(true);
+        Controller.LogController.getWorklogsByDay(worklogDateInput.value).then(() => {
+            setLoadingStatus(false);
         });
 
-        saveButton.addEventListener("click", () => {
-            setLoadingStatus(true);
-            var items = View.Table.getWorklogItems();
-            Controller.LogController.save(items, worklogDateInput.value).then(() => {
-                alert('Worklog saved.');
-                
-            }).catch(() => {
-                alert('Something went wrong');
-            }).then(() => {
-                setLoadingStatus(false);
-            });
-
-        });
-
-        setLoadingStatus(false);
     }
 
     function setWorklogDateInputValue(formattedDate) {
