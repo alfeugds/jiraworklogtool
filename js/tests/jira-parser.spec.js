@@ -73,6 +73,8 @@ test("timeSpent in text format should return numeric hour", done => {
         '1h 45m': 1.75
     }, {
         '50m': 0.83
+    }, {
+        '50e': 0
     },
     ];
     //act

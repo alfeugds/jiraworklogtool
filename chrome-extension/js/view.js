@@ -70,10 +70,9 @@ window.View.Main = (function() {
                 () => {
                     console.log("date changed: " + worklogDateInput.value);
                     setLoadingStatus(true);
-                    getWorklogItemsFromDate()
-                        .then(() => {
-                            setLoadingStatus(false);
-                        });
+                    getWorklogItemsFromDate().then(() => {
+                        setLoadingStatus(false);
+                    });
                 },
                 true
             );
@@ -85,20 +84,19 @@ window.View.Main = (function() {
     }
 
     function persistUnsavedData(date) {
-        
-        
         //first, persist unsaved data locally
         var items = View.Table.getWorklogItems().filter(item => {
-            return item.status === 'new';
+            return item.status === "new";
         });
         return Controller.LogController.persistUnsavedData(date, items);
-
     }
 
     function getWorklogItemsFromDate() {
-
-        var promise =  Controller.LogController.getWorklogsByDay(worklogDateInput.value);
-        promise.then(() => {})
+        var promise = Controller.LogController.getWorklogsByDay(
+            worklogDateInput.value
+        );
+        promise
+            .then(() => {})
             .catch(error => {
                 alert(
                     "Something went wrong. Please make sure you are logged in Jira, and the Jira URL is correct."
@@ -140,6 +138,7 @@ window.View.Main = (function() {
 
 window.View.Table = (function() {
     var table, tbody;
+    var originalWorklogItems = [];
 
     var worklogTableRowTemplate = `
     <tr class="worklog {{status-class}}" data-status="{{status}}" data-id="{{logId}}">
@@ -200,36 +199,81 @@ window.View.Table = (function() {
         }
     }
 
+    function getWorklogFromRow(row) {
+        var status = row.getAttribute("data-status");
+        var logId = row.getAttribute("data-id");
+        var jira = row.querySelector("[name=jira]").value;
+        var timeSpent = row.querySelector("[name=timeSpent]").value;
+        var comment = row.querySelector("[name=comment]").value;
+        //var jira = row.get
+        //...
+        return {
+            status: status,
+            jira: jira,
+            timeSpent: timeSpent,
+            comment: comment,
+            logId: logId
+        };
+    }
+
     function getWorklogItems() {
         var items = [];
 
         for (var i = 0, row; (row = tbody.rows[i]); i++) {
-            //iterate through rows
-            var status = row.getAttribute("data-status");
-            var logId = row.getAttribute("data-id");
-            var jira = row.querySelector("[name=jira]").value;
-            var timeSpent = row.querySelector("[name=timeSpent]").value;
-            var comment = row.querySelector("[name=comment]").value;
-            //var jira = row.get
-            //...
-            items.push({
-                status: status,
-                jira: jira,
-                timeSpent: timeSpent,
-                comment: comment,
-                logId: logId
-            });
+            items.push(getWorklogFromRow(row));
         }
         return items;
+    }
+
+    function updateWorklogRowStatus(row, oldStatus, newStatus) {
+        var oldStatusClass = getStatusClass(oldStatus);
+        var newStatusClass = getStatusClass(newStatus);
+        row.classList.remove(oldStatusClass);
+        row.classList.add(newStatusClass);
+        row.setAttribute("data-status", newStatus);
+    }
+
+    function isEqual(worklog1, worklog2){
+        return worklog1.jira === worklog2.jira &&
+            worklog1.comment === worklog2.comment &&
+            worklog1.timeSpent === worklog2.timeSpent;
+    }
+
+    function worklogChanged(e) {
+        var row = e.srcElement.parentElement.parentElement;
+        var worklog = getWorklogFromRow(row);
+        mediator.trigger("view.table.worklog.changed", worklog);
+        console.log("worklog changed", worklog);
+        if (worklog.status !== "new") {
+            originalWorklog = originalWorklogItems.filter(item => {
+                return item.logId === worklog.logId;
+            })[0];
+            if (isEqual(originalWorklog, worklog)) {
+                updateWorklogRowStatus(row, worklog.status, "saved");
+            } else {
+                updateWorklogRowStatus(row, worklog.status, "edited");
+            }
+        }
+    }
+
+    function configureInputListeners() {
+        var inputs = tbody.querySelectorAll("input[type=text]");
+
+        inputs.forEach(input => {
+            input.removeEventListener("input", worklogChanged);
+            input.addEventListener("input", worklogChanged);
+        });
     }
 
     function init() {
         table = document.getElementById("worklog-items");
         tbody = table.getElementsByTagName("tbody")[0];
 
-        mediator.on("model.workloglist.updated", worklogItems =>
-            populateWorklogTable(worklogItems)
-        );
+        mediator.on("model.workloglist.updated", worklogItems => {
+            originalWorklogItems = worklogItems;
+            populateWorklogTable(worklogItems);
+            configureInputListeners();
+        });
     }
 
     return {
