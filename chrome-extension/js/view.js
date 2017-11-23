@@ -283,8 +283,8 @@ window.View.Table = (function() {
 
         if (worklog.status === "new") {
             //just delete the row
-            mediator.trigger('view.table.new-worklog.deleted', worklog);
             deleteRow(row);
+            mediator.trigger('view.table.new-worklog.deleted', worklog);
         }
     }
 

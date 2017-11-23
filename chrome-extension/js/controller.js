@@ -101,10 +101,6 @@ window.Controller.LogController = (function() {
     }
 
     function persistUnsavedData(date, items) {
-        if (!items || items.length === 0) {
-            return Promise.resolve();
-        }
-
         return Model.WorklogModel.persistUnsavedWorklogToLocal(date, items);
     }
 
