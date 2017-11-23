@@ -128,26 +128,27 @@
 
     function logWork(worklog, date){
         //TODO: remove after testing request accuracy
-        worklog = worklog || {
-            //'started': '2017-11-21',
-            'comment': 'general activities',
-            'timeSpent': '15m', 
-            'jira': 'CMS-246'
-        }
-        worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
+        // worklog = worklog || {
+        //     //'started': '2017-11-21',
+        //     'comment': 'general activities',
+        //     'timeSpent': '15m', 
+        //     'jira': 'CMS-246'
+        // }
+        // worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
 
-        var url = `${jiraDomain}/rest/api/2/issue/${worklog.jira}/worklog`;
-        var config = {
-            'headers': headers,
-            'method': 'POST',
-            'url': url,
-            'data': {
-                'started': worklog.started,
-                'comment': worklog.comment,
-                'timeSpent': worklog.timeSpent
-            }
-        }
-        return request(config);
+        // var url = `${jiraDomain}/rest/api/2/issue/${worklog.jira}/worklog`;
+        // var config = {
+        //     'headers': headers,
+        //     'method': 'POST',
+        //     'url': url,
+        //     'data': {
+        //         'started': worklog.started,
+        //         'comment': worklog.comment,
+        //         'timeSpent': worklog.timeSpent
+        //     }
+        // }
+        // return request(config);
+        return Promise.resolve(worklog);
     }
 
     function setJiraUrl(jiraUrl){

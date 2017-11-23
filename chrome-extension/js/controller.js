@@ -19,7 +19,7 @@ window.Controller.LogController = (function() {
     function getWorklogsByDay(worklogDate) {
         return new Promise((resolve, reject) => {
             var p = Model.WorklogModel.getUnsavedWorklogFromLocal(worklogDate);
-            p.then( items => {
+            p.then(items => {
                 Model.WorklogModel.clearItems();
                 Model.WorklogModel.updateItemsWithLocalData(items);
                 JiraHelper.getWorklog(worklogDate)
@@ -31,8 +31,7 @@ window.Controller.LogController = (function() {
                         reject();
                     })
                     .then(() => {});
-                }
-            );
+            });
         });
     }
 
@@ -72,7 +71,9 @@ window.Controller.LogController = (function() {
         return new Promise((resolve, reject) => {
             console.log(items);
             var promises = [];
-            for (var i = 0, item; (item = items[i]); i++) {
+            var i = items.length;
+            while (i--) {
+                var item = items[i];
                 var promise;
                 switch (item.status) {
                     case "saved":
@@ -82,20 +83,31 @@ window.Controller.LogController = (function() {
                         break;
                     case "edited":
                         break;
+                    case "new":
+                        var promise = JiraHelper.logWork(item, date);
+                        promise
+                            .then(item => {
+                                //remove item from local storage. Marking it as 'saved' will prevent it from being 
+                                item.status = 'saved';
+                                items.splice(items.indexOf(item),1)
+                                console.log(item);
+                            })
+                            .catch(error => {
+                                console.error('controller.save', error);
+                            })
+                            .then(() => {});
+                        promises.push(promise);
+                        break;
                     default:
                         console.log("item ignored", item);
                         break;
                 }
-
-                var promise = JiraHelper.logWork(item, date);
-                promise
-                    .then(result => {})
-                    .catch(error => {})
-                    .then(() => {});
-                promises.push(promise);
             }
+            
             Promise.all(promises).then(() => {
-                resolve();
+                persistUnsavedData(date, items).then(() => {
+                    resolve();
+                });
             });
         });
     }

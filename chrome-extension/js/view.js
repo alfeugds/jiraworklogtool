@@ -72,7 +72,10 @@ window.View.Main = (function() {
                 var items = View.Table.getWorklogItems();
                 Controller.LogController.save(items, worklogDateInput.value)
                     .then(() => {
-                        alert("Worklog saved.");
+                        getWorklogItemsFromDate().then(() => {
+                            alert("Worklog saved.");
+                            setLoadingStatus(false);
+                        });            
                     })
                     .catch(() => {
                         alert("Something went wrong");
