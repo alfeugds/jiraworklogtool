@@ -151,6 +151,39 @@
         return Promise.resolve(worklog);
     }
 
+    function updateWorklog(worklog){
+        //TODO: remove after testing request accuracy
+        // worklog = worklog || {
+        //     //'started': '2017-11-21',
+        //     comment: "daily and alignments with team",
+        //     jira: "CMS-250",
+        //     logId: "37733",
+        //     timeSpent: "30m"
+        // }
+
+        worklog = {
+            comment: worklog.comment,
+            jira: worklog.jira,
+            logId: worklog.logId,
+            timeSpent: worklog.timeSpent,
+        }
+        //worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
+
+        var url = `${jiraDomain}/rest/api/2/issue/${worklog.jira}/worklog/${worklog.logId}`;
+        var config = {
+            'headers': headers,
+            'method': 'PUT',
+            'url': url,
+            'data': {
+                'started': worklog.started,
+                'comment': worklog.comment,
+                'timeSpent': worklog.timeSpent
+            }
+        }
+        return request(config);
+        //return Promise.resolve(worklog);
+    }
+
     function setJiraUrl(jiraUrl){
         jiraDomain = jiraUrl;
     }
@@ -163,7 +196,8 @@
         getWorklog : getWorklog,
         logWork: logWork,
         bulkInsertWorklog: bulkInsertWorklog,
-        setJiraUrl: setJiraUrl
+        setJiraUrl: setJiraUrl,
+        updateWorklog: updateWorklog
     }
 
 })();
