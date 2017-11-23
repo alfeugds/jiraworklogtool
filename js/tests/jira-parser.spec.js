@@ -75,7 +75,11 @@ test("timeSpent in text format should return numeric hour", done => {
         '50m': 0.83
     }, {
         '50e': 0
-    },
+    },{
+        '50mk': 0
+    },{
+        'huebr': 0
+    }
     ];
     //act
     testDataList.forEach(testData => {

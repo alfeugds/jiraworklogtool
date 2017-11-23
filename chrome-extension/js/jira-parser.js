@@ -7,12 +7,18 @@ var JiraParser = (function () {
     function timeSpentToHours(timeSpent) {
         var result = 0;
         if (timeSpent.indexOf('h') > -1) {
-            var h = /\b(\d+)h\b/.exec(timeSpent)[1];
-            result = parseFloat(h.replace('h', ''));
+            var match = /\b(\d+)h\b/.exec(timeSpent);
+            if (match) {
+                var h = match[1];
+                result = parseFloat(h.replace('h', ''));                
+            }
         }
         if (timeSpent.indexOf('m') > -1) {
-            var m = /\b(\d+)m\b/.exec(timeSpent)[1];
-            result += parseFloat(m.replace('m', '')) / 60;
+            var match = /\b(\d+)m\b/.exec(timeSpent);
+            if (match) {
+                var m = match[1];
+                result += parseFloat(m.replace('m', '')) / 60;                
+            }
         }
         return result;
     }

@@ -61,6 +61,7 @@ window.View.Main = (function() {
                 Controller.LogController.bulkInsert(worklogInput.value).then(
                     () => {
                         worklogInput.value = "";
+                        mediator.trigger("view.table.new-worklog.changed", {});
                         setLoadingStatus(false);
                     }
                 );
@@ -162,7 +163,7 @@ window.View.Table = (function() {
             <input name="jira" type="text" value="{{jiraNumber}}"/>
         </td>
         <td class="tg-yw4l time-spent-column-item">
-            <input name="timeSpent" type="text" value="{{timeSpent}}"/>
+            <input name="timeSpent" type="text" value="{{timeSpent}}" pattern="(\d+[m]|\d+[h](?:\s\d+[m])?)"/>
         </td>
         <td class="tg-yw4l comment-column-item">
             <input name="comment" type="text" value="{{comment}}"/>
