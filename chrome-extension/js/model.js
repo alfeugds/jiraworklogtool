@@ -28,9 +28,13 @@ window.Model.WorklogModel = (function(){
         updateTotalHours();
     }
 
-    function setItems(newItems){
-        items = newItems;
-        mediator.trigger('model.workloglist.updated', items);
+    function updateItemsWithLocalData(persistedItems){
+        items = items.filter(item => {
+            return item.status !== "new";
+        });
+
+        items = items.concat(persistedItems);
+        //mediator.trigger('model.workloglist.updated', items);
         updateTotalHours();
     }
 
@@ -69,6 +73,7 @@ window.Model.WorklogModel = (function(){
                 chrome.storage.local.set({
                     worklogs: persistedWorklogs
                 }, () => {
+                    updateItemsWithLocalData(worklogs);
                     resolve();
                 })
             });
@@ -99,6 +104,8 @@ window.Model.WorklogModel = (function(){
         getTotalHours: getTotalHours,
         updateItemsFromJira: updateItemsFromJira,
         getUnsavedWorklogFromLocal: getUnsavedWorklogFromLocal,
-        persistUnsavedWorklogToLocal: persistUnsavedWorklogToLocal
+        persistUnsavedWorklogToLocal: persistUnsavedWorklogToLocal,
+        updateItemsWithLocalData: updateItemsWithLocalData,
+        clearItems: clearItems
     };
 })();

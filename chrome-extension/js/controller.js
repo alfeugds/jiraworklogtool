@@ -1,7 +1,6 @@
 window.Controller = window.Controller || {};
-window.Controller.LogController = (function () {
-
-    function init(){
+window.Controller.LogController = (function() {
+    function init() {
         return new Promise((resolve, reject) => {
             //initialize jira url
             //TODO: remove hard-coded url
@@ -14,34 +13,36 @@ window.Controller.LogController = (function () {
                     resolve();
                 }
             );
-
         });
-        
-
     }
 
     function getWorklogsByDay(worklogDate) {
         return new Promise((resolve, reject) => {
-            
-            JiraHelper.getWorklog(worklogDate).then((worklogItems) => {
-                Model.WorklogModel.updateItemsFromJira(worklogItems);
-                resolve();
-            }).catch(() => {
-                reject();
-            }).then(() => {
-                
-            });
-
-        } );
+            var p = Model.WorklogModel.getUnsavedWorklogFromLocal(worklogDate);
+            p.then( items => {
+                Model.WorklogModel.clearItems();
+                Model.WorklogModel.updateItemsWithLocalData(items);
+                JiraHelper.getWorklog(worklogDate)
+                    .then(worklogItems => {
+                        Model.WorklogModel.updateItemsFromJira(worklogItems);
+                        resolve();
+                    })
+                    .catch(() => {
+                        reject();
+                    })
+                    .then(() => {});
+                }
+            );
+        });
     }
 
-    function getFromText(worklogItemsText){
-        var arr = worklogItemsText.split('\n');
+    function getFromText(worklogItemsText) {
+        var arr = worklogItemsText.split("\n");
         var result = [];
         for (var i = 0; i < arr.length; i++) {
             var worklogText = arr[i];
             if (worklogText && worklogText.trim()) {
-                result.push(JiraParser.parse(worklogText));            
+                result.push(JiraParser.parse(worklogText));
             }
         }
         // return [{
@@ -71,32 +72,27 @@ window.Controller.LogController = (function () {
         return new Promise((resolve, reject) => {
             console.log(items);
             var promises = [];
-            for (var i = 0, item; item = items[i]; i++) {
+            for (var i = 0, item; (item = items[i]); i++) {
                 var promise;
                 switch (item.status) {
-                    case 'saved':
-                        console.log('item already saved', item);
+                    case "saved":
+                        console.log("item already saved", item);
                         break;
-                    case 'invalid':
-                        
+                    case "invalid":
                         break;
-                    case 'edited':
-                        
+                    case "edited":
                         break;
                     default:
-                        console.log('item ignored', item);
+                        console.log("item ignored", item);
                         break;
                 }
 
                 var promise = JiraHelper.logWork(item, date);
-                promise.then(result =>{
-
-                }).catch((error) => {
-
-                }).then(() => {
-                    
-                });
-                promises.push(promise);                
+                promise
+                    .then(result => {})
+                    .catch(error => {})
+                    .then(() => {});
+                promises.push(promise);
             }
             Promise.all(promises).then(() => {
                 resolve();
@@ -104,7 +100,7 @@ window.Controller.LogController = (function () {
         });
     }
 
-    function persistUnsavedData(date, items){
+    function persistUnsavedData(date, items) {
         if (!items || items.length === 0) {
             return Promise.resolve();
         }

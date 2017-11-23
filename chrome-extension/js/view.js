@@ -31,6 +31,22 @@ window.View.Main = (function() {
                     parseFloat(totalHours).toFixed(2) + "h";
             });
 
+            mediator.on("view.table.new-worklog.changed", worklog => {
+                
+                persistUnsavedData()
+                    .then(() => {
+                        console.log('persisted data locally.');
+                    });
+            });
+
+            mediator.on("view.table.new-worklog.deleted", worklog => {
+                
+                persistUnsavedData()
+                    .then(() => {
+                        console.log('persisted data locally (deletion).');
+                    });
+            });
+
             getWorklogButton.addEventListener("click", () => {
                 setLoadingStatus(true);
                 persistUnsavedData()
@@ -83,12 +99,12 @@ window.View.Main = (function() {
         });
     }
 
-    function persistUnsavedData(date) {
+    function persistUnsavedData() {
         //first, persist unsaved data locally
         var items = View.Table.getWorklogItems().filter(item => {
             return item.status === "new";
         });
-        return Controller.LogController.persistUnsavedData(date, items);
+        return Controller.LogController.persistUnsavedData(worklogDateInput.value, items);
     }
 
     function getWorklogItemsFromDate() {
@@ -242,7 +258,6 @@ window.View.Table = (function() {
     function worklogChanged(e) {
         var row = e.srcElement.parentElement.parentElement;
         var worklog = getWorklogFromRow(row);
-        mediator.trigger("view.table.worklog.changed", worklog);
         console.log("worklog changed", worklog);
         if (worklog.status !== "new") {
             originalWorklog = originalWorklogItems.filter(item => {
@@ -253,6 +268,23 @@ window.View.Table = (function() {
             } else {
                 updateWorklogRowStatus(row, worklog.status, "edited");
             }
+        } else{
+            mediator.trigger("view.table.new-worklog.changed", worklog);
+        }
+    }
+
+    function deleteRow(row){
+        tbody.removeChild(row);
+    }
+
+    function worklogDeleted(e){
+        var row = e.srcElement.parentElement.parentElement;
+        var worklog = getWorklogFromRow(row);
+
+        if (worklog.status === "new") {
+            //just delete the row
+            mediator.trigger('view.table.new-worklog.deleted', worklog);
+            deleteRow(row);
         }
     }
 
@@ -263,7 +295,15 @@ window.View.Table = (function() {
             input.removeEventListener("input", worklogChanged);
             input.addEventListener("input", worklogChanged);
         });
+
+        var deleteButtons = tbody.querySelectorAll("a.delete-button");
+        
+        deleteButtons.forEach(deleteButton => {
+            deleteButton.removeEventListener("click", worklogDeleted);
+            deleteButton.addEventListener("click", worklogDeleted);
+        });
     }
+
 
     function init() {
         table = document.getElementById("worklog-items");
