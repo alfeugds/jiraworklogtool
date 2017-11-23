@@ -77,8 +77,8 @@ window.View.Main = (function() {
                             setLoadingStatus(false);
                         });            
                     })
-                    .catch(() => {
-                        alert("Something went wrong");
+                    .catch(error => {
+                        alert("Something went wrong.");
                     })
                     .then(() => {
                         setLoadingStatus(false);

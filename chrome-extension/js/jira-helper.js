@@ -40,7 +40,7 @@
             
             xhr.addEventListener("readystatechange", (event) => {
                 if (xhr.readyState === 4) {
-                    if(xhr.status === 200 || xhr.status === 201){
+                    if(xhr.status === 200 || xhr.status === 201 || xhr.status === 204){
                         var response = JSON.parse(xhr.responseText);
                         //TODO: define better way to save user name, which will be used to filter the worklogs
                         user = xhr.getResponseHeader('X-AUSERNAME').toLowerCase();
@@ -128,27 +128,31 @@
 
     function logWork(worklog, date){
         //TODO: remove after testing request accuracy
-        // worklog = worklog || {
-        //     //'started': '2017-11-21',
-        //     'comment': 'general activities',
-        //     'timeSpent': '15m', 
-        //     'jira': 'CMS-246'
-        // }
-        // worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
+        worklog = worklog || {
+            //'started': '2017-11-21',
+            'comment': 'general activities',
+            'timeSpent': '15m', 
+            'jira': 'CMS-246'
+        }
+        worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
 
-        // var url = `${jiraDomain}/rest/api/2/issue/${worklog.jira}/worklog`;
-        // var config = {
-        //     'headers': headers,
-        //     'method': 'POST',
-        //     'url': url,
-        //     'data': {
-        //         'started': worklog.started,
-        //         'comment': worklog.comment,
-        //         'timeSpent': worklog.timeSpent
-        //     }
-        // }
-        // return request(config);
-        return Promise.resolve(worklog);
+        var url = `${jiraDomain}/rest/api/2/issue/${worklog.jira}/worklog`;
+        var config = {
+            'headers': headers,
+            'method': 'POST',
+            'url': url,
+            'data': {
+                'started': worklog.started,
+                'comment': worklog.comment,
+                'timeSpent': worklog.timeSpent
+            }
+        }
+        return request(config).then(result => {
+            return Promise.resolve(worklog);
+        }).catch(error => {
+            return Promise.reject(worklog);
+        });
+        //return Promise.resolve(worklog);
     }
 
     function updateWorklog(worklog){
@@ -180,7 +184,44 @@
                 'timeSpent': worklog.timeSpent
             }
         }
-        return request(config);
+        return request(config).then(result => {
+            return Promise.resolve(worklog);
+        }).catch(error => {
+            return Promise.reject(worklog);
+        });
+        //return Promise.resolve(worklog);
+    }
+
+    function deleteWorklog(worklog){
+        //TODO: remove after testing request accuracy
+        worklog = worklog || {
+            //'started': '2017-11-21',
+            jira: "CMS-250", 
+            timeSpent: "30m", 
+            comment: "team support", 
+            started: "2017-11-23T23:10:00.000+0000", 
+            logId: "38215"
+        }
+
+        worklog = {
+            comment: worklog.comment,
+            jira: worklog.jira,
+            logId: worklog.logId,
+            timeSpent: worklog.timeSpent,
+        }
+        //worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
+
+        var url = `${jiraDomain}/rest/api/2/issue/${worklog.jira}/worklog/${worklog.logId}`;
+        var config = {
+            'headers': headers,
+            'method': 'DELETE',
+            'url': url
+        }
+        return request(config).then(result => {
+            return Promise.resolve(worklog);
+        }).catch(error => {
+            return Promise.reject(worklog);
+        });
         //return Promise.resolve(worklog);
     }
 
@@ -197,7 +238,8 @@
         logWork: logWork,
         bulkInsertWorklog: bulkInsertWorklog,
         setJiraUrl: setJiraUrl,
-        updateWorklog: updateWorklog
+        updateWorklog: updateWorklog,
+        deleteWorklog: deleteWorklog
     }
 
 })();

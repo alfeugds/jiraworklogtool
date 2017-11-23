@@ -82,18 +82,27 @@ window.Controller.LogController = (function() {
                     case "invalid":
                         break;
                     case "edited":
+                        var promise = JiraHelper.updateWorklog(item);
+                        promise
+                            .then(item => {
+                                items.splice(items.indexOf(item), 1);
+                                console.log('item update', item);
+                            })
+                            .catch(error => {
+                                console.error("controller.save update", error,item);
+                            })
+                            .then(() => {});
+                        promises.push(promise);
                         break;
                     case "new":
                         var promise = JiraHelper.logWork(item, date);
                         promise
                             .then(item => {
-                                //remove item from local storage. Marking it as 'saved' will prevent it from being 
-                                item.status = 'saved';
-                                items.splice(items.indexOf(item),1)
-                                console.log(item);
+                                items.splice(items.indexOf(item), 1);
+                                console.log('item inserted', item);
                             })
                             .catch(error => {
-                                console.error('controller.save', error);
+                                console.error("controller.save insert", error, item);
                             })
                             .then(() => {});
                         promises.push(promise);
@@ -103,12 +112,18 @@ window.Controller.LogController = (function() {
                         break;
                 }
             }
-            
+
             Promise.all(promises).then(() => {
                 persistUnsavedData(date, items).then(() => {
                     resolve();
-                });
-            });
+                })
+            }).catch(error => {
+                // persistUnsavedData(date, items).then(() => {
+                //     reject(error);
+                // })
+                console.log('after save error', error);
+                resolve();
+            });;
         });
     }
 
