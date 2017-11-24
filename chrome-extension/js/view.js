@@ -215,10 +215,6 @@ window.View.Table = (function() {
         tbody.innerHTML += row;
     }
 
-    function deleteRow() {
-        //TODO: implement
-    }
-
     function clearRows() {
         var new_tbody = document.createElement("tbody");
         tbody.parentNode.replaceChild(new_tbody, tbody);

@@ -19,7 +19,6 @@ function save_options(options) {
 // Restores options state using the preferences
 // stored in chrome.storage.
 function restoreOptions() {
-    //TODO: remove hard-coded url
     chrome.storage.sync.get(
         {
             jiraOptions: {}

@@ -32,18 +32,6 @@ window.Controller.LogController = (function() {
                 result.push(JiraParser.parse(worklogText));
             }
         }
-        // return [{
-        //     timeSpent: "1h",
-        //     jira: "CMS-1234",
-        //     comment:
-        //         "[grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview"
-        // },
-        // {
-        //     timeSpent: "2h 30m",
-        //     jira: "CMS-1211",
-        //     comment:
-        //         "working on stuff"
-        // }];
         return result;
     }
 
@@ -64,7 +52,7 @@ window.Controller.LogController = (function() {
                 var item = items[i];
 
                 //ignore invalid items
-                if(getInvalidFields(item).length)
+                if(item.status !== 'deleted' && getInvalidFields(item).length)
                     continue;
                 
                 var promise;

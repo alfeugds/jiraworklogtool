@@ -43,25 +43,11 @@ function getCurrentTabUrl(callback) {
     // alert(url); // Shows "undefined", because chrome.tabs.query is async.
 }
 
-
-//TODO: delete function
-function getCookies(domain, name, callback) {
-    chrome.cookies.get({"url": domain, "name": name}, function(cookie) {
-        if(callback) {
-            callback(cookie.value);
-        }
-    });
-}
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
     getCurrentTabUrl(url => {
         
         window.mediator = new Mediator();
         
-        //Controller.LogController.init();
-
         View.Main.init();
         
     });

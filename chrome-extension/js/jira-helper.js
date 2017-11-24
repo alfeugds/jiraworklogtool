@@ -3,7 +3,6 @@
     var headers = {
         "content-type": "application/json",
         "cache-control": "no-cache"
-        //TODO: make sure no auth headers are needed. It seems the chrome extension gets the cookies for the domain automatically.
     };
     var jiraOptions = {};
 
@@ -163,13 +162,6 @@
     }
 
     function logWork(worklog, date){
-        //TODO: remove after testing request accuracy
-        worklog = worklog || {
-            //'started': '2017-11-21',
-            'comment': 'general activities',
-            'timeSpent': '15m', 
-            'jira': 'CMS-246'
-        }
         worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
 
         var url = `${jiraOptions.jiraUrl}/rest/api/2/issue/${worklog.jira}/worklog`;
@@ -192,14 +184,6 @@
     }
 
     function updateWorklog(worklog){
-        //TODO: remove after testing request accuracy
-        // worklog = worklog || {
-        //     //'started': '2017-11-21',
-        //     comment: "daily and alignments with team",
-        //     jira: "CMS-250",
-        //     logId: "37733",
-        //     timeSpent: "30m"
-        // }
 
         worklog = {
             comment: worklog.comment,
@@ -207,7 +191,6 @@
             logId: worklog.logId,
             timeSpent: worklog.timeSpent,
         }
-        //worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
 
         var url = `${jiraOptions.jiraUrl}/rest/api/2/issue/${worklog.jira}/worklog/${worklog.logId}`;
         var config = {
@@ -229,15 +212,6 @@
     }
 
     function deleteWorklog(worklog){
-        //TODO: remove after testing request accuracy
-        worklog = worklog || {
-            //'started': '2017-11-21',
-            jira: "CMS-250", 
-            timeSpent: "30m", 
-            comment: "team support", 
-            started: "2017-11-23T23:10:00.000+0000", 
-            logId: "38215"
-        }
 
         worklog = {
             comment: worklog.comment,
@@ -245,7 +219,6 @@
             logId: worklog.logId,
             timeSpent: worklog.timeSpent,
         }
-        //worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
 
         var url = `${jiraOptions.jiraUrl}/rest/api/2/issue/${worklog.jira}/worklog/${worklog.logId}`;
         var config = {
@@ -279,8 +252,6 @@
 
     function init(requestParams){
         return new Promise((resolve, reject) => {
-            //initialize jira url
-            //TODO: remove hard-coded url
             chrome.storage.sync.get(
                 {
                     jiraOptions: {}
