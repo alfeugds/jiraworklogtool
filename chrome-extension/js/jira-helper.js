@@ -232,14 +232,27 @@
         jiraDomain = jiraUrl;
     }
 
-    function bulkInsertWorklog(requestParams){
-
+    function init(requestParams){
+        return new Promise((resolve, reject) => {
+            //initialize jira url
+            //TODO: remove hard-coded url
+            chrome.storage.sync.get(
+                {
+                    jiraUrl: "https://jira.coke.com/jira"
+                },
+                function(items) {
+                    setJiraUrl(items.jiraUrl);
+                    resolve();
+                    
+                }
+            );
+        });
     }
 
     window.JiraHelper = {
+        init: init,
         getWorklog : getWorklog,
         logWork: logWork,
-        bulkInsertWorklog: bulkInsertWorklog,
         setJiraUrl: setJiraUrl,
         updateWorklog: updateWorklog,
         deleteWorklog: deleteWorklog

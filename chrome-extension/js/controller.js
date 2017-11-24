@@ -1,19 +1,7 @@
 window.Controller = window.Controller || {};
 window.Controller.LogController = (function() {
     function init() {
-        return new Promise((resolve, reject) => {
-            //initialize jira url
-            //TODO: remove hard-coded url
-            chrome.storage.sync.get(
-                {
-                    jiraUrl: "https://jira.coke.com/jira"
-                },
-                function(items) {
-                    JiraHelper.setJiraUrl(items.jiraUrl);
-                    resolve();
-                }
-            );
-        });
+        return JiraHelper.init();
     }
 
     function getWorklogsByDay(worklogDate) {
