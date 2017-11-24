@@ -39,6 +39,14 @@ window.View.Main = (function() {
                     });
             });
 
+            mediator.on("view.table.worklog.changed", worklog => {
+                
+                persistUnsavedData()
+                    .then(() => {
+                        console.log('persisted data locally.');
+                    });
+            });
+
             mediator.on("view.table.new-worklog.deleted", worklog => {
                 
                 persistUnsavedData()
@@ -113,10 +121,7 @@ window.View.Main = (function() {
     }
 
     function persistUnsavedData() {
-        //first, persist unsaved data locally
-        var items = View.Table.getWorklogItems().filter(item => {
-            return item.status === "new";
-        });
+        var items = View.Table.getWorklogItems();
         return Controller.LogController.persistUnsavedData(worklogDateInput.value, items);
     }
 
@@ -191,7 +196,8 @@ window.View.Table = (function() {
     var statusClassList = {
         saved: "worklog--saved",
         invalid: "worklog--invalid",
-        edited: "worklog--edited"
+        edited: "worklog--edited",
+        deleted: "worklog--deleted"
     };
 
     function getStatusClass(status) {
@@ -255,9 +261,12 @@ window.View.Table = (function() {
     }
 
     function updateWorklogRowStatus(row, oldStatus, newStatus) {
-        var oldStatusClass = getStatusClass(oldStatus);
+        //var oldStatusClass = getStatusClass(oldStatus);
         var newStatusClass = getStatusClass(newStatus);
-        row.classList.remove(oldStatusClass);
+        //row.classList.remove(oldStatusClass);
+        row.classList.remove('worklog--saved');
+        row.classList.remove('worklog--edited');
+        row.classList.remove('worklog--deleted');
         row.classList.add(newStatusClass);
         row.setAttribute("data-status", newStatus);
     }
@@ -273,16 +282,21 @@ window.View.Table = (function() {
         var worklog = getWorklogFromRow(row);
         console.log("worklog changed", worklog);
         if (worklog.status !== "new") {
-            originalWorklog = originalWorklogItems.filter(item => {
-                return item.logId === worklog.logId;
-            })[0];
-            if (isEqual(originalWorklog, worklog)) {
-                updateWorklogRowStatus(row, worklog.status, "saved");
-            } else {
-                updateWorklogRowStatus(row, worklog.status, "edited");
-            }
+            changeStatusForUpdate(row, worklog);
+            mediator.trigger("view.table.worklog.changed", worklog);
         } else{
             mediator.trigger("view.table.new-worklog.changed", worklog);
+        }
+    }
+
+    function changeStatusForUpdate(row, worklog){
+        originalWorklog = originalWorklogItems.filter(item => {
+            return item.logId === worklog.logId;
+        })[0];
+        if (isEqual(originalWorklog, worklog)) {
+            updateWorklogRowStatus(row, worklog.status, "saved");
+        } else {
+            updateWorklogRowStatus(row, worklog.status, "edited");
         }
     }
 
@@ -298,6 +312,18 @@ window.View.Table = (function() {
             //just delete the row
             deleteRow(row);
             mediator.trigger('view.table.new-worklog.deleted', worklog);
+        }else {
+            //mark existing item for deletion
+            changeStatusForDeletion(row,worklog);
+        }
+    }
+
+    function changeStatusForDeletion(row, worklog){
+        if (worklog.status === "deleted") {
+            updateWorklogRowStatus(row, worklog.status, "saved");
+            changeStatusForUpdate(row, worklog);
+        }else {
+            updateWorklogRowStatus(row, worklog.status, "deleted");
         }
     }
 

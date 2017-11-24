@@ -60,6 +60,12 @@ window.Model.WorklogModel = (function(){
     function persistUnsavedWorklogToLocal(date, worklogs){
         return new Promise((resolve, reject) => {
             getUnsavedWorklogFromLocal().then(persistedWorklogs => {
+                
+                //save only new items
+                worklogs = worklogs.filter(item => {
+                    return item.status === "new";
+                });
+
                 worklogs.forEach(function(item) {
                     item.started = date;
                 }, this);
@@ -73,7 +79,6 @@ window.Model.WorklogModel = (function(){
                 chrome.storage.local.set({
                     worklogs: persistedWorklogs
                 }, () => {
-                    updateItemsWithLocalData(worklogs);
                     resolve();
                 })
             });

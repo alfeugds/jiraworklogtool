@@ -99,6 +99,14 @@
       background-color: #b1ffb8;
     }
 
+    .worklog.worklog--deleted {
+      background-color: #ff9b9b;
+    }
+
+    .worklog input.input--invalid{
+      border-color: #ff2323;
+    }
+
     .hidden {
       display: none;
     }
@@ -181,7 +189,7 @@
       <tbody>
         <tr class='worklog worklog--edited' data-status="edited" data-id="123">
           <td class="tg-yw4l jira-number-column-item">
-            <input name="jira" type="text" value="CMS-123" />
+            <input name="jira" type="text" value="CMS-123" class="input--invalid"/>
           </td>
           <td class="tg-yw4l time-spent-column-item">
             <input name="timeSpent" type="text" value="2h" />
@@ -196,12 +204,12 @@
             <input type="checkbox" name="selected">
           </td>
         </tr>
-        <tr class='worklog worklog--invalid' data-status="edited" data-id="123">
+        <tr class='worklog worklog--deleted' data-status="edited" data-id="123">
           <td class="tg-yw4l jira-number-column-item">
             <input name="jira" type="text" value="CMS-123" />
           </td>
           <td class="tg-yw4l time-spent-column-item">
-            <input name="timeSpent" type="text" value="2h" />
+            <input name="timeSpent" type="text" value="2h" class="input--invalid"/>
           </td>
           <td class="tg-yw4l comment-column-item">
             <input name="comment" type="text" value="fixing layout bug" />

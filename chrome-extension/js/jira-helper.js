@@ -33,7 +33,7 @@
         });
     }
     
-    function request(config, callback){
+    function request(config){
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
             xhr.withCredentials = true;
@@ -41,9 +41,12 @@
             xhr.addEventListener("readystatechange", (event) => {
                 if (xhr.readyState === 4) {
                     if(xhr.status === 200 || xhr.status === 201 || xhr.status === 204){
-                        var response = JSON.parse(xhr.responseText);
                         //TODO: define better way to save user name, which will be used to filter the worklogs
                         user = xhr.getResponseHeader('X-AUSERNAME').toLowerCase();
+                        var response = {};
+                        if (xhr.responseText) {
+                            response = JSON.parse(xhr.responseText);
+                        }
                         resolve(response);
                     }else{
                         reject(xhr.statusText);

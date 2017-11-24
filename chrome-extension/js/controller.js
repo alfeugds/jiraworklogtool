@@ -107,6 +107,19 @@ window.Controller.LogController = (function() {
                             .then(() => {});
                         promises.push(promise);
                         break;
+                    case "deleted":
+                        var promise = JiraHelper.deleteWorklog(item);
+                        promise
+                            .then(item => {
+                                items.splice(items.indexOf(item), 1);
+                                console.log('item deleted', item);
+                            })
+                            .catch(error => {
+                                console.error("controller.save delete", error, item);
+                            })
+                            .then(() => {});
+                        promises.push(promise);
+                        break;
                     default:
                         console.log("item ignored", item);
                         break;
@@ -128,7 +141,11 @@ window.Controller.LogController = (function() {
     }
 
     function persistUnsavedData(date, items) {
-        return Model.WorklogModel.persistUnsavedWorklogToLocal(date, items);
+        return Model.WorklogModel.persistUnsavedWorklogToLocal(date, items)
+            .then(() => {
+                Model.WorklogModel.clearItems();
+                Model.WorklogModel.updateItemsWithLocalData(items);
+            });
     }
 
     return {
