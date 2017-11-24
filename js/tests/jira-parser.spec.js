@@ -107,6 +107,9 @@ test("isValidTimeSpentFormat should validate timeSpent in text format", done => 
     }, {
         '50m': true
     },
+    {
+        '1h 50ma': false
+    }
     ];
     //act
     testDataList.forEach(testData => {
@@ -115,6 +118,50 @@ test("isValidTimeSpentFormat should validate timeSpent in text format", done => 
         let result = jiraParser.isValidTimeSpentFormat(text);
         //assert
         expect(result).toEqual(expected);
+        done();
+    });
+});
+
+test("object fields must be validated", done => {
+    const testDataList = [
+        {
+            item: {
+                timeSpent: "30",
+                jira: "CMS-1234",
+                comment: "working on stuff"
+            },
+            invalidFields: ['timeSpent']
+        },
+        {
+            item: {
+                timeSpent: "30",
+                jira: "CMS",
+                comment: "working on stuff"
+            },
+            invalidFields: ['jira', 'timeSpent']
+        },
+        {
+            item: {
+                timeSpent: "1h 30m",
+                jira: "CMS-123",
+                comment: ""
+            },
+            invalidFields: ['comment']
+        },
+        {
+            item: {
+                jira: "CMS-123a",
+                timeSpent: "1h am",
+                comment: "  "
+            },
+            invalidFields: ['jira', 'timeSpent', 'comment']
+        }
+    ];
+
+    testDataList.forEach(testData => {
+        let expected = testData.invalidFields;
+        let result = jiraParser.getInvalidFields(testData.item);
+        expect(result).toMatchObject(expected);
         done();
     });
 });

@@ -251,6 +251,24 @@ window.View.Table = (function() {
         };
     }
 
+    function validateInput(worklog, row){
+        var invalidFields = Controller.LogController.getInvalidFields(worklog);
+        updateWorklogRowInputStatus(row, invalidFields);
+    }
+
+    function updateWorklogRowInputStatus(row, invalidFields){
+        var inputs = row.querySelectorAll("input[type=text]");
+        inputs.forEach(input => {
+            input.classList.remove('input--invalid');
+        });
+        if (invalidFields && invalidFields.length) {
+            invalidFields.forEach(invalidFieldName => {
+                row.querySelector(`[name=${invalidFieldName}]`).classList.add('input--invalid');
+            });
+        }
+
+    }
+
     function getWorklogItems() {
         var items = [];
 
@@ -275,12 +293,13 @@ window.View.Table = (function() {
         return worklog1.jira === worklog2.jira &&
             worklog1.comment === worklog2.comment &&
             worklog1.timeSpent === worklog2.timeSpent;
-    }
+    }    
 
     function worklogChanged(e) {
         var row = e.srcElement.parentElement.parentElement;
         var worklog = getWorklogFromRow(row);
         console.log("worklog changed", worklog);
+        validateInput(worklog,row);
         if (worklog.status !== "new") {
             changeStatusForUpdate(row, worklog);
             mediator.trigger("view.table.worklog.changed", worklog);

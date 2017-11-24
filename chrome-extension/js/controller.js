@@ -74,6 +74,11 @@ window.Controller.LogController = (function() {
             var i = items.length;
             while (i--) {
                 var item = items[i];
+
+                //ignore invalid items
+                if(getInvalidFields(item).length)
+                    continue;
+                
                 var promise;
                 switch (item.status) {
                     case "saved":
@@ -148,11 +153,16 @@ window.Controller.LogController = (function() {
             });
     }
 
+    function getInvalidFields(worklog){
+        return JiraParser.getInvalidFields(worklog);
+    }
+
     return {
         getWorklogsByDay: getWorklogsByDay,
         bulkInsert: bulkInsert,
         persistUnsavedData: persistUnsavedData,
         save: save,
-        init: init
+        init: init,
+        getInvalidFields: getInvalidFields
     };
 })();

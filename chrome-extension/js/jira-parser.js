@@ -1,6 +1,6 @@
 var JiraParser = (function () {
-    const hoursAndMinutesRegex = /\b(\d+[hm](?:\s\d+[m])?)\b/,
-        jiraNumberRegex = /\b([A-Z]{3,4}-\d{3,4})\b/,
+    const hoursAndMinutesRegex = /^(\d+[m]|\d+[h](?:\s\d+[m])?)$/,
+        jiraNumberRegex = /^([a-zA-Z]{2,5}-\d{2,5})$/,
         worklogRegex = /\s*-*\s+(.+)/,
         worklogTextLineRegex = /\b([a-zA-Z]{2,5}-\d{2,5})?\b.*?\b(\d+[m]|\d+[h](?:\s\d+[m])?)\b[\s\-_;,]*(.+)$/;
 
@@ -51,10 +51,25 @@ var JiraParser = (function () {
         return result
     }
 
+    function getInvalidFields(item){
+        var result = [];
+        if (!jiraNumberRegex.exec(item.jira)) {
+            result.push('jira');            
+        }
+        if (!isValidTimeSpentFormat(item.timeSpent)) {
+            result.push('timeSpent');            
+        }
+        if (!item.comment.trim()) {
+            result.push('comment');            
+        }
+        return result;
+    }
+
     return {
         parse: parse,
         timeSpentToHours: timeSpentToHours,
-        isValidTimeSpentFormat: isValidTimeSpentFormat
+        isValidTimeSpentFormat: isValidTimeSpentFormat,
+        getInvalidFields: getInvalidFields
     };
 
 })();
