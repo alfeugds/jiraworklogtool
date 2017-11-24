@@ -1,9 +1,9 @@
 // Saves options to chrome.storage
-function save_options() {
-    var jiraUrl = document.getElementById("jiraUrl").value;
+function save_options(options) {
+    
     chrome.storage.sync.set(
         {
-            jiraUrl: jiraUrl
+            jiraOptions: options
         },
         function() {
             // Update status to let user know options were saved.
@@ -18,16 +18,57 @@ function save_options() {
 
 // Restores options state using the preferences
 // stored in chrome.storage.
-function restore_options() {
+function restoreOptions() {
     //TODO: remove hard-coded url
     chrome.storage.sync.get(
         {
-            jiraUrl: "https://jira.coke.com/jira"
+            jiraOptions: {}
         },
         function(items) {
-            document.getElementById("jiraUrl").value = items.jiraUrl;
+            restoreOptionsToInput(items.jiraOptions);
         }
     );
 }
-document.addEventListener("DOMContentLoaded", restore_options);
-document.getElementById("save").addEventListener("click", save_options);
+
+var saveButton, jiraUrlInput, userInput, passwordInput, tokenInput;
+
+function restoreOptionsToInput(options){
+    jiraUrlInput.value = options.jiraUrl || '';
+    userInput.value = options.user || '';
+    passwordInput.value = options.password || '';
+    tokenInput.value = options.token || '';
+}
+
+function getOptionsFromInput(){
+    return {
+        jiraUrl: jiraUrlInput.value,
+        user: userInput.value,
+        password: passwordInput.value,
+        token: tokenInput.value
+    };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    restoreOptions();
+    jiraUrlInput = document.getElementById("jiraUrl");
+    userInput = document.getElementById("user");
+    passwordInput = document.getElementById("password");
+    tokenInput = document.getElementById("token");
+
+    document.getElementById("save").addEventListener("click", ()=>{
+        save_options(getOptionsFromInput());
+    });
+    document.getElementById("testConnection").addEventListener("click", e => {
+        var jiraOptions = getOptionsFromInput();
+        console.log(jiraOptions);
+        JiraHelper.testConnection(jiraOptions)
+            .then(result => {
+                console.info("connection successful", result);
+                alert('Connection [OK]');
+            })
+            .catch(error => {
+                console.error("connection failed", error);
+                alert('Connection [FAILED]. Please double-check the options.');
+            });
+    });
+});

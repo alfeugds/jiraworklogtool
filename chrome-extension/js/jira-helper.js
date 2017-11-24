@@ -5,13 +5,13 @@
         "cache-control": "no-cache"
         //TODO: make sure no auth headers are needed. It seems the chrome extension gets the cookies for the domain automatically.
     };
-    var jiraDomain = '';
+    var jiraOptions = {};
 
-    function searchForWorklogKeys(worklogDate){
+    function searchForWorklogKeysByDate(worklogDate){
         return new Promise((resolve, reject) =>{
             var fields = "fields=fields,key"
             var jql = `jql=worklogDate='${worklogDate}' AND worklogAuthor=currentUser()`;
-            var url = jiraDomain + "/rest/api/2/search?" + fields + '&' + jql;
+            var url = jiraOptions.jiraUrl + "/rest/api/2/search?" + fields + '&' + jql;
             
             var config = {
                 'headers': headers,
@@ -22,7 +22,40 @@
                 var keys = [];
                 for (var i = 0; i < response.issues.length; i++) {
                     var item = response.issues[i];
-                    console.log(item.key);
+                    keys.push(item.key);
+                }
+                resolve(keys);
+            }).catch((error) => {
+                reject(error);
+            });
+            
+        });
+    }
+
+    function testConnection(options){
+        return new Promise((resolve, reject) =>{
+            var fields = "fields=fields,key"
+            var jql = `jql=worklogAuthor=currentUser()`;
+            var url = options.jiraUrl + "/rest/api/2/search?" + fields + '&' + jql;
+            
+            if (options.user) {
+                var b64 = btoa(`${options.user}:${options.password}`);
+                headers.Authorization = `Basic ${b64}`;
+            }
+            if(options.token){
+                headers.app_token = options.token;
+            }
+
+
+            var config = {
+                'headers': headers,
+                'method': 'GET',
+                'url': url
+            }
+            request(config).then((response) => {
+                var keys = [];
+                for (var i = 0; i < response.issues.length; i++) {
+                    var item = response.issues[i];
                     keys.push(item.key);
                 }
                 resolve(keys);
@@ -67,7 +100,7 @@
     }
 
     function getDetailedWorklogFromIssue(key){
-        var url = `${jiraDomain}/rest/api/2/issue/${key}/worklog`;
+        var url = `${jiraOptions.jiraUrl}/rest/api/2/issue/${key}/worklog`;
         var config = {
             'headers': headers,
             'method': 'GET',
@@ -108,7 +141,7 @@
                     //filter worklogs by 'started' date and user author
                     var worklogs = response.worklogs.filter((worklog) => {
                         return worklog.started.indexOf(worklogDate) > -1 &&
-                            worklog.author.key === user;
+                            worklog.author.key === (jiraOptions.user || user);
                     });
                     var promise = getWorklogObjects(key, worklogs);
                     promises.push(promise);
@@ -124,7 +157,7 @@
     }
 
     function getWorklog(worklogDate){
-        return searchForWorklogKeys(worklogDate).then((keys) => {
+        return searchForWorklogKeysByDate(worklogDate).then((keys) => {
             return getDetailedWorklogs(keys,worklogDate);
         })
     }
@@ -139,7 +172,7 @@
         }
         worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
 
-        var url = `${jiraDomain}/rest/api/2/issue/${worklog.jira}/worklog`;
+        var url = `${jiraOptions.jiraUrl}/rest/api/2/issue/${worklog.jira}/worklog`;
         var config = {
             'headers': headers,
             'method': 'POST',
@@ -176,7 +209,7 @@
         }
         //worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
 
-        var url = `${jiraDomain}/rest/api/2/issue/${worklog.jira}/worklog/${worklog.logId}`;
+        var url = `${jiraOptions.jiraUrl}/rest/api/2/issue/${worklog.jira}/worklog/${worklog.logId}`;
         var config = {
             'headers': headers,
             'method': 'PUT',
@@ -214,7 +247,7 @@
         }
         //worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
 
-        var url = `${jiraDomain}/rest/api/2/issue/${worklog.jira}/worklog/${worklog.logId}`;
+        var url = `${jiraOptions.jiraUrl}/rest/api/2/issue/${worklog.jira}/worklog/${worklog.logId}`;
         var config = {
             'headers': headers,
             'method': 'DELETE',
@@ -228,8 +261,20 @@
         //return Promise.resolve(worklog);
     }
 
-    function setJiraUrl(jiraUrl){
-        jiraDomain = jiraUrl;
+    function configureHeaders(jiraOptions){
+        if (jiraOptions.user) {
+            var b64 = btoa(`${jiraOptions.user}:${jiraOptions.password}`);
+            headers.Authorization = `Basic ${b64}`;
+        }
+        if(jiraOptions.token){
+            headers.app_token = jiraOptions.token;
+        }
+    }
+
+    function setJiraOptions(options){
+        jiraOptions = options;
+        configureHeaders(options);
+        console.log(jiraOptions);
     }
 
     function init(requestParams){
@@ -238,10 +283,11 @@
             //TODO: remove hard-coded url
             chrome.storage.sync.get(
                 {
-                    jiraUrl: "https://jira.coke.com/jira"
+                    jiraOptions: {}
                 },
                 function(items) {
-                    setJiraUrl(items.jiraUrl);
+                    console.log(items);
+                    setJiraOptions(items.jiraOptions);
                     resolve();
                     
                 }
@@ -253,9 +299,9 @@
         init: init,
         getWorklog : getWorklog,
         logWork: logWork,
-        setJiraUrl: setJiraUrl,
         updateWorklog: updateWorklog,
-        deleteWorklog: deleteWorklog
+        deleteWorklog: deleteWorklog,
+        testConnection: testConnection
     }
 
 })();

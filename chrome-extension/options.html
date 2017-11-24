@@ -18,18 +18,43 @@
         align-items: center;
         /* display: flex; */
         justify-content: space-between;
+        padding: 20px
+    }
+    #container * {
+        align-items: center;
+        /* display: flex;  */
+        justify-content: space-between;
+        margin: 5px;
+        margin-top: 10px;
     }
 </style>
 
 <body>
     <div id="container">
+        <h3>Configure Jira Connection</h3>
         <label for="jiraUrl">Jira URL</label>
         <input type="text" id="jiraUrl" />
-    
+        <br/>
+        <button id="testConnection">Test Connection</button>
+        <br />
+        <br />
+        <h4>Basic Authentication</h4>
+        <p>Only needed if connection doesn't work even after logging in on Jira through Chrome, and the Jira API URL is different from the Jira Website you use.</p>
+        <label for="user">User Name</label>
+        <input type="text" id="user" />
+        <br />
+        <label for="password">Password</label>
+        <input type="password" id="password" />
+        <br />
+        <h4>App Token</h4>
+        <label for="token">Token</label>
+        <input type="token" id="token" />
+        
         <div id="status"></div>
         <button id="save">Save</button>
     
     </div>
+    <script src="js/jira-helper.js"></script>
     <script src="js/options.js"></script>
 </body>
 
