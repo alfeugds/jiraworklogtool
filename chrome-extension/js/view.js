@@ -52,6 +52,10 @@ window.View.Main = (function() {
                 persistUnsavedData()
                     .then(getWorklogItemsFromDate)
                     .then(() => {
+                        
+                    }).catch(error => {
+                        console.warn(error);
+                    }).then(() => {
                         setLoadingStatus(false);
                     });
             });
@@ -71,18 +75,15 @@ window.View.Main = (function() {
                 setLoadingStatus(true);
                 var items = View.Table.getWorklogItems();
                 Controller.LogController.save(items, worklogDateInput.value)
+                    .then(getWorklogItemsFromDate)
                     .then(() => {
-                        getWorklogItemsFromDate().then(() => {
                             alert("Worklog saved.");
+                        }).catch(error => {
+                            alert("Some items were not saved. Make sure the Jira numbers exist, and you are logged in Jira.");
+                            console.warn(error);
+                        }).then(() => {
                             setLoadingStatus(false);
-                        });            
-                    })
-                    .catch(error => {
-                        alert("Something went wrong.");
-                    })
-                    .then(() => {
-                        setLoadingStatus(false);
-                    });
+                        });
             });
 
             worklogDateInput.addEventListener(
@@ -91,6 +92,10 @@ window.View.Main = (function() {
                     console.log("date changed: " + worklogDateInput.value);
                     setLoadingStatus(true);
                     getWorklogItemsFromDate().then(() => {
+                        
+                    }).catch(error => {
+                        console.warn(error);
+                    }).then(() => {
                         setLoadingStatus(false);
                     });
                 },
@@ -98,6 +103,10 @@ window.View.Main = (function() {
             );
 
             getWorklogItemsFromDate().then(() => {
+                
+            }).catch(error => {
+                console.warn(error);
+            }).then(() => {
                 setLoadingStatus(false);
             });
         });
