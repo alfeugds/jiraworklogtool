@@ -189,9 +189,6 @@ window.View.Table = (function () {
         <td class="tg-yw4l delete-column-item">
             <a class='delete-button'></a>
         </td>
-        <td class="tg-yw4l select-column-item">
-            <input type="checkbox" name="selected">
-        </td>
     </tr>`;
 
     var statusClassList = {

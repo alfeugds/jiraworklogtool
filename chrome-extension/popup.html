@@ -146,6 +146,22 @@
       background-image: url(/ic_delete_black_24dp.png);
     }
 
+    .save-button {
+      outline: none;
+      margin: 10px 0;
+      width: 70px;
+      height: 50px;
+      border: 1px solid #ddd;
+      border-bottom: 1px solid #aaa; 
+      border-right: 1px solid #aaa;
+      background-color: #fff; 
+      background-repeat: no-repeat;
+      background-position: center;
+      font-size: 14px;
+      line-height: 1.5em;
+      background-image: url(/ic_cloud_upload_black_48dp.png);
+    }
+
     .error_status {
       padding: 20px;
     }
@@ -187,7 +203,6 @@
           <th class="tg-yw4l time-spent-column-item">Time Spent</th>
           <th class="tg-yw4l comment-column-item">Comment</th>
           <th class="tg-yw4l delete-column-item">Delete</th>
-          <th class="tg-yw4l select-column-item">Select</th>
         </tr>
       </thead>
       <tbody>
@@ -204,9 +219,6 @@
           <td class="tg-yw4l delete-column-item">
             <a name="deleteButton" class='delete-button'></a>
           </td>
-          <td class="tg-yw4l select-column-item">
-            <input type="checkbox" name="selected">
-          </td>
         </tr>
         <tr class='worklog worklog--deleted' data-status="edited" data-id="123">
           <td class="tg-yw4l jira-number-column-item">
@@ -220,9 +232,6 @@
           </td>
           <td class="tg-yw4l delete-column-item">
             <a name="deleteButton" class='delete-button'></a>
-          </td>
-          <td class="tg-yw4l select-column-item">
-            <input type="checkbox" name="selected">
           </td>
         </tr>
         <tr class='worklog worklog--saved' data-status="edited" data-id="123">
@@ -238,15 +247,11 @@
           <td class="tg-yw4l delete-column-item">
             <a name="deleteButton" class='delete-button'></a>
           </td>
-          <td class="tg-yw4l select-column-item">
-            <input type="checkbox" name="selected">
-          </td>
         </tr>
       </tbody>
     </table>
     <h2>Total: <span id="totalHours">2h</span></h2>
-    <button id="deleteSelected">Delete Selected</button>
-    <button id="save">Save All</button>
+    <button id="save" class="save-button" aria-label="Save All"></button>
     <br/>
     <label for="worklog">Paste your formatted worklog here</label>
     <br/>
