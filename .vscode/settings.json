@@ -1,0 +1,5 @@
+{
+    "eslint.enable": true,
+    "eslint.run":"onSave",
+    "eslint.trace.server": "messages"
+}

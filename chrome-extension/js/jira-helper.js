@@ -70,7 +70,7 @@
             var xhr = new XMLHttpRequest();
             xhr.withCredentials = true;
             
-            xhr.addEventListener("readystatechange", (event) => {
+            xhr.addEventListener("readystatechange", () => {
                 if (xhr.readyState === 4) {
                     if(xhr.status === 200 || xhr.status === 201 || xhr.status === 204){
                         //TODO: define better way to save user name, which will be used to filter the worklogs
@@ -109,7 +109,7 @@
     }
 
     function getWorklogObjects(key, worklogs){
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             
             console.log(`key: ${key}`,worklogs);
             var worklogObjectArray = [];
@@ -129,7 +129,7 @@
     }
 
     function getDetailedWorklogs(keys, worklogDate){
-        return new Promise((resolve, reject) =>{
+        return new Promise((resolve) =>{
             var promises = [];
             var worklogsObjectArray = [];
             keys.forEach((key) => {
@@ -175,12 +175,11 @@
                 'timeSpent': worklog.timeSpent
             }
         }
-        return request(config).then(result => {
+        return request(config).then(() => {
             return Promise.resolve(worklog);
-        }).catch(error => {
+        }).catch(() => {
             return Promise.reject(worklog);
         });
-        //return Promise.resolve(worklog);
     }
 
     function updateWorklog(worklog){
@@ -203,12 +202,11 @@
                 'timeSpent': worklog.timeSpent
             }
         }
-        return request(config).then(result => {
+        return request(config).then(() => {
             return Promise.resolve(worklog);
-        }).catch(error => {
+        }).catch(() => {
             return Promise.reject(worklog);
         });
-        //return Promise.resolve(worklog);
     }
 
     function deleteWorklog(worklog){
@@ -226,12 +224,11 @@
             'method': 'DELETE',
             'url': url
         }
-        return request(config).then(result => {
+        return request(config).then(() => {
             return Promise.resolve(worklog);
-        }).catch(error => {
+        }).catch(() => {
             return Promise.reject(worklog);
         });
-        //return Promise.resolve(worklog);
     }
 
     function configureHeaders(jiraOptions){
@@ -250,7 +247,7 @@
         console.log(jiraOptions);
     }
 
-    function init(requestParams){
+    function init(){
         return new Promise((resolve, reject) => {
             chrome.storage.sync.get(
                 {
@@ -259,8 +256,9 @@
                 function(items) {
                     console.log(items);
                     setJiraOptions(items.jiraOptions);
-                    resolve();
-                    
+                    testConnection(items.jiraOptions)
+                        .then(resolve)
+                        .catch(reject);                    
                 }
             );
         });

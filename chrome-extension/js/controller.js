@@ -1,5 +1,6 @@
 window.Controller = window.Controller || {};
-window.Controller.LogController = (function() {
+window.Controller.LogController = (function(JiraHelper, Model, JiraParser) {
+    'use strict';
     function init() {
         return JiraHelper.init();
     }
@@ -36,7 +37,7 @@ window.Controller.LogController = (function() {
     }
 
     function bulkInsert(worklogItemsText) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             var worklogItems = getFromText(worklogItemsText);
             Model.WorklogModel.addAll(worklogItems);
             resolve();
@@ -44,7 +45,7 @@ window.Controller.LogController = (function() {
     }
 
     function save(items, date) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             console.log(items);
             var promises = [];
             var i = items.length;
@@ -141,4 +142,4 @@ window.Controller.LogController = (function() {
         init: init,
         getInvalidFields: getInvalidFields
     };
-})();
+})(window.JiraHelper, window.Model, window.JiraParser);

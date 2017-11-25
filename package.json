@@ -16,6 +16,7 @@
     "testEnvironment": "node"
   },
   "devDependencies": {
+    "eslint": "^4.11.0",
     "jest": "^21.2.1",
     "jest-cli": "^21.2.1"
   }

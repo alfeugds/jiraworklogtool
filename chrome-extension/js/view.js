@@ -1,6 +1,6 @@
 window.View = window.View || {};
 
-window.View.Main = (function() {
+window.View.Main = (function () {
     var worklogDateInput,
         getWorklogButton,
         worklogInput,
@@ -32,7 +32,7 @@ window.View.Main = (function() {
             });
 
             mediator.on("view.table.new-worklog.changed", worklog => {
-                
+
                 persistUnsavedData()
                     .then(() => {
                         console.log('persisted data locally.');
@@ -40,7 +40,7 @@ window.View.Main = (function() {
             });
 
             mediator.on("view.table.worklog.changed", worklog => {
-                
+
                 persistUnsavedData()
                     .then(() => {
                         console.log('persisted data locally.');
@@ -48,7 +48,7 @@ window.View.Main = (function() {
             });
 
             mediator.on("view.table.new-worklog.deleted", worklog => {
-                
+
                 persistUnsavedData()
                     .then(() => {
                         console.log('persisted data locally (deletion).');
@@ -60,7 +60,7 @@ window.View.Main = (function() {
                 persistUnsavedData()
                     .then(getWorklogItemsFromDate)
                     .then(() => {
-                        
+
                     }).catch(error => {
                         console.warn(error);
                     }).then(() => {
@@ -85,13 +85,13 @@ window.View.Main = (function() {
                 Controller.LogController.save(items, worklogDateInput.value)
                     .then(getWorklogItemsFromDate)
                     .then(() => {
-                            alert("Worklog saved.");
-                        }).catch(error => {
-                            alert("Some items were not saved. Make sure the Jira numbers exist, and you are logged in Jira.");
-                            console.warn(error);
-                        }).then(() => {
-                            setLoadingStatus(false);
-                        });
+                        alert("Worklog saved.");
+                    }).catch(error => {
+                        alert("Some items were not saved. Make sure the Jira numbers exist, and you are logged in Jira.");
+                        console.warn(error);
+                    }).then(() => {
+                        setLoadingStatus(false);
+                    });
             });
 
             worklogDateInput.addEventListener(
@@ -100,7 +100,7 @@ window.View.Main = (function() {
                     console.log("date changed: " + worklogDateInput.value);
                     setLoadingStatus(true);
                     getWorklogItemsFromDate().then(() => {
-                        
+
                     }).catch(error => {
                         console.warn(error);
                     }).then(() => {
@@ -111,12 +111,19 @@ window.View.Main = (function() {
             );
 
             getWorklogItemsFromDate().then(() => {
-                
+
             }).catch(error => {
                 console.warn(error);
             }).then(() => {
                 setLoadingStatus(false);
             });
+        })
+        .catch(() => {
+            document.getElementsByClassName('container')[0].classList.add('hidden');
+            document.getElementsByClassName('error_status')[0].classList.remove('hidden');
+            alert('Something went wrong. Please go to \'Options\' and make sure you are logged in Jira, and the Jira URL is correct.');
+        }).then(() => {
+            setLoadingStatus(false);
         });
     }
 
@@ -130,7 +137,7 @@ window.View.Main = (function() {
             worklogDateInput.value
         );
         promise
-            .then(() => {})
+            .then(() => { })
             .catch(error => {
                 alert(
                     "Something went wrong. Please make sure you are logged in Jira, and the Jira URL is correct."
@@ -142,7 +149,7 @@ window.View.Main = (function() {
         return promise;
     }
 
-    function setWorklogDateInputValue(formattedDate) {}
+    function setWorklogDateInputValue(formattedDate) { }
 
     function formatDate(date) {
         var d = date,
@@ -170,7 +177,7 @@ window.View.Main = (function() {
     };
 })();
 
-window.View.Table = (function() {
+window.View.Table = (function () {
     var table, tbody;
     var originalWorklogItems = [];
 
@@ -247,12 +254,12 @@ window.View.Table = (function() {
         };
     }
 
-    function validateInput(worklog, row){
+    function validateInput(worklog, row) {
         var invalidFields = Controller.LogController.getInvalidFields(worklog);
         updateWorklogRowInputStatus(row, invalidFields);
     }
 
-    function updateWorklogRowInputStatus(row, invalidFields){
+    function updateWorklogRowInputStatus(row, invalidFields) {
         var inputs = row.querySelectorAll("input[type=text]");
         inputs.forEach(input => {
             input.classList.remove('input--invalid');
@@ -285,26 +292,26 @@ window.View.Table = (function() {
         row.setAttribute("data-status", newStatus);
     }
 
-    function isEqual(worklog1, worklog2){
+    function isEqual(worklog1, worklog2) {
         return worklog1.jira === worklog2.jira &&
             worklog1.comment === worklog2.comment &&
             worklog1.timeSpent === worklog2.timeSpent;
-    }    
+    }
 
     function worklogChanged(e) {
         var row = e.srcElement.parentElement.parentElement;
         var worklog = getWorklogFromRow(row);
         console.log("worklog changed", worklog);
-        validateInput(worklog,row);
+        validateInput(worklog, row);
         if (worklog.status !== "new") {
             changeStatusForUpdate(row, worklog);
             mediator.trigger("view.table.worklog.changed", worklog);
-        } else{
+        } else {
             mediator.trigger("view.table.new-worklog.changed", worklog);
         }
     }
 
-    function changeStatusForUpdate(row, worklog){
+    function changeStatusForUpdate(row, worklog) {
         originalWorklog = originalWorklogItems.filter(item => {
             return item.logId === worklog.logId;
         })[0];
@@ -315,11 +322,11 @@ window.View.Table = (function() {
         }
     }
 
-    function deleteRow(row){
+    function deleteRow(row) {
         tbody.removeChild(row);
     }
 
-    function worklogDeleted(e){
+    function worklogDeleted(e) {
         var row = e.srcElement.parentElement.parentElement;
         var worklog = getWorklogFromRow(row);
 
@@ -327,17 +334,17 @@ window.View.Table = (function() {
             //just delete the row
             deleteRow(row);
             mediator.trigger('view.table.new-worklog.deleted', worklog);
-        }else {
+        } else {
             //mark existing item for deletion
-            changeStatusForDeletion(row,worklog);
+            changeStatusForDeletion(row, worklog);
         }
     }
 
-    function changeStatusForDeletion(row, worklog){
+    function changeStatusForDeletion(row, worklog) {
         if (worklog.status === "deleted") {
             updateWorklogRowStatus(row, worklog.status, "saved");
             changeStatusForUpdate(row, worklog);
-        }else {
+        } else {
             updateWorklogRowStatus(row, worklog.status, "deleted");
         }
     }
@@ -351,7 +358,7 @@ window.View.Table = (function() {
         });
 
         var deleteButtons = tbody.querySelectorAll("a.delete-button");
-        
+
         deleteButtons.forEach(deleteButton => {
             deleteButton.removeEventListener("click", worklogDeleted);
             deleteButton.addEventListener("click", worklogDeleted);

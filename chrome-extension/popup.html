@@ -18,21 +18,23 @@
       font-size: 15px;
     }
 
-    #container {
+    .container {
       align-items: center;
-      /* display: flex; */
       justify-content: space-between;
       padding: 10px;
       display: block;
-      /* margin-top: 30px; */
     }
 
-    #container>* {
+    .container>* {
       margin: 10px 0;
     }
 
-    #container>*:first-child {
+    .container>*:first-child {
       margin-top: 0px;
+    }
+
+    .container.container--hidden {
+      display: none;
     }
 
     textarea {
@@ -130,12 +132,8 @@
     .delete-button{
       outline: none;
       display: block;
-      /* margin-left: auto;
-      margin-right: auto; */
       margin: auto;
       width: 20px;
-      /* padding: 6px 0; */
-      /* text-align: center; */
       border: 1px solid #ddd;
       border-bottom: 1px solid #aaa; 
       border-right: 1px solid #aaa;
@@ -143,12 +141,18 @@
       background-repeat: no-repeat;
       background-position: center;
       font-size: 14px;
-      /* text-shadow: 1px 1px 1px #fff; */
-      /* font-weight: bold; */
       height: 19px;
       line-height: 1.5em;
-      /* margin-bottom: 6px; */
       background-image: url(/ic_delete_black_24dp.png);
+    }
+
+    .error_status {
+      padding: 20px;
+    }
+
+    .error_status h2 {
+      white-space: initial;
+      width: 400px;
     }
   </style>
 
@@ -169,7 +173,7 @@
 
 <body>
   <h1>Jira Worklog Tool</h1>
-  <div id="container">
+  <div id="container" class="container">
     <section>
       <label for="worklogDate">Worklog Date:</label>
       <input type="date" id="worklogDate" />
@@ -251,6 +255,9 @@
     <button id="addWorklogs">Add Worklogs</button>
     <br />
     <div id="status" class="hidden"></div>
+  </div>
+  <div class="error_status hidden">
+    <h2>Please go to 'Options' and make sure you are logged in Jira, and the Jira URL is correct.</h2>
   </div>
   <div id="loading" class="hidden">
     <img class="hidden" src="spinner-small.gif" aria-hidden="true" />

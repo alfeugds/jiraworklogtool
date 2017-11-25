@@ -1,3 +1,6 @@
+var chrome = chrome || {};
+var Mediator = Mediator || {};
+var View = View || {};
 /**
  * Get the current URL.
  *
@@ -44,7 +47,7 @@ function getCurrentTabUrl(callback) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    getCurrentTabUrl(url => {
+    getCurrentTabUrl(() => {
         
         window.mediator = new Mediator();
         
