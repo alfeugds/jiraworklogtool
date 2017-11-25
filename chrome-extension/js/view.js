@@ -7,7 +7,6 @@ window.View.Main = (function () {
         addWorklogsButton,
         saveButton,
         totalHoursSpan;
-    var previousDate;
 
     function init() {
         setLoadingStatus(true);
@@ -24,7 +23,6 @@ window.View.Main = (function () {
             worklogDateInput = document.getElementById("worklogDate");
             //initialize date with today's date
             worklogDateInput.value = formatDate(new Date());
-            previousDate = worklogDateInput.value;
 
             mediator.on("modal.totalHours.update", totalHours => {
                 totalHoursSpan.innerText =
@@ -122,7 +120,6 @@ window.View.Main = (function () {
             document.getElementsByClassName('container')[0].classList.add('hidden');
             document.getElementsByClassName('error_status')[0].classList.remove('hidden');
             alert('Something went wrong. Please go to \'Options\' and make sure you are logged in Jira, and the Jira URL is correct.');
-        }).then(() => {
             setLoadingStatus(false);
         });
     }
@@ -142,9 +139,6 @@ window.View.Main = (function () {
                 alert(
                     "Something went wrong. Please make sure you are logged in Jira, and the Jira URL is correct."
                 );
-            })
-            .then(() => {
-                previousDate = worklogDateInput.value;
             });
         return promise;
     }

@@ -1,5 +1,5 @@
 window.Model = {};
-window.Model.WorklogModel = (function(){
+window.Model.WorklogModel = (function(JiraParser, chrome){
 
     var items = [];
     var totalHours = 0.0;
@@ -58,7 +58,7 @@ window.Model.WorklogModel = (function(){
     }
 
     function persistUnsavedWorklogToLocal(date, worklogs){
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             getUnsavedWorklogFromLocal().then(persistedWorklogs => {
                 
                 //save only new items
@@ -87,7 +87,7 @@ window.Model.WorklogModel = (function(){
     }
 
     function getUnsavedWorklogFromLocal(date){
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             chrome.storage.local.get({
                 worklogs: []
             }, result => {
@@ -113,4 +113,4 @@ window.Model.WorklogModel = (function(){
         updateItemsWithLocalData: updateItemsWithLocalData,
         clearItems: clearItems
     };
-})();
+})(window.JiraParser, window.chrome);

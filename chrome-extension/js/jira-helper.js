@@ -1,4 +1,4 @@
-(function(){
+(function(chrome){
     var user = '';
     var headers = {
         "content-type": "application/json",
@@ -88,8 +88,8 @@
             
             xhr.open(config.method, config.url);
 
-            for (header in config.headers) {
-                xhr.setRequestHeader(header, config.headers[header]);   
+            for (var header in config.headers) {
+                xhr.setRequestHeader(header, config.headers[header]);
             }
             if (config.data) 
                 xhr.send(JSON.stringify(config.data));
@@ -273,4 +273,4 @@
         testConnection: testConnection
     }
 
-})();
+})(window.chrome);
