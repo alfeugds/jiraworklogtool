@@ -1,9 +1,4 @@
 <!doctype html>
-<!--
- This page is shown when the extension button is clicked, because the
- "browser_action" field in manifest.json contains the "default_popup" key with
- value "popup.html".
- -->
 <html>
 
 <head>
@@ -22,7 +17,8 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px;
-      display: block;
+      display: inline-block;
+      max-height: 548px;
     }
 
     .container>* {
@@ -35,12 +31,6 @@
 
     .container.container--hidden {
       display: none;
-    }
-
-    textarea {
-      min-width: 550px;
-      min-height: 70px;
-      font-size: 10px;
     }
 
     .tg {
@@ -93,6 +83,8 @@
     {
       width: 100%;
       font-size: 12px;
+      min-height: 70px;
+      font-size: 10px;
     }
     
     .worklog.worklog--edited {
