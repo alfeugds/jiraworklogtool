@@ -16,6 +16,8 @@
         "default_popup": "temp-popup.html",
         "default_title": "Log Work"
     },
-    "permissions": ["activeTab", "storage","cookies","<all_urls>"]
+    "permissions": ["activeTab", "storage","cookies","<all_urls>"],
+    "content_security_policy": "script-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; object-src 'self'"
+    
     
 }
