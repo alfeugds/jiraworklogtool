@@ -1,4 +1,4 @@
-(function(chrome){
+(function (chrome) {
     var user = '';
     var headers = {
         "content-type": "application/json",
@@ -6,12 +6,12 @@
     };
     var jiraOptions = {};
 
-    function searchForWorklogKeysByDate(worklogDate){
-        return new Promise((resolve, reject) =>{
+    function searchForWorklogKeysByDate(worklogDate) {
+        return new Promise((resolve, reject) => {
             var fields = "fields=fields,key"
             var jql = `jql=worklogDate='${worklogDate}' AND worklogAuthor=currentUser()`;
             var url = jiraOptions.jiraUrl + "/rest/api/2/search?" + fields + '&' + jql;
-            
+
             var config = {
                 'headers': headers,
                 'method': 'GET',
@@ -27,21 +27,21 @@
             }).catch((error) => {
                 reject(error);
             });
-            
+
         });
     }
 
-    function testConnection(options){
-        return new Promise((resolve, reject) =>{
+    function testConnection(options) {
+        return new Promise((resolve, reject) => {
             var fields = "fields=fields,key"
             var jql = `jql=worklogAuthor=currentUser()`;
             var url = options.jiraUrl + "/rest/api/2/search?" + fields + '&' + jql;
-            
+
             if (options.user) {
                 var b64 = btoa(`${options.user}:${options.password}`);
                 headers.Authorization = `Basic ${b64}`;
             }
-            if(options.token){
+            if (options.token) {
                 headers.app_token = options.token;
             }
 
@@ -61,18 +61,18 @@
             }).catch((error) => {
                 reject(error);
             });
-            
+
         });
     }
-    
-    function request(config){
+
+    function request(config) {
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest();
             xhr.withCredentials = true;
-            
+
             xhr.addEventListener("readystatechange", () => {
                 if (xhr.readyState === 4) {
-                    if(xhr.status === 200 || xhr.status === 201 || xhr.status === 204){
+                    if (xhr.status === 200 || xhr.status === 201 || xhr.status === 204) {
                         //TODO: define better way to save user name, which will be used to filter the worklogs
                         user = xhr.getResponseHeader('X-AUSERNAME').toLowerCase();
                         var response = {};
@@ -80,25 +80,28 @@
                             response = JSON.parse(xhr.responseText);
                         }
                         resolve(response);
-                    }else{
-                        reject(xhr.statusText);
+                    } else if (xhr.status === 429) {
+                        reject(`Too many requests to Jira API. Please wait some seconds before making another request.\n\nServer response: ${xhr.status}(${xhr.statusText}): ${xhr.responseText}`);
+                    }
+                    else {
+                        reject(`Server response: ${xhr.status}(${xhr.statusText}): ${xhr.responseText}`);
                     }
                 }
             });
-            
+
             xhr.open(config.method, config.url);
 
             for (var header in config.headers) {
                 xhr.setRequestHeader(header, config.headers[header]);
             }
-            if (config.data) 
+            if (config.data)
                 xhr.send(JSON.stringify(config.data));
             else
                 xhr.send();
         });
     }
 
-    function getDetailedWorklogFromIssue(key){
+    function getDetailedWorklogFromIssue(key) {
         var url = `${jiraOptions.jiraUrl}/rest/api/2/issue/${key}/worklog`;
         var config = {
             'headers': headers,
@@ -108,12 +111,12 @@
         return request(config);
     }
 
-    function getWorklogObjects(key, worklogs){
+    function getWorklogObjects(key, worklogs) {
         return new Promise((resolve) => {
-            
-            console.log(`key: ${key}`,worklogs);
+
+            console.log(`key: ${key}`, worklogs);
             var worklogObjectArray = [];
-            worklogs.forEach((worklog)=> {
+            worklogs.forEach((worklog) => {
                 worklogObjectArray.push({
                     'jira': key,
                     'timeSpent': worklog.timeSpent,
@@ -128,14 +131,14 @@
         });
     }
 
-    function getDetailedWorklogs(keys, worklogDate){
-        return new Promise((resolve) =>{
+    function getDetailedWorklogs(keys, worklogDate) {
+        return new Promise((resolve, reject) => {
             var promises = [];
             var worklogsObjectArray = [];
             keys.forEach((key) => {
                 var responsePromise = getDetailedWorklogFromIssue(key);
                 promises.push(responsePromise);
-                
+
                 responsePromise.then((response) => {
                     //filter worklogs by 'started' date and user author
                     var worklogs = response.worklogs.filter((worklog) => {
@@ -151,17 +154,20 @@
             });
             Promise.all(promises).then(() => {
                 resolve(worklogsObjectArray);
-            })            
+            })
+            .catch(error => {
+                reject(error);
+            });
         });
     }
 
-    function getWorklog(worklogDate){
+    function getWorklog(worklogDate) {
         return searchForWorklogKeysByDate(worklogDate).then((keys) => {
-            return getDetailedWorklogs(keys,worklogDate);
+            return getDetailedWorklogs(keys, worklogDate);
         })
     }
 
-    function logWork(worklog, date){
+    function logWork(worklog, date) {
         worklog.started = date + 'T06:00:00.075+0000'; //TODO: refactor to expected date format
 
         var url = `${jiraOptions.jiraUrl}/rest/api/2/issue/${worklog.jira}/worklog`;
@@ -182,7 +188,7 @@
         });
     }
 
-    function updateWorklog(worklog){
+    function updateWorklog(worklog) {
 
         worklog = {
             comment: worklog.comment,
@@ -209,7 +215,7 @@
         });
     }
 
-    function deleteWorklog(worklog){
+    function deleteWorklog(worklog) {
 
         worklog = {
             comment: worklog.comment,
@@ -231,34 +237,34 @@
         });
     }
 
-    function configureHeaders(jiraOptions){
+    function configureHeaders(jiraOptions) {
         if (jiraOptions.user) {
             var b64 = btoa(`${jiraOptions.user}:${jiraOptions.password}`);
             headers.Authorization = `Basic ${b64}`;
         }
-        if(jiraOptions.token){
+        if (jiraOptions.token) {
             headers.app_token = jiraOptions.token;
         }
     }
 
-    function setJiraOptions(options){
+    function setJiraOptions(options) {
         jiraOptions = options;
         configureHeaders(options);
         console.log(jiraOptions);
     }
 
-    function init(){
+    function init() {
         return new Promise((resolve, reject) => {
             chrome.storage.sync.get(
                 {
                     jiraOptions: {}
                 },
-                function(items) {
+                function (items) {
                     console.log(items);
                     setJiraOptions(items.jiraOptions);
                     testConnection(items.jiraOptions)
                         .then(resolve)
-                        .catch(reject);                    
+                        .catch(reject);
                 }
             );
         });
@@ -266,7 +272,7 @@
 
     window.JiraHelper = {
         init: init,
-        getWorklog : getWorklog,
+        getWorklog: getWorklog,
         logWork: logWork,
         updateWorklog: updateWorklog,
         deleteWorklog: deleteWorklog,

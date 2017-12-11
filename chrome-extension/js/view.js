@@ -1,3 +1,4 @@
+/* global Controller View mediator */
 window.View = window.View || {};
 
 window.View.Main = (function () {
@@ -29,7 +30,7 @@ window.View.Main = (function () {
                     parseFloat(totalHours).toFixed(2) + "h";
             });
 
-            mediator.on("view.table.new-worklog.changed", worklog => {
+            mediator.on("view.table.new-worklog.changed", () => {
 
                 persistUnsavedData()
                     .then(() => {
@@ -37,7 +38,7 @@ window.View.Main = (function () {
                     });
             });
 
-            mediator.on("view.table.worklog.changed", worklog => {
+            mediator.on("view.table.worklog.changed", () => {
 
                 persistUnsavedData()
                     .then(() => {
@@ -45,7 +46,7 @@ window.View.Main = (function () {
                     });
             });
 
-            mediator.on("view.table.new-worklog.deleted", worklog => {
+            mediator.on("view.table.new-worklog.deleted", () => {
 
                 persistUnsavedData()
                     .then(() => {
@@ -136,14 +137,10 @@ window.View.Main = (function () {
         promise
             .then(() => { })
             .catch(error => {
-                alert(
-                    "Something went wrong. Please make sure you are logged in Jira, and the Jira URL is correct."
-                );
+                alert(`Something went wrong.\n\n${error}`);
             });
         return promise;
     }
-
-    function setWorklogDateInputValue(formattedDate) { }
 
     function formatDate(date) {
         var d = date,
@@ -272,10 +269,8 @@ window.View.Table = (function () {
         return items;
     }
 
-    function updateWorklogRowStatus(row, oldStatus, newStatus) {
-        //var oldStatusClass = getStatusClass(oldStatus);
+    function updateWorklogRowStatus(row, newStatus) {
         var newStatusClass = getStatusClass(newStatus);
-        //row.classList.remove(oldStatusClass);
         row.classList.remove('worklog--saved');
         row.classList.remove('worklog--edited');
         row.classList.remove('worklog--deleted');
@@ -303,13 +298,13 @@ window.View.Table = (function () {
     }
 
     function changeStatusForUpdate(row, worklog) {
-        originalWorklog = originalWorklogItems.filter(item => {
+        var originalWorklog = originalWorklogItems.filter(item => {
             return item.logId === worklog.logId;
         })[0];
         if (isEqual(originalWorklog, worklog)) {
-            updateWorklogRowStatus(row, worklog.status, "saved");
+            updateWorklogRowStatus(row, "saved");
         } else {
-            updateWorklogRowStatus(row, worklog.status, "edited");
+            updateWorklogRowStatus(row, "edited");
         }
     }
 
@@ -333,10 +328,10 @@ window.View.Table = (function () {
 
     function changeStatusForDeletion(row, worklog) {
         if (worklog.status === "deleted") {
-            updateWorklogRowStatus(row, worklog.status, "saved");
+            updateWorklogRowStatus(row, "saved");
             changeStatusForUpdate(row, worklog);
         } else {
-            updateWorklogRowStatus(row, worklog.status, "deleted");
+            updateWorklogRowStatus(row, "deleted");
         }
     }
 
