@@ -16,8 +16,8 @@ window.Controller.LogController = (function(JiraHelper, Model, JiraParser) {
                         Model.WorklogModel.updateItemsFromJira(worklogItems);
                         resolve();
                     })
-                    .catch(() => {
-                        reject();
+                    .catch(error => {
+                        reject(error);
                     })
                     .then(() => {});
             });
@@ -71,7 +71,7 @@ window.Controller.LogController = (function(JiraHelper, Model, JiraParser) {
                                 console.log('item update', item);
                             })
                             .catch(error => {
-                                console.error("controller.save update", error,item);
+                                console.error("controller.save update", error, item);
                             })
                             .then(() => {});
                         promises.push(promise);
