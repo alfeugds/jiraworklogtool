@@ -4,6 +4,11 @@ var JiraHelper = window.JiraHelper || {};
 // Saves options to chrome.storage
 function save_options(options) {
 
+    //make sure to not save user password, as chrome storage is not encrypted (https://developer.chrome.com/apps/storage#using-sync).
+    //The JESSIONID authentication cookie will be remembered by the browser once User clicks 'Test Connection' anyway,
+    //and Jira will consider the JESSIONID cookie and ignore the basic auth settings for the requests.
+    options.password = '';
+
     chrome.storage.sync.set(
         {
             jiraOptions: options

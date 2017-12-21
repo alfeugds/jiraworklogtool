@@ -74,7 +74,7 @@
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200 || xhr.status === 201 || xhr.status === 204) {
                         //TODO: define better way to save user name, which will be used to filter the worklogs
-                        user = xhr.getResponseHeader('X-AUSERNAME').toLowerCase();
+                        user = decodeURIComponent(xhr.getResponseHeader('X-AUSERNAME').toLowerCase());
                         var response = {};
                         if (xhr.responseText) {
                             response = JSON.parse(xhr.responseText);

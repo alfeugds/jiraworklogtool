@@ -1,5 +1,6 @@
+/* global mediator chrome */
 window.Model = {};
-window.Model.WorklogModel = (function(JiraParser, chrome){
+window.Model.WorklogModel = (function(JiraParser){
 
     var items = [];
     var totalHours = 0.0;
@@ -113,4 +114,4 @@ window.Model.WorklogModel = (function(JiraParser, chrome){
         updateItemsWithLocalData: updateItemsWithLocalData,
         clearItems: clearItems
     };
-})(window.JiraParser, window.chrome);
+})(window.JiraParser);
