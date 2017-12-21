@@ -2,7 +2,7 @@
     "manifest_version": 2,
 
     "name": "Jira Worklog Tool",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "author": "alfeugds",
     "description":
         "This extension allows the user to log the work in Jira easily.",
@@ -16,6 +16,8 @@
         "default_popup": "temp-popup.html",
         "default_title": "Log Work"
     },
-    "permissions": ["activeTab", "storage","cookies","<all_urls>"]
+    "permissions": ["activeTab", "storage","cookies","<all_urls>"],
+    "content_security_policy": "script-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; object-src 'self'"
+    
     
 }
