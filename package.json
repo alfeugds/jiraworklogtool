@@ -1,6 +1,6 @@
 {
   "name": "jira-log",
-  "version": "1.0.0",
+  "version": "0.2.2",
   "description": "",
   "main": "jira-parser.js",
   "directories": {
@@ -9,15 +9,16 @@
   "scripts": {
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Alfeu Santos <alfeugds@gmail.com>",
+  "license": "MIT",
   "dependencies": {},
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "jsdom"
   },
   "devDependencies": {
     "eslint": "^4.11.0",
     "jest": "^21.2.1",
     "jest-cli": "^21.2.1"
-  }
+  },
+  "repository": "https://github.com/alfeugds/jiraworklogtool.git"
 }
