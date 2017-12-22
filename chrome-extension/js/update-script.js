@@ -1,42 +1,45 @@
 /* global chrome */
 var updateScript = (function(){
-    function saveOptions(options) {
-        chrome.storage.sync.set(
-            {
-                jiraOptions: options
-            },
-            function () {
-                Promise.resolve();
-            }
-        );
+    function saveOptions(jiraOptions) {
+        return new Promise(resolve => {
+            chrome.storage.sync.set(
+                {
+                    jiraOptions: jiraOptions
+                },
+                function () {
+                    resolve();
+                }
+            );
+        })
     }
     function getOptions() {
-        chrome.storage.sync.get(
-            {
-                jiraOptions: {}
-            },
-            function (items) {
-                Promise.resolve(items.jiraOptions);
-            }
-        );
+        return new Promise(resolve => {
+            chrome.storage.sync.get(
+                {
+                    jiraOptions: {}
+                },
+                function (options) {
+                    resolve(options.jiraOptions);
+                }
+            );
+        })
     }
     function removePassword() {
-
+        var getPromise = getOptions();
+        var savePromise = getPromise.then((jiraOptions) => {
+            jiraOptions.password = '';
+            return saveOptions(jiraOptions);
+        })
+        return savePromise;
     }
     return {
         run: () => {
             // Check whether new version is installed
-            chrome.runtime.onInstalled.addListener(function(details){
-                console.log('details', details);
-                if(details.reason == "install"){
-                    console.log("This is a first install!");
-                }else if(details.reason == "update"){
-                    var thisVersion = chrome.runtime.getManifest().version;
-                    console.log("Updated from " + details.previousVersion + " to " + thisVersion + "!");
-                    removePassword();
-                }
+            var thisVersion = chrome.runtime.getManifest().version;
+            console.log(`app version: ${thisVersion}`);
+            return removePassword().then(() => {
+                return Promise.resolve();
             });
-            return Promise.resolve();
         }
     }
 })();

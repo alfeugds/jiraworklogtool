@@ -1,44 +1,63 @@
-/* global test jest expect*/
+/* global test jest expect describe beforeEach*/
 const updateScript = require("../../chrome-extension/js/update-script");
 
-test("should run update storage script upon extension update", (done) => {  
-    //arrange
-    let isCalled = false;
-    global.chrome = {
-        runtime: {
-            onInstalled: {
-                addListener: jest.fn(function(callback){
-                    isCalled = true;
-                    callback({
-                        reason: 'update',
-                        previousVersion: '0.2.2'
-                    });
+describe('Update Script', () => {
+    let options,
+    chrome;
+    
+    beforeEach(() => {
+        //arrange
+        options = {
+            jiraOptions: {
+                jiraUrl: 'https://whatever.com',
+                user: 'someuser@gmail.com',
+                password: 'pwd',
+                token: 'tkn'
+            }
+        };
+        global.chrome = {
+            runtime: {
+                getManifest: jest.fn(function(){
+                    return {
+                        version: '0.2.3'
+                    }
                 })
             },
-            getManifest: jest.fn(function(){
-                return {
-                    version: '0.2.3'
+            storage: {
+                sync: {
+                    set: jest.fn((options, callback) => {
+                        options = options;
+                        callback();
+                    }),
+                    get: jest.fn((jiraOptions, callback) => {
+                        callback(options)
+                    })
                 }
-            })
-        }
-    };
-    global.console = {
-        log: jest.fn()
-    };
-    let chrome = global.chrome;
+            }
+        };
+        global.console = {
+            log: jest.fn()
+        };
+        chrome = global.chrome;
 
-    //act
-    updateScript.run().then(() => {
-        //assert
-        expect(chrome.runtime.onInstalled.addListener).toHaveBeenCalled();
-        expect(isCalled).toBeTruthy();
-        expect(console.log).toHaveBeenCalledWith('Updated from 0.2.2 to 0.2.3!');
-        expect(console.log).toHaveBeenCalledWith('details', {
-                reason: 'update',
-                previousVersion: '0.2.2'
-            });
-        expect(chrome.runtime.getManifest).toHaveBeenCalled();
-        done();
     });
 
+    test("should run update storage script upon extension update", (done) => {
+    
+        //act
+        //console.log('before', options);
+        expect(options.jiraOptions.password).toBe('pwd');
+        updateScript.run().then(() => {
+            //assert
+            
+            expect(console.log).toHaveBeenCalledWith('app version: 0.2.3');
+            expect(chrome.runtime.getManifest).toHaveBeenCalled();
+            expect(options.jiraOptions.token).toBe('tkn');
+            expect(options.jiraOptions.password).toBe('');
+    
+            done();
+        });
+    
+    });
 });
+
