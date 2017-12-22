@@ -1,6 +1,6 @@
 {
   "name": "jira-log",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "",
   "main": "jira-parser.js",
   "directories": {
@@ -9,7 +9,10 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "lint": "npm-run-all --parallel lint:code lint:tests",
+    "lint:code": "eslint --config .eslintrc.json --ignore-path .eslintignore chrome-extension/**/*.js",
+    "lint:tests": "eslint --config .eslintrc.json --ignore-path .eslintignore chrome-extension/**/*.spec.js"
   },
   "author": "Alfeu Santos <alfeugds@gmail.com>",
   "license": "MIT",
