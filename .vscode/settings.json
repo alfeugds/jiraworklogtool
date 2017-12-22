@@ -1,5 +1,8 @@
 {
     "eslint.enable": true,
     "eslint.run":"onSave",
-    "eslint.trace.server": "messages"
+    "eslint.trace.server": "messages",
+    "eslint.options": {
+        "configFile": ".eslintrc.json"
+    },
 }

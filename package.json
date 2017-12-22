@@ -1,23 +1,29 @@
 {
   "name": "jira-log",
-  "version": "1.0.0",
+  "version": "0.2.3",
   "description": "",
   "main": "jira-parser.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "npm-run-all --parallel lint:code lint:tests",
+    "lint:code": "eslint --config .eslintrc.json --ignore-path .eslintignore chrome-extension/**/*.js",
+    "lint:tests": "eslint --config .eslintrc.json --ignore-path .eslintignore chrome-extension/**/*.spec.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Alfeu Santos <alfeugds@gmail.com>",
+  "license": "MIT",
   "dependencies": {},
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "jsdom"
   },
   "devDependencies": {
     "eslint": "^4.11.0",
     "jest": "^21.2.1",
     "jest-cli": "^21.2.1"
-  }
+  },
+  "repository": "https://github.com/alfeugds/jiraworklogtool.git"
 }

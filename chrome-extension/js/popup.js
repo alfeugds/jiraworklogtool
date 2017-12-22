@@ -1,3 +1,4 @@
+/* global updateScript */
 var chrome = chrome || {};
 var Mediator = Mediator || {};
 var View = View || {};
@@ -14,7 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     window.mediator = new Mediator();
-    
-    View.Main.init();
+
+    //palliative solution for storage sync issue
+    updateScript.run().then(() => {
+        View.Main.init();
+    });
+
         
 });
