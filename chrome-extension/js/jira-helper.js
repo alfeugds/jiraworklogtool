@@ -37,7 +37,7 @@
             var jql = `jql=worklogAuthor=currentUser()`;
             var url = options.jiraUrl + "/rest/api/2/search?" + fields + '&' + jql;
 
-            if (options.user) {
+            if (options.user && options.password) {
                 var b64 = btoa(`${options.user}:${options.password}`);
                 headers.Authorization = `Basic ${b64}`;
             }
@@ -238,7 +238,7 @@
     }
 
     function configureHeaders(jiraOptions) {
-        if (jiraOptions.user) {
+        if (jiraOptions.user && jiraOptions.password) {
             var b64 = btoa(`${jiraOptions.user}:${jiraOptions.password}`);
             headers.Authorization = `Basic ${b64}`;
         }
