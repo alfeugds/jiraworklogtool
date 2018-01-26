@@ -1,7 +1,7 @@
 var JiraParser = (function () {
     const hoursAndMinutesRegex = /^(\d+[m]|\d+[h](?:\s\d+[m])?)$/,
-        jiraNumberRegex = /^([a-zA-Z]{2,5}-\d{2,5})$/,
-        worklogTextLineRegex = /\b([a-zA-Z]{2,5}-\d{2,5})?\b.*?\b(\d+[m]|\d+[h](?:\s\d+[m])?)\b[\s\-_;,]*(.+)$/;
+        jiraNumberRegex = /^([a-zA-Z]{1,10}-\d+)$/,
+        worklogTextLineRegex = /\b([a-zA-Z]{1,10}-\d+)?\b.*?\b(\d+[m]|\d+[h](?:\s\d+[m])?)\b[\s\-_;,]*(.+)$/;
 
     function timeSpentToHours(timeSpent) {
         var result = 0;

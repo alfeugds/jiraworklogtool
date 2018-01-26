@@ -30,10 +30,10 @@ test("string should return a meaningful log object", done => {
         },
         {
             logText:
-            "ms-12345 1h 30m [grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview",
+            "PLANNING-2 1h 30m [grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview",
             expectedObject: {
                 timeSpent: "1h 30m",
-                jira: "ms-12345",
+                jira: "PLANNING-2",
                 comment:
                 "[grooming] align with SM about grooming pending tasks and blocks / align with Devs the grooming tasks and story overview"
             }
@@ -155,7 +155,48 @@ test("object fields must be validated", done => {
                 comment: "  "
             },
             invalidFields: ['jira', 'timeSpent', 'comment']
+        },
+        {
+            item: {
+                jira: "MANAGEMENT-4",
+                timeSpent: "1h",
+                comment: "test"
+            },
+            invalidFields: []
+        },
+        {
+            item: {
+                jira: "KIMOFR-24",
+                timeSpent: "1h",
+                comment: "test"
+            },
+            invalidFields: []
+        },
+        {
+            item: {
+                jira: "PLANNING-2",
+                timeSpent: "1h",
+                comment: "test"
+            },
+            invalidFields: []
+        },
+        {
+            item: {
+                jira: "P-2",
+                timeSpent: "1h",
+                comment: "test"
+            },
+            invalidFields: []
+        },
+        {
+            item: {
+                jira: "-2",
+                timeSpent: "1h",
+                comment: "test"
+            },
+            invalidFields: ['jira']
         }
+
     ];
 
     testDataList.forEach(testData => {
