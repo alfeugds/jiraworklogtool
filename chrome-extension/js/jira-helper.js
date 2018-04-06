@@ -67,37 +67,20 @@
 
     function request(config) {
         return new Promise((resolve, reject) => {
-            var xhr = new XMLHttpRequest();
-            xhr.withCredentials = true;
-
-            xhr.addEventListener("readystatechange", () => {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200 || xhr.status === 201 || xhr.status === 204) {
-                        //TODO: define better way to save user name, which will be used to filter the worklogs
-                        user = decodeURIComponent(xhr.getResponseHeader('X-AUSERNAME').toLowerCase());
-                        var response = {};
-                        if (xhr.responseText) {
-                            response = JSON.parse(xhr.responseText);
-                        }
-                        resolve(response);
-                    } else if (xhr.status === 429) {
-                        reject(`Too many requests to Jira API. Please wait some seconds before making another request.\n\nServer response: ${xhr.status}(${xhr.statusText}): ${xhr.responseText}`);
-                    }
-                    else {
-                        reject(`Server response: ${xhr.status}(${xhr.statusText}): ${xhr.responseText}`);
-                    }
+            axios(config).then(response => {
+                //TODO: define better way to save user name, which will be used to filter the worklogs
+                let userFromHeader = response.headers['x-ausername'].toLowerCase();
+                user = decodeURIComponent(userFromHeader);
+                var data = response.data;
+                resolve(data);
+            }).catch(response => {
+                if (response.status === 429) {
+                    reject(`Too many requests to Jira API. Please wait some seconds before making another request.\n\nServer response: ${response.status}(${response.statusText}): ${response.data}`);
+                }
+                else {
+                    reject(`Server response: ${response.status}(${response.statusText}): ${response.data}`);
                 }
             });
-
-            xhr.open(config.method, config.url);
-
-            for (var header in config.headers) {
-                xhr.setRequestHeader(header, config.headers[header]);
-            }
-            if (config.data)
-                xhr.send(JSON.stringify(config.data));
-            else
-                xhr.send();
         });
     }
 

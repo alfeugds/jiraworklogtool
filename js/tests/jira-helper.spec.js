@@ -44,9 +44,6 @@ global.chrome = {
         }
     }
 };
-// global.console = {
-//     log: jest.fn()
-// };
 
 //module to test
 const jiraHelper = require("../../chrome-extension/js/jira-helper");
@@ -73,9 +70,18 @@ describe('Jira API Helper', () => {
 
             xhr.callback();
         });
+
+        const options = {
+            jiraUrl: 'https://whatever.com',
+            user: 'someuser@gmail.com',
+            password: 'pwd',
+            token: 'tkn'
+        }
         //act
         //assert
         jiraHelper.testConnection(options).then(result => {
+            expect(result).not.toBeNull();
+
             done();
         }).catch((e) => {
             fail(e);
