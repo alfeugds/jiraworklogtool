@@ -1,26 +1,10 @@
-//mocks
-function XMLHttpRequest(){
-    this.callback;
-    this.addEventListener = jest.fn((eventName, callback) => {
-        this.callback = callback;
-    });
-    this.open = jest.fn();
-    this.setRequestHeader = jest.fn();
-    this.send = jest.fn(() => {
-        global.mockResponse(this);
-        this.callback();
-    });
+var axios = require('axios');
+var mockAxios = axios.create();
+var MockAdapter = require('axios-mock-adapter');
+// This sets the mock adapter on the default instance
+var mock = new MockAdapter(mockAxios, { delayResponse: 10 });
 
-    this.getResponseHeader = jest.fn((h) =>{
-        return this.header[h];
-    });
-}
-
-global.mockResponse = jest.fn(() => {
-    throw('implement it');
-});
-
-global.XMLHttpRequest = XMLHttpRequest;
+global.axios = mockAxios;
 
 global.options = {
     jiraOptions: {
@@ -60,28 +44,28 @@ describe('Jira API Helper', () => {
 
     test('testConnection works successfully with valid options', done => {
         //arrange
-        global.mockResponse = jest.fn().mockImplementationOnce((xhr) => {
-            xhr.readyState = 4;
-            xhr.status = 200;
-            xhr.header = {
-                'X-AUSERNAME': 'hue'
-            }
-            xhr.responseText = '{"issues":[]}'
-
-            xhr.callback();
-        });
-
         const options = {
             jiraUrl: 'https://whatever.com',
             user: 'someuser@gmail.com',
             password: 'pwd',
             token: 'tkn'
-        }
-        //act
-        //assert
-        jiraHelper.testConnection(options).then(result => {
-            expect(result).not.toBeNull();
+        };
+        mock.onGet(/rest\/api\/2\/search/).reply(200,
+            {
+                issues: [{
+                    'key': 'cms-123'
+                }]
+            },
+            {
+                'x-ausername': 'hue@br.com'
+            }
+        );
 
+        //act
+        jiraHelper.testConnection(options).then(result => {
+            //assert
+            expect(result).not.toBeNull();
+            expect(result[0]).toEqual('cms-123');
             done();
         }).catch((e) => {
             fail(e);
