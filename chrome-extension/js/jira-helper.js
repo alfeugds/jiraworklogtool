@@ -45,12 +45,12 @@
                 headers.app_token = options.token;
             }
 
-
             var config = {
                 'headers': headers,
                 'method': 'GET',
                 'url': url
             }
+            //TODO: check if URL is valid before making the request
             request(config).then((response) => {
                 var keys = [];
                 for (var i = 0; i < response.issues.length; i++) {
@@ -73,12 +73,13 @@
                 user = decodeURIComponent(userFromHeader);
                 var data = response.data;
                 resolve(data);
-            }).catch(response => {
+            }).catch(axiosResponse => {
+                const response = axiosResponse.response;
                 if (response.status === 429) {
-                    reject(`Too many requests to Jira API. Please wait some seconds before making another request.\n\nServer response: ${response.status}(${response.statusText}): ${response.data}`);
+                    reject(`Too many requests to Jira API. Please wait some seconds before making another request.\n\nServer response: ${response.status}(${response.statusText}): ${response.data.errorMessages[0]}`);
                 }
                 else {
-                    reject(`Server response: ${response.status}(${response.statusText}): ${response.data}`);
+                    reject(`Server response: ${response.status}(${response.statusText}): ${response.data.errorMessages}`);
                 }
             });
         });

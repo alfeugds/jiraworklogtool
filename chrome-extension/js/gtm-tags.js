@@ -11,19 +11,23 @@
 		var intervalId = window.setInterval(function() {
 			if(xhr.readyState != 4) {
 				return;
-            }
-            var u = new URL(xhr.responseURL);
-            var pathname = u.pathname;
-            var origin = u.origin;
-            var data = {
-				'event': 'ajaxSuccess',
-				'eventCategory': 'AJAX',
-				'eventAction': origin,
-				'eventLabel': xhr.method + ' - '  + pathname
-			};
-			dataLayer.push(data);
-			clearInterval(intervalId);
-		}, 1);
+			}
+			try{
+				var u = new URL(xhr.responseURL);
+				var pathname = u.pathname;
+				var origin = u.origin;
+				var data = {
+					'event': 'ajaxSuccess',
+					'eventCategory': 'AJAX',
+					'eventAction': origin,
+					'eventLabel': xhr.method + ' - '  + pathname
+				};
+				dataLayer.push(data);
+				clearInterval(intervalId);
+			}catch(e){
+				console.debug('GTM error', e);
+			}
+		}, 10);
 		return xhrSend.apply(this, [].slice.call(arguments));
 	};
 })(window.dataLayer);
