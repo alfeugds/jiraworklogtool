@@ -67,6 +67,7 @@
 
     function request(config) {
         return new Promise((resolve, reject) => {
+            //console.log(config)
             axios(config).then(response => {
                 //TODO: define better way to save user name, which will be used to filter the worklogs
                 let userFromHeader = response.headers['x-ausername'].toLowerCase();
@@ -75,11 +76,12 @@
                 resolve(data);
             }).catch(axiosResponse => {
                 const response = axiosResponse.response;
+                //console.log(response.data)
                 if (response.status === 429) {
                     reject(`Too many requests to Jira API. Please wait some seconds before making another request.\n\nServer response: ${response.status}(${response.statusText}): ${response.data.errorMessages[0]}`);
                 }
                 else {
-                    reject(`Server response: ${response.status}(${response.statusText}): ${response.data.errorMessages}`);
+                    reject(`Server response: ${response.status}(${response.statusText}): ${(response.data ? response.data.errorMessages : 'undefined')}`);
                 }
             });
         });
@@ -97,8 +99,7 @@
 
     function getWorklogObjects(key, worklogs) {
         return new Promise((resolve) => {
-
-            console.log(`key: ${key}`, worklogs);
+            //console.log(`key: ${key}`, worklogs);
             var worklogObjectArray = [];
             worklogs.forEach((worklog) => {
                 worklogObjectArray.push({
@@ -110,7 +111,6 @@
                     'status': 'saved'
                 });
             })
-            console.log(worklogObjectArray);
             resolve(worklogObjectArray);
         });
     }
@@ -234,7 +234,7 @@
     function setJiraOptions(options) {
         jiraOptions = options;
         configureHeaders(options);
-        console.log(jiraOptions);
+        //console.log(jiraOptions);
     }
 
     function init() {
@@ -244,7 +244,7 @@
                     jiraOptions: {}
                 },
                 function (items) {
-                    console.log(items);
+                    //console.log(items);
                     setJiraOptions(items.jiraOptions);
                     testConnection(items.jiraOptions)
                         .then(resolve)

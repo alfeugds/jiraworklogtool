@@ -104,13 +104,120 @@ describe('Jira API Helper', () => {
         })
 
     });
-
-    test.skip("module is initiated successfully", done => {
-        //arrange
-        //act
-        //assert
-        jiraHelper.init().then(() => {
-            done();
+    describe('init', () =>{
+        test("module is initiated successfully", done => {
+            //arrange
+            mock.onGet(/rest\/api\/2\/search/)
+                .replyOnce(200,
+                    {
+                        issues: [{
+                            'key': 'cms-123'
+                        }]
+                    },
+                    {
+                        'x-ausername': 'hue@br.com'
+                    }
+                );
+            //act
+            jiraHelper.init().then((result) => {
+                //assert
+                expect(result).toEqual(['cms-123'])
+                done();
+            }).catch(error =>{
+                fail(error);
+                done();
+            });
         });
+        test('module fails with invalid options')
+    })
+    describe('getWorklog', () => {
+        beforeEach(done => {
+            //arrange
+            mock.onGet(/rest\/api\/2\/search/)
+                .replyOnce(200,
+                    {
+                        issues: [{
+                            'key': 'cms-123'
+                        }]
+                    },
+                    {
+                        'x-ausername': 'hue@br.com'
+                    }
+                );
+            global.options.jiraOptions.user = 'hue@br.com'
+            //act
+            jiraHelper.init().then((result) => {
+                //assert
+                expect(result).toEqual(['cms-123'])
+                done();
+            }).catch(error =>{
+                fail(error);
+                done();
+            });
+        });
+        test('returns 2 worklogs successfully', done => {
+            mock.onGet(/rest\/api\/2\/search/)
+            .replyOnce(config => {
+                return [200,
+                    {
+                        issues: [{
+                            'key': 'cms-123'
+                        }]
+                    },
+                    {
+                        'x-ausername': 'hue@br.com'
+                    }]                
+            });
+            mock.onGet(/rest\/api\/2\/issue\/cms-123\/worklog/)
+            .replyOnce(config => {
+                return [200,
+                    {
+                        "worklogs":[  
+                            {  
+                                "author":{
+                                    "key":"hue@br.com"
+                                },
+                                "comment":"tech onboarding",
+                                "started":"2018-03-26T06:00:00.000+0000",
+                                "timeSpent":"1h 50m",
+                                "id":"55829"
+                            }
+                        ]
+                    },
+                    {
+                        'x-ausername': 'hue@br.com'
+                    }]                
+            });
+            jiraHelper.getWorklog('2018-03-26').then(result => {
+                const worklog = result[0];
+                expect(worklog.jira).toEqual('cms-123');
+                expect(worklog.timeSpent).toEqual('1h 50m');
+                expect(worklog.comment).toEqual('tech onboarding');
+                expect(worklog.status).toEqual('saved');
+                expect(worklog.started).toEqual('2018-03-26T06:00:00.000+0000');
+                expect(worklog.logId).toEqual('55829');
+                done();
+            }).catch(e => {
+                fail(e);
+                done();
+            });
+        })
+        test('returns zero worklogs')
+        test('returns error')
+    });
+    describe('logWork', () => {
+        test('adds worklog successfully')
+        test('fails to add worklog due to wrong input')
+        test('fails to add worklog due to jira instance error')
+    });
+    describe('updateWorklog', () => {
+        test('updates worklog successfully')
+        test('fails to update worklog due to wrong input')
+        test('fails to update worklog due to jira instance error')
+    });
+    describe('deleteWorklog', () => {
+        test('deletes worklog successfully')
+        test('fails to delete worklog due to wrong input')
+        test('fails to delete worklog due to jira instance error')
     });
 });
