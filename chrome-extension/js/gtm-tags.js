@@ -23,9 +23,10 @@
 					'eventLabel': xhr.method + ' - '  + pathname
 				};
 				dataLayer.push(data);
-				clearInterval(intervalId);
 			}catch(e){
 				console.debug('GTM error', e);
+			}finally{
+				clearInterval(intervalId);
 			}
 		}, 10);
 		return xhrSend.apply(this, [].slice.call(arguments));

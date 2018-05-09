@@ -76,13 +76,18 @@
                 resolve(data);
             }).catch(axiosResponse => {
                 const response = axiosResponse.response;
+                if(!response){
+                    reject('Network error');
+                    return;
+                }
                 //console.log(response.data)
                 if (response.status === 429) {
                     reject(`Too many requests to Jira API. Please wait some seconds before making another request.\n\nServer response: ${response.status}(${response.statusText}): ${response.data.errorMessages[0]}`);
+                    return;
                 }
-                else {
-                    reject(`Server response: ${response.status}(${response.statusText}): ${(response.data ? response.data.errorMessages : 'undefined')}`);
-                }
+                
+                reject(`Server response: ${response.status}(${response.statusText}): ${(response.data ? response.data.errorMessages : 'undefined')}`);
+                
             });
         });
     }

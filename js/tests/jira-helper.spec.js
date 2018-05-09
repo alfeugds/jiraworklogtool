@@ -160,9 +160,14 @@ describe('Jira API Helper', () => {
             .replyOnce(config => {
                 return [200,
                     {
-                        issues: [{
-                            'key': 'cms-123'
-                        }]
+                        issues: [
+                            {
+                                'key': 'cms-123'
+                            },
+                            {
+                                'key': 'cms-456'
+                            }
+                        ]
                     },
                     {
                         'x-ausername': 'hue@br.com'
@@ -188,22 +193,72 @@ describe('Jira API Helper', () => {
                         'x-ausername': 'hue@br.com'
                     }]                
             });
+            mock.onGet(/rest\/api\/2\/issue\/cms-456\/worklog/)
+            .replyOnce(config => {
+                return [200,
+                    {
+                        "worklogs":[  
+                            {  
+                                "author":{
+                                    "key":"hue@br.com"
+                                },
+                                "comment":"tech onboarding 2",
+                                "started":"2018-03-26T06:00:00.000+0000",
+                                "timeSpent":"2h 50m",
+                                "id":"45645"
+                            }
+                        ]
+                    },
+                    {
+                        'x-ausername': 'hue@br.com'
+                    }]                
+            });
             jiraHelper.getWorklog('2018-03-26').then(result => {
-                const worklog = result[0];
-                expect(worklog.jira).toEqual('cms-123');
-                expect(worklog.timeSpent).toEqual('1h 50m');
-                expect(worklog.comment).toEqual('tech onboarding');
-                expect(worklog.status).toEqual('saved');
-                expect(worklog.started).toEqual('2018-03-26T06:00:00.000+0000');
-                expect(worklog.logId).toEqual('55829');
+                const firstWorklog = result[0];
+                expect(firstWorklog.jira).toEqual('cms-123');
+                expect(firstWorklog.timeSpent).toEqual('1h 50m');
+                expect(firstWorklog.comment).toEqual('tech onboarding');
+                expect(firstWorklog.status).toEqual('saved');
+                expect(firstWorklog.started).toEqual('2018-03-26T06:00:00.000+0000');
+                expect(firstWorklog.logId).toEqual('55829');
+
+                const secondWorklog = result[1];
+                expect(secondWorklog.timeSpent).toEqual('2h 50m');
                 done();
             }).catch(e => {
                 fail(e);
                 done();
             });
         })
-        test('returns zero worklogs')
-        test('returns error')
+        test('returns zero worklogs', done => {
+            //arrange
+            mock.onGet(/rest\/api\/2\/search/)
+            .replyOnce(config => {
+                return [200,
+                    {
+                        issues: []
+                    },
+                    {
+                        'x-ausername': 'hue@br.com'
+                    }]                
+            });
+            jiraHelper.getWorklog('2018-03-26').then(result => {
+                expect(result).toEqual([]);
+                done();
+            }).catch(e => {
+                fail(e);
+                done();
+            });
+        });
+        test('returns error', done => {
+            jiraHelper.getWorklog('2018-03-26').then(result => {
+                fail(result);
+                done();
+            }).catch(e => {
+                expect(e).toEqual('Server response: 404(undefined): undefined');
+                done();
+            });
+        });
     });
     describe('logWork', () => {
         test('adds worklog successfully')
