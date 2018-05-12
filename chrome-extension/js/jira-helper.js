@@ -242,6 +242,12 @@
         //console.log(jiraOptions);
     }
 
+    function getJiraUrl(jiraNumber){
+        if(!jiraNumber)
+            return '';
+        return `${jiraOptions.jiraUrl}/browse/${jiraNumber}`;
+    }
+
     function init() {
         return new Promise((resolve, reject) => {
             chrome.storage.sync.get(
@@ -265,7 +271,8 @@
         logWork: logWork,
         updateWorklog: updateWorklog,
         deleteWorklog: deleteWorklog,
-        testConnection: testConnection
+        testConnection: testConnection,
+        getJiraUrl: getJiraUrl
     }
 
 })(window.chrome);

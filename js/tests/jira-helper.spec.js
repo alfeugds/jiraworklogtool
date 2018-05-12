@@ -29,6 +29,24 @@ global.chrome = {
     }
 };
 
+function initJiraHelper(){
+    //arrange
+    mock.onGet(/rest\/api\/2\/search/)
+    .replyOnce(200,
+        {
+            issues: [{
+                'key': 'cms-123'
+            }]
+        },
+        {
+            'x-ausername': 'hue@br.com'
+        }
+    );
+    global.options.jiraOptions.user = 'hue@br.com'
+    //act
+    return jiraHelper.init();
+}
+
 //module to test
 const jiraHelper = require("../../chrome-extension/js/jira-helper");
 
@@ -132,28 +150,7 @@ describe('Jira API Helper', () => {
     })
     describe('getWorklog', () => {
         beforeEach(done => {
-            //arrange
-            mock.onGet(/rest\/api\/2\/search/)
-                .replyOnce(200,
-                    {
-                        issues: [{
-                            'key': 'cms-123'
-                        }]
-                    },
-                    {
-                        'x-ausername': 'hue@br.com'
-                    }
-                );
-            global.options.jiraOptions.user = 'hue@br.com'
-            //act
-            jiraHelper.init().then((result) => {
-                //assert
-                expect(result).toEqual(['cms-123'])
-                done();
-            }).catch(error =>{
-                fail(error);
-                done();
-            });
+            initJiraHelper().then(() => done());
         });
         test('returns 2 worklogs successfully', done => {
             mock.onGet(/rest\/api\/2\/search/)
@@ -274,5 +271,28 @@ describe('Jira API Helper', () => {
         test('deletes worklog successfully')
         test('fails to delete worklog due to wrong input')
         test('fails to delete worklog due to jira instance error')
+    });
+    describe('getJiraUrl', () => {
+        beforeEach(done => {
+            initJiraHelper().then(() => done());
+        });
+        test('returns jira url successfully when jira # is CMS-123', done => {
+            const jiraUrl = jiraHelper.getJiraUrl("CMS-123");
+            expect(jiraUrl).toEqual("https://whatever.com/browse/CMS-123");
+            
+            done();
+        });
+        test('returns jira url successfully when jira # is CMS-45678', done => {
+            const jiraUrl = jiraHelper.getJiraUrl("CMS-45678");
+            expect(jiraUrl).toEqual("https://whatever.com/browse/CMS-45678");
+            
+            done();
+        })
+        test('fails to return jira URL when jira # is empty', done => {
+            const jiraUrl = jiraHelper.getJiraUrl("");
+            expect(jiraUrl).toEqual("");
+            done();
+        })
+        
     });
 });
