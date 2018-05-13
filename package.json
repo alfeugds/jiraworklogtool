@@ -1,6 +1,6 @@
 {
   "name": "jira-log",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "description": "",
   "main": "jira-parser.js",
   "directories": {
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "archiver": "^2.1.1",
-    "chrome-extension-deploy": "^3.0.0",
+    "chrome-webstore-upload": "^0.2.2",
     "dotenv": "^4.0.0",
     "eslint": "^4.16.0",
     "jest": "^21.2.1",
