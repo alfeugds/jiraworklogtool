@@ -185,7 +185,7 @@ window.View.Table = (function () {
         </td>
         <td class="tg-yw4l action-column-item">
             <a class='delete-button'></a>
-            <a target="_blank" href="{{jiraUrl}}" class='open-link-button'></a>
+            <a target="_blank" href="{{jiraUrl}}" class='open-link-button {{link-disabled}}'></a>
         </td>
     </tr>`;
 
@@ -208,7 +208,8 @@ window.View.Table = (function () {
             .replace("{{status}}", worklogItem.status)
             .replace("{{logId}}", worklogItem.logId)
             .replace("{{status-class}}", getStatusClass(worklogItem.status))
-            .replace("{{jiraUrl}}", worklogItem.jiraUrl);
+            .replace("{{jiraUrl}}", worklogItem.jiraUrl)
+            .replace("{{link-disabled}}", worklogItem.jiraUrl ? '' : 'link-disabled');
         tbody.innerHTML += row;
     }
 
@@ -223,6 +224,7 @@ window.View.Table = (function () {
 
         for (var i = 0; i < worklogItems.length; i++) {
             var worklogItem = worklogItems[i];
+            updateJiraUrl(worklogItem);
             addRow(worklogItem);
         }
     }
@@ -286,11 +288,28 @@ window.View.Table = (function () {
             worklog1.timeSpent === worklog2.timeSpent;
     }
 
+    
+    function updateJiraUrl(worklog){
+        worklog.jiraUrl = JiraHelper.getJiraUrl(worklog.jira);
+    }
+
+    function updateJiraUrlLink(url, row) {
+        var link = row.querySelector("a.open-link-button");
+        if (url) {
+            link.href = url;
+            link.classList.remove('link-disabled');
+        } else {
+            link.classList.add('link-disabled');
+        }
+    }
+
     function worklogChanged(e) {
         var row = e.srcElement.parentElement.parentElement;
         var worklog = getWorklogFromRow(row);
         console.log("worklog changed", worklog);
         validateInput(worklog, row);
+        updateJiraUrl(worklog);
+        updateJiraUrlLink(worklog.jiraUrl, row);
         if (worklog.status !== "new") {
             changeStatusForUpdate(row, worklog);
             mediator.trigger("view.table.worklog.changed", worklog);
