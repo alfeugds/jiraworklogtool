@@ -135,7 +135,7 @@
 
     .delete-button{
       outline: none;
-      display: block;
+      display: inline-block;
       margin: auto;
       width: 20px;
       border: 1px solid #ddd;
@@ -148,6 +148,24 @@
       height: 19px;
       line-height: 1.5em;
       background-image: url(/ic_delete_black_24dp.png);
+    }
+
+    .open-link-button{
+      outline: none;
+      display: inline-block;
+      margin: auto;
+      width: 20px;
+      border: 1px solid #ddd;
+      border-bottom: 1px solid #aaa; 
+      border-right: 1px solid #aaa;
+      background-color: #fff; 
+      background-repeat: no-repeat;
+      background-position: center;
+      font-size: 14px;
+      height: 19px;
+      line-height: 1.5em;
+      background-image: url(/open_in_new_window.png);
+      background-size: cover;
     }
 
     .save-button {
@@ -183,6 +201,7 @@
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
     -->
   <script src="lib/mediator.min.js" defer></script>
+  <script src="lib/axios.min.js" defer></script>
   <script src="js/jira-helper.js"></script>
   <script src="js/jira-parser.js"></script>
   <script src="js/model.js"></script>
@@ -204,14 +223,13 @@
       <input type="date" id="worklogDate" />
       <button id="getWorklogButton">Get Worklog</button>
     </section>
-    
     <table class="tg "id="worklog-items">
       <thead>
         <tr>
           <th class="tg-yw4l jira-number-column-item">Jira #</th>
           <th class="tg-yw4l time-spent-column-item">Time Spent</th>
           <th class="tg-yw4l comment-column-item">Comment</th>
-          <th class="tg-yw4l delete-column-item">Delete</th>
+          <th class="tg-yw4l action-column-item">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -225,8 +243,9 @@
           <td class="tg-yw4l comment-column-item">
             <input name="comment" type="text" value="fixing layout bug" />
           </td>
-          <td class="tg-yw4l delete-column-item">
+          <td class="tg-yw4l action-column-item">
             <a name="deleteButton" class='delete-button'></a>
+            <a target="_blank" href="" class='open-link-button'></a>
           </td>
         </tr>
         <tr class='worklog worklog--deleted' data-status="edited" data-id="123">
@@ -239,8 +258,9 @@
           <td class="tg-yw4l comment-column-item">
             <input name="comment" type="text" value="fixing layout bug" />
           </td>
-          <td class="tg-yw4l delete-column-item">
+          <td class="tg-yw4l action-column-item">
             <a name="deleteButton" class='delete-button'></a>
+            <a target="_blank" href="" class='open-link-button'></a>
           </td>
         </tr>
         <tr class='worklog worklog--saved' data-status="edited" data-id="123">
@@ -253,8 +273,9 @@
           <td class="tg-yw4l comment-column-item">
             <input name="comment" type="text" value="fixing layout bug" />
           </td>
-          <td class="tg-yw4l delete-column-item">
+          <td class="tg-yw4l action-column-item">
             <a name="deleteButton" class='delete-button'></a>
+            <a target="_blank" href="" class='open-link-button'></a>
           </td>
         </tr>
       </tbody>
@@ -271,7 +292,7 @@
     <div id="status" class="hidden"></div>
   </div>
   <div class="error_status hidden">
-    <h2>Please go to 'Options' and make sure you are logged in Jira, and the Jira URL is correct.</h2>
+    <h2>Please go to <a target="_blank" href="options.html">Options</a> and make sure you are logged in Jira, and the Jira Hostname is correct.</h2>
   </div>
   <div id="loading" class="hidden">
     <img class="hidden" src="spinner-small.gif" aria-hidden="true" />

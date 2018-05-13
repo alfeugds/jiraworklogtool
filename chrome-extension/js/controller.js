@@ -13,6 +13,9 @@ window.Controller.LogController = (function(JiraHelper, Model, JiraParser) {
                 Model.WorklogModel.updateItemsWithLocalData(items);
                 JiraHelper.getWorklog(worklogDate)
                     .then(worklogItems => {
+                        worklogItems.forEach(item => {
+                            item.jiraUrl = JiraHelper.getJiraUrl(item.jira);
+                        });
                         Model.WorklogModel.updateItemsFromJira(worklogItems);
                         resolve();
                     })

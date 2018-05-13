@@ -35,7 +35,6 @@ window.Model.WorklogModel = (function(JiraParser){
         });
 
         items = items.concat(persistedItems);
-        //mediator.trigger('model.workloglist.updated', items);
         updateTotalHours();
     }
 

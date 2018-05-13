@@ -62,6 +62,7 @@ typings/
 
 # dotenv environment variables file
 .env
+oauth.txt
 
 # package output
 chrome-extension.zip

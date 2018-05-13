@@ -45,12 +45,12 @@
                 headers.app_token = options.token;
             }
 
-
             var config = {
                 'headers': headers,
                 'method': 'GET',
                 'url': url
             }
+            //TODO: check if URL is valid before making the request
             request(config).then((response) => {
                 var keys = [];
                 for (var i = 0; i < response.issues.length; i++) {
@@ -67,37 +67,28 @@
 
     function request(config) {
         return new Promise((resolve, reject) => {
-            var xhr = new XMLHttpRequest();
-            xhr.withCredentials = true;
-
-            xhr.addEventListener("readystatechange", () => {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200 || xhr.status === 201 || xhr.status === 204) {
-                        //TODO: define better way to save user name, which will be used to filter the worklogs
-                        user = decodeURIComponent(xhr.getResponseHeader('X-AUSERNAME').toLowerCase());
-                        var response = {};
-                        if (xhr.responseText) {
-                            response = JSON.parse(xhr.responseText);
-                        }
-                        resolve(response);
-                    } else if (xhr.status === 429) {
-                        reject(`Too many requests to Jira API. Please wait some seconds before making another request.\n\nServer response: ${xhr.status}(${xhr.statusText}): ${xhr.responseText}`);
-                    }
-                    else {
-                        reject(`Server response: ${xhr.status}(${xhr.statusText}): ${xhr.responseText}`);
-                    }
+            //console.log(config)
+            axios(config).then(response => {
+                //TODO: define better way to save user name, which will be used to filter the worklogs
+                let userFromHeader = response.headers['x-ausername'].toLowerCase();
+                user = decodeURIComponent(userFromHeader);
+                var data = response.data;
+                resolve(data);
+            }).catch(axiosResponse => {
+                const response = axiosResponse.response;
+                if(!response){
+                    reject('Network error');
+                    return;
                 }
+                //console.log(response.data)
+                if (response.status === 429) {
+                    reject(`Too many requests to Jira API. Please wait some seconds before making another request.\n\nServer response: ${response.status}(${response.statusText}): ${response.data.errorMessages[0]}`);
+                    return;
+                }
+                
+                reject(`Server response: ${response.status}(${response.statusText}): ${(response.data ? response.data.errorMessages : 'undefined')}`);
+                
             });
-
-            xhr.open(config.method, config.url);
-
-            for (var header in config.headers) {
-                xhr.setRequestHeader(header, config.headers[header]);
-            }
-            if (config.data)
-                xhr.send(JSON.stringify(config.data));
-            else
-                xhr.send();
         });
     }
 
@@ -113,8 +104,7 @@
 
     function getWorklogObjects(key, worklogs) {
         return new Promise((resolve) => {
-
-            console.log(`key: ${key}`, worklogs);
+            //console.log(`key: ${key}`, worklogs);
             var worklogObjectArray = [];
             worklogs.forEach((worklog) => {
                 worklogObjectArray.push({
@@ -126,7 +116,6 @@
                     'status': 'saved'
                 });
             })
-            console.log(worklogObjectArray);
             resolve(worklogObjectArray);
         });
     }
@@ -250,7 +239,13 @@
     function setJiraOptions(options) {
         jiraOptions = options;
         configureHeaders(options);
-        console.log(jiraOptions);
+        //console.log(jiraOptions);
+    }
+
+    function getJiraUrl(jiraNumber){
+        if(!jiraNumber)
+            return '';
+        return `${jiraOptions.jiraUrl}/browse/${jiraNumber}`;
     }
 
     function init() {
@@ -260,7 +255,7 @@
                     jiraOptions: {}
                 },
                 function (items) {
-                    console.log(items);
+                    //console.log(items);
                     setJiraOptions(items.jiraOptions);
                     testConnection(items.jiraOptions)
                         .then(resolve)
@@ -276,7 +271,11 @@
         logWork: logWork,
         updateWorklog: updateWorklog,
         deleteWorklog: deleteWorklog,
-        testConnection: testConnection
+        testConnection: testConnection,
+        getJiraUrl: getJiraUrl
     }
 
 })(window.chrome);
+
+if (typeof module !== 'undefined')
+    module.exports = window.JiraHelper;

@@ -25,11 +25,15 @@ You can also omit the Jira # and time spent and add it later.
 * Supports SAML and Basic Authentication with Jira app token.
 
 ## Getting Started
-Before using it, you need to open the **Options** page and configure the Jira URL, which needs to point to the API services. For example: `http://<Your Jira URL>/rest/api/2/search`.
+Before using it, you need to do two things:
+- Make sure you are logged in to your Jira instance in Chrome. The extension leverages the existing authentication cookie when it is present in the browser;
+- Open the **Options** page and configure the **Jira Hostname**, which needs to point to the API services*. For example: **`https://jira.atlassian.com`**.
 
 After that, click **Test Connection** to make sure the extension can reach Jira correctly. If so, click **Save** and you are good to go.
 
-If by only providing the Jira URL the connection fails, you'll need to configure the Basic Authentication with your user and password. Also, depending on the authentication method of the Jira API, you'll also need to provide an app token. If that's the case, please consult your IT department to get one.
+If by only providing the Jira Hostname the connection fails, you'll need to configure the **Basic Authentication** with your user and password. Also, depending on the authentication method of the Jira API, you'll also need to provide an app token. If that's the case, please consult your IT department to get one.
+
+*_The extension uses the **Jira Hostname** to build the URL and API calls to the Jira instance like this: **`https://jira.atlassian.com/`**`rest/api/2/search`._
 
 ## Some Images
 

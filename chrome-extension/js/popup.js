@@ -5,7 +5,8 @@ var View = View || {};
 
 document.addEventListener("DOMContentLoaded", () => {
     
-    var DEBUG = false;
+    //TODO: refactor debug log
+    var DEBUG = true;
     if(!DEBUG){
         if(!window.console) window.console = {};
         var methods = ["log", "debug", "warn", "info"];

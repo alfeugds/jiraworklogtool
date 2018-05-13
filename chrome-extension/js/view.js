@@ -183,8 +183,9 @@ window.View.Table = (function () {
         <td class="tg-yw4l comment-column-item">
             <input name="comment" type="text" value="{{comment}}"/>
         </td>
-        <td class="tg-yw4l delete-column-item">
+        <td class="tg-yw4l action-column-item">
             <a class='delete-button'></a>
+            <a target="_blank" href="{{jiraUrl}}" class='open-link-button'></a>
         </td>
     </tr>`;
 
@@ -206,7 +207,8 @@ window.View.Table = (function () {
             .replace("{{comment}}", worklogItem.comment)
             .replace("{{status}}", worklogItem.status)
             .replace("{{logId}}", worklogItem.logId)
-            .replace("{{status-class}}", getStatusClass(worklogItem.status));
+            .replace("{{status-class}}", getStatusClass(worklogItem.status))
+            .replace("{{jiraUrl}}", worklogItem.jiraUrl);
         tbody.innerHTML += row;
     }
 
