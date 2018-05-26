@@ -3,6 +3,8 @@ const puppeteer = require('puppeteer');
 const CRX_PATH = '../../../../../chrome-extension/';
 
 (async () => {
+
+    const POPUP_PAGE = 'chrome-extension://ehkgicpgemphledafbkdenjjekkogbmk/popup.html';
     const browser = await puppeteer.launch({
         headless: false, // extensions only supported in full chrome.
         args: [
@@ -19,13 +21,19 @@ const CRX_PATH = '../../../../../chrome-extension/';
         console.log(dialog.message());
         await dialog.accept();
     });
-    await page.goto('chrome-extension://ehkgicpgemphledafbkdenjjekkogbmk/popup.html');
+    await page.goto(POPUP_PAGE);
     // click buttons, test UI elements, etc.
+    const errorMessage = await page.evaluate(() => document.querySelector('.error_status h2').textContent);
+    console.log(errorMessage)
     await page.click('h2>a');
     await page.waitFor(1000);
 
     let pages = await browser.pages()
     optionsPage = pages[2];
+    optionsPage.on('dialog', async dialog => {
+        console.log(dialog.message());
+        await dialog.accept();
+    });
 
     await optionsPage.setRequestInterception(true);
     optionsPage.on('request', request => {
@@ -46,6 +54,11 @@ const CRX_PATH = '../../../../../chrome-extension/';
 
     await optionsPage.type('#jiraUrl', 'https://jira.com');
     await optionsPage.click('#testConnection');
+    await optionsPage.click('#save');
+
+    await optionsPage.reload();
+    //await page.click('h2>a');
+    //await page.reload();
 
     await browser.close();
 })();
