@@ -37,6 +37,7 @@
   "repository": "https://github.com/alfeugds/jiraworklogtool.git",
   "dependencies": {
     "axios": "^0.18.0",
-    "axios-mock-adapter": "^1.15.0"
+    "axios-mock-adapter": "^1.15.0",
+    "puppeteer": "^1.4.0"
   }
 }
