@@ -1,20 +1,29 @@
 const puppeteer = require('puppeteer');
+const jiraMock = require('./jira-mock');
 
 describe('UI Test', () => {
     describe('popup.js', () => {
-        test.only('Loads successfully with no worklogs', async () => {
-
-            const browser = await getBrowser();
-            const popup = await getPopupPage(browser);
-            const errorMessage = await popup.getErrorMessage();
-            expect(errorMessage).toEqual('Please go to Options and make sure you are logged in Jira, and the Jira Hostname is correct.');
-            await popup.clickOptionsPage();
-
-            const optionsPage = await getOptionsPage(browser);
-            await optionsPage.setValidJiraUrl();
-            await optionsPage.clickOnTestconnection();
-
-            await browser.close();
+        test.only('Loads successfully with no worklogs', async (done) => {
+            try{
+                const browser = await getBrowser();
+                const popup = await getPopupPage(browser);
+                const errorMessage = await popup.getErrorMessage();
+                expect(errorMessage).toEqual('Please go to Options and make sure you are logged in Jira, and the Jira Hostname is correct.');
+                await popup.clickOptionsPage();
+                await popup.wait();
+    
+                const optionsPage = await getOptionsPage(browser);
+                await optionsPage.setValidJiraUrl();
+                await optionsPage.clickOnTestconnection();
+                const connectionResultMessage = await optionsPage.waitForTestConnectionResult();
+                expect(connectionResultMessage).toEqual('Connection [OK]');
+    
+                await browser.close();
+                done();
+            }catch(e){
+                fail(e);
+                done();
+            }
         });
         test('Loads successfully with some worklogs');
         test('Adds some worklogs from text');
@@ -55,6 +64,9 @@ async function getPopupPage(browser){
         },
         clickOptionsPage: async () => {
             return page.click('h2>a');
+        },
+        wait: async () => {
+            return page.waitFor(100);
         }
     }
 }
@@ -62,19 +74,41 @@ async function getPopupPage(browser){
 async function getOptionsPage(browser){
     let self = this;
     let pages = await browser.pages()
-    self.optionsPage = pages[2];
+    let dialogDeferred = null;
+    let dialogPromise = null;
+    this.page = pages.filter( p => p.url().includes('options.html'))[0];
+    
+    //intercept all requests
+    await page.setRequestInterception(true);
+    page.on('request', request => {
+        if(request.url().includes('chrome-extension://'))
+            request.continue();
+        else
+            request.respond(jiraMock.getResponse(request));
+    });
 
-    self.optionsPage.on('dialog', async dialog => {
-        console.log(dialog.message());
+    self.page.on('dialog', async dialog => {
+        let dialogMessage = dialog.message();
+        console.log(dialogMessage);
         await dialog.accept();
+        dialogDeferred.resolve(dialogMessage);
     });
 
     return {
         setValidJiraUrl: async () => {
-            return optionsPage.type('#jiraUrl', 'https://jira.com');
+            return self.page.type('#jiraUrl', 'https://jira.com');
         },
         clickOnTestconnection: async () => {
-            return optionsPage.click('#testConnection');
+            dialogPromise = new Promise((resolve, reject) => {
+                dialogDeferred = {
+                    resolve: resolve,
+                    reject: reject
+                };
+            });
+            return self.page.click('#testConnection');
+        },
+        waitForTestConnectionResult: async () => {
+            return dialogPromise;
         }
     }
 }
