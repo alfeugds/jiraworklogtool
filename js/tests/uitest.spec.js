@@ -11,7 +11,7 @@ describe('UI Test', () => {
             await popup.clickOptionsPage();
 
             const optionsPage = await getOptionsPage(browser);
-            await optionsPage.setJiraUrl('https://jira.com');
+            await optionsPage.setValidJiraUrl();
             await optionsPage.clickOnTestconnection();
 
             await browser.close();
@@ -60,10 +60,21 @@ async function getPopupPage(browser){
 }
 
 async function getOptionsPage(browser){
-    return {
-        setJiraUrl: async (jiraUrl) => {
+    let self = this;
+    let pages = await browser.pages()
+    self.optionsPage = pages[2];
 
+    self.optionsPage.on('dialog', async dialog => {
+        console.log(dialog.message());
+        await dialog.accept();
+    });
+
+    return {
+        setValidJiraUrl: async () => {
+            return optionsPage.type('#jiraUrl', 'https://jira.com');
         },
-        clickOnTestconnection: async () => {}
+        clickOnTestconnection: async () => {
+            return optionsPage.click('#testConnection');
+        }
     }
 }
