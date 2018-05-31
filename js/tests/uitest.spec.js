@@ -36,7 +36,7 @@ describe('UI Test', () => {
 async function getBrowser(){
     const CRX_PATH = '../../../../../chrome-extension/';
 
-    return await puppeteer.launch({
+    return puppeteer.launch({
         headless: false, // extensions only supported in full chrome.
         args: [
             `--disable-extensions-except=${CRX_PATH}`,
