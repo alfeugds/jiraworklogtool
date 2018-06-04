@@ -27,7 +27,7 @@ console.log(jiraMock);
 
     await page.setRequestInterception(true);
     page.on('request', request => {
-        if(request.url().includes('chrome-extension://'))
+        if (request.url().includes('chrome-extension://'))
             request.continue();
         else
             request.respond(jiraMock.getResponse(request));
@@ -41,7 +41,7 @@ console.log(jiraMock);
     await page.waitFor(1000);
 
     let pages = await browser.pages()
-    optionsPage = pages.filter( p => p.url().includes('options.html'))[0];
+    optionsPage = pages.filter(p => p.url().includes('options.html'))[0];
     optionsPage.on('dialog', async dialog => {
         console.log(dialog.message());
         await dialog.accept();
@@ -58,7 +58,22 @@ console.log(jiraMock);
     await optionsPage.click('#save');
     //await optionsPage.reload();
     //await page.click('h2>a');
-    //await page.reload();
+    await page.bringToFront();
+    await page.waitFor(100);
+    await page.reload();
+    await page.type('#worklogDate', '01/01/2018');
+    await page.waitFor(100);
+    async function getValueArrayFromInputs(page, selector) {
+        return page.evaluate((selector) =>
+        Array.from(document.querySelectorAll(selector))
+            .map((i) => i.value), selector)
+    }
+    const jiraNumberArray = await getValueArrayFromInputs(page, 'input[name=jira]');
+    console.log(jiraNumberArray);
+    const timeSpentArray = await getValueArrayFromInputs(page, 'input[name=timeSpent]');
+    console.log(timeSpentArray);
+    const commentArray = await getValueArrayFromInputs(page,'input[name=comment]');
+    console.log(commentArray);
 
 
     //await browser.close();
