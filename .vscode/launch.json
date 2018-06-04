@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}\\js\\tests\\test-puppeteer.js"
+            "program": "${workspaceFolder}/js/tests/test-puppeteer.js"
         }
     ]
 }

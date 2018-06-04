@@ -1,13 +1,14 @@
 const puppeteer = require('puppeteer');
 
-const CRX_PATH = '../../../../../chrome-extension/';
+const CRX_PATH = `${process.cwd()}/chrome-extension/`;
 const jiraMock = require('./jira-mock');
+const CHROME_EXTENSION_URL = 'chrome-extension://fdlngnncmegpefbfmdjbjepgobgkengh/'
 
 console.log(jiraMock);
 
 (async () => {
-
-    const POPUP_PAGE = 'chrome-extension://ehkgicpgemphledafbkdenjjekkogbmk/popup.html';
+    
+    const POPUP_PAGE = `${CHROME_EXTENSION_URL}popup.html`;
     const browser = await puppeteer.launch({
         headless: false, // extensions only supported in full chrome.
         args: [

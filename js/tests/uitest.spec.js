@@ -1,6 +1,9 @@
 const puppeteer = require('puppeteer');
 const jiraMock = require('./jira-mock');
 
+const CRX_PATH = `${process.cwd()}/chrome-extension/`;
+const CHROME_EXTENSION_URL = 'chrome-extension://fdlngnncmegpefbfmdjbjepgobgkengh/'
+
 describe('UI Test', () => {
     describe('popup.js', () => {
         test('Loads successfully with no worklogs', async (done) => {
@@ -57,7 +60,6 @@ describe('UI Test', () => {
 });
 
 async function getBrowser(){
-    const CRX_PATH = '../../../../../chrome-extension/';
 
     return puppeteer.launch({
         headless: false, // extensions only supported in full chrome.
@@ -80,7 +82,7 @@ async function makeSureJiraUrlIsConfigured(browser){
 
 async function openOptionsPage(browser){
     const page = await browser.newPage();    
-    return await page.goto('chrome-extension://ehkgicpgemphledafbkdenjjekkogbmk/options.html');
+    return await page.goto(`${CHROME_EXTENSION_URL}options.html`);
 }
 
 async function getPopupPage(browser){
@@ -107,7 +109,7 @@ async function getPopupPage(browser){
             request.respond(jiraMock.getResponse(request));
     });
     
-    await page.goto('chrome-extension://ehkgicpgemphledafbkdenjjekkogbmk/popup.html');
+    await page.goto(`${CHROME_EXTENSION_URL}popup.html`);
 
     return {
         getErrorMessage: async () => {
