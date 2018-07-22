@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 
 const CRX_PATH = `${process.cwd()}/chrome-extension/`;
 const jiraMock = require('./jira-mock');
-const CHROME_EXTENSION_URL = 'chrome-extension://fdlngnncmegpefbfmdjbjepgobgkengh/'
+const CHROME_EXTENSION_URL = 'chrome-extension://ehkgicpgemphledafbkdenjjekkogbmk/'
 
 console.log(jiraMock);
 
@@ -19,6 +19,10 @@ console.log(jiraMock);
         //executablePath: 'C:/Users/Alfeu/Documents/dev/tools/chromedriver.exe'
     });
     // ... do some testing ...
+
+    const extensionPage = await browser.newPage();
+    await extensionPage.goto('chrome://extensions/')
+    
 
     const page = await browser.newPage();
     page.on('dialog', async dialog => {

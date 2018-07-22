@@ -2,13 +2,20 @@ const puppeteer = require('puppeteer');
 const jiraMock = require('./jira-mock');
 
 const CRX_PATH = `${process.cwd()}/chrome-extension/`;
-const CHROME_EXTENSION_URL = 'chrome-extension://fdlngnncmegpefbfmdjbjepgobgkengh/'
+const CHROME_EXTENSION_URL = 'chrome-extension://ehkgicpgemphledafbkdenjjekkogbmk/'
 
 describe('UI Test', () => {
-    describe('popup.js', () => {
+    describe('popup', () => {
+        let browser
+        beforeEach(async () => {
+            //browser must be initialized
+            browser = await getBrowser()
+        })
+        afterEach(async () => {
+            await browser.close()
+        })
         test('Loads successfully with no worklogs', async (done) => {
             try{
-                const browser = await getBrowser();
                 const popup = await getPopupPage(browser);
                 const errorMessage = await popup.getErrorMessage();
                 expect(errorMessage).toEqual('Please go to Options and make sure you are logged in Jira, and the Jira Hostname is correct.');
@@ -20,8 +27,6 @@ describe('UI Test', () => {
                 await optionsPage.clickOnTestconnection();
                 const connectionResultMessage = await optionsPage.waitForTestConnectionResult();
                 expect(connectionResultMessage).toEqual('Connection [OK]');
-                
-                await browser.close();
                 done();
             }catch(e){
                 fail(e);
@@ -30,8 +35,6 @@ describe('UI Test', () => {
         });
         test('Loads successfully with some worklogs', async done => {
             try{
-                //browser must be initialized
-                const browser = await getBrowser();
                 await makeSureJiraUrlIsConfigured(browser);
                 const popupPage = await getPopupPage(browser);
                 await popupPage.setWorklogDate('01/01/2018');
@@ -42,9 +45,6 @@ describe('UI Test', () => {
                 expect(timeSpentArray).toEqual(['1h 50m', '2h 50m']);
                 expect(commentArray).toEqual(['tech onboarding', 'tech onboarding 2']);
 
-                //browser must be closed.
-                //TODO: add it in tear down
-                await browser.close();
                 done();
 
             }catch(e){ 
@@ -52,7 +52,27 @@ describe('UI Test', () => {
                 done();
             }
         });
-        test('Adds some worklogs from text');
+        test('Adds some worklogs from text', async done => {
+            //given I have the extension opened and with jira configured
+            await makeSureJiraUrlIsConfigured(browser);
+            const popup = await getPopupPage(browser);
+            //and I select the worklog date as 01/01/2018
+            await popup.setWorklogDate('01/01/2018')
+            //then I see the total worklog as 4.67h
+            let totalWorklog = await popup.getTotalWorklog()
+            expect(totalWorklog).toEqual('4.67h')
+            //when I write down the following worklog
+            const worklogText = '30m some worklog'
+            await popup.setWorklogText(worklogText)
+            //then I should see the worklogs in the worklog table
+            const commentArray = await popup.getCommentArray();
+            expect(commentArray).toEqual(['tech onboarding', 'tech onboarding 2', 'some worklog']);
+            //and I should see the total worklog time updated to 5.17h
+            totalWorklog = await popup.getTotalWorklog()
+            expect(totalWorklog).toEqual('5.17h')
+
+            done()
+        });
         test('POSTs some worklogs');
         test('PUTs some worklogs');
         test('DELETEs some worklogs');
@@ -69,6 +89,12 @@ async function getBrowser(){
             '--user-agent=PuppeteerAgent'
         ]
     });
+}
+
+async function getConfiguredPopupPage() {
+    const browser = await getBrowser();
+    await makeSureJiraUrlIsConfigured(browser);
+    return await getPopupPage(browser);
 }
 
 async function makeSureJiraUrlIsConfigured(browser){
@@ -135,6 +161,18 @@ async function getPopupPage(browser){
         getCommentArray: async () => {
             return await getValueArrayFromInputs(page,'input[name=comment]');
             console.log(commentArray);
+        },
+        getWorklogText: async () => {
+            return await page.evaluate(() => document.querySelector('#worklog').value);
+        },
+        setWorklogText: async worklogText => {
+            await page.type('#worklog', worklogText);
+            await page.click('#addWorklogs');
+            return await page.waitFor(100);
+        },
+        getTotalWorklog: async () => {
+            const totalhours = await page.evaluate(() => document.querySelector('#totalHours').textContent)
+            return totalhours
         }
     }
 }
