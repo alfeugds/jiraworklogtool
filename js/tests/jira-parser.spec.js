@@ -195,6 +195,14 @@ test("object fields must be validated", done => {
                 comment: "test"
             },
             invalidFields: ['jira']
+        },
+        {
+            item: {
+                jira: "TESTINGLONGERJIRAKEY-123",
+                timeSpent: "1h",
+                comment: "test"
+            },
+            invalidFields: []
         }
 
     ];
