@@ -7,9 +7,11 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "unit": "jest -c jest.config.unit.js",
+    "integration": "jest -c jest.config.integration.js",
+    "test": "jest -c jest.config.js",
+    "test:watch": "jest -c jest.config.unit.js --watch",
+    "test:coverage": "jest -c jest.config.unit.js --coverage",
     "lint": "npm-run-all --parallel lint:code lint:tests",
     "lint:code": "eslint --config .eslintrc.json --ignore-path .eslintignore chrome-extension/**/*.js",
     "lint:tests": "eslint --config .eslintrc.json --ignore-path .eslintignore chrome-extension/**/*.spec.js",
