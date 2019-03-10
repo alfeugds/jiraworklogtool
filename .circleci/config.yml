@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  setup:
     docker:
       - image: circleci/node
     steps:
@@ -17,6 +17,16 @@ jobs:
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
+  test:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
       - run: yarn unit
       - run: yarn lint
-    
+workflows:
+  version: 2
+  run:
+    jobs:
+      - setup
+      - test
