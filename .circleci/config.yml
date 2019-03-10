@@ -5,4 +5,6 @@ jobs:
       - image: circleci/ruby:2.4.1
     steps:
       - checkout
-      - run: echo "A first hello"
+      - run: yarn
+      - run: yarn unit
+      - run: yarn lint
