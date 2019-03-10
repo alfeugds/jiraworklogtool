@@ -66,3 +66,7 @@ oauth.txt
 
 # package output
 chrome-extension.zip
+
+#extension key
+chrome-extension.crx
+chrome-extension.pem

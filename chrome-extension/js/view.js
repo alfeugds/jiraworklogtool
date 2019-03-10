@@ -1,4 +1,4 @@
-/* global Controller View mediator */
+/* global Controller View mediator JiraHelper */
 window.View = window.View || {};
 
 window.View.Main = (function () {

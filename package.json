@@ -7,9 +7,11 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "unit": "jest -c jest.config.unit.json",
+    "integration": "jest -c jest.config.integration.json",
+    "test": "jest -c jest.config.json",
+    "test:watch": "jest -c jest.config.unit.json --watch",
+    "test:coverage": "jest -c jest.config.unit.json --coverage",
     "lint": "npm-run-all --parallel lint:code lint:tests",
     "lint:code": "eslint --config .eslintrc.json --ignore-path .eslintignore chrome-extension/**/*.js",
     "lint:tests": "eslint --config .eslintrc.json --ignore-path .eslintignore chrome-extension/**/*.spec.js",
@@ -30,14 +32,17 @@
     "chrome-webstore-upload": "^0.2.2",
     "dotenv": "^4.0.0",
     "eslint": "^4.16.0",
+    "hoek": "4.2.1",
     "jest": "^21.2.1",
     "jest-cli": "^21.2.1",
     "npm-run-all": "^4.1.2",
-    "hoek": "4.2.1"
+    "sshpk": "1.14.1",
+    "puppeteer": "^1.4.0"
   },
   "repository": "https://github.com/alfeugds/jiraworklogtool.git",
   "dependencies": {
     "axios": "^0.18.0",
-    "axios-mock-adapter": "^1.15.0"
+    "axios-mock-adapter": "^1.15.0",
+    "retire": "^1.6.0"
   }
 }
