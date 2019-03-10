@@ -20,8 +20,8 @@ console.log(jiraMock);
     });
     // ... do some testing ...
 
-    const extensionPage = await browser.newPage();
-    await extensionPage.goto('chrome://extensions/')
+    // const extensionPage = await browser.newPage();
+    // await extensionPage.goto('chrome://extensions/')
     
 
     const page = await browser.newPage();
