@@ -106,7 +106,7 @@ body {
   }
 
   #loading {
-    position: absolute;
+    position: fixed;
     margin: auto;
     background-color: rgba(0, 0, 0, 0.28);
     top: 0px;
