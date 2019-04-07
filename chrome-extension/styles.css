@@ -122,7 +122,6 @@ body {
 
 
   .delete-button{
-    outline: none;
     display: inline-block;
     margin: auto;
     width: 20px;
@@ -139,7 +138,6 @@ body {
   }
 
   .open-link-button{
-    outline: none;
     display: inline-block;
     margin: auto;
     width: 20px;
@@ -161,7 +159,6 @@ body {
   }
 
   .save-button {
-    outline: none;
     margin: 10px 0;
     width: 70px;
     height: 50px;
