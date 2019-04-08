@@ -37,8 +37,8 @@
   <div id="container" class="container">
     <section>
       <label for="worklogDate">Worklog Date:</label>
-      <input type="date" id="worklogDate" />
-      <button id="getWorklogButton">Get Worklog</button>
+      <input type="date" id="worklogDate" class="worklog-date-input"/>
+      <button id="getWorklogButton" class="get-worklog-date-button">Get Worklog</button>
     </section>
     <table class="tg "id="worklog-items">
       <thead>
@@ -52,13 +52,13 @@
       <tbody>
         <tr class='worklog worklog--edited' data-status="edited" data-id="123">
           <td class="tg-yw4l jira-number-column-item">
-            <input name="jira" type="text" value="CMS-123" class="input--invalid"/>
+            <input name="jira" type="text" value="CMS-123" class="input--invalid jira-number-input"/>
           </td>
           <td class="tg-yw4l time-spent-column-item">
-            <input name="timeSpent" type="text" value="2h" />
+            <input name="timeSpent" type="text" value="2h" class="time-spent-input"/>
           </td>
           <td class="tg-yw4l comment-column-item">
-            <input name="comment" type="text" value="fixing layout bug" />
+            <input name="comment" type="text" value="fixing layout bug" class="comment-input"/>
           </td>
           <td class="tg-yw4l action-column-item">
             <a name="deleteButton" class='delete-button'></a>
@@ -97,19 +97,19 @@
         </tr>
       </tbody>
     </table>
-    <h2>Total: <span id="totalHours">2h</span></h2>
+    <h2 class="total-hours-label">Total: <span id="totalHours">2h</span></h2>
     <button id="save" class="save-button" aria-label="Save All"></button>
     <br/>
     <label for="worklog">Paste your formatted worklog here</label>
     <br/>
     <textarea class="worklog-textarea" id="worklog"></textarea>
     <br>
-    <button id="addWorklogs">Add Worklogs</button>
+    <button id="addWorklogs" class="add-worklogs-button">Add Worklogs</button>
     <br />
     <div id="status" class="hidden"></div>
   </div>
   <div class="error_status hidden">
-    <h2>Please go to <a target="_blank" href="options.html">Options</a> and make sure you are logged in Jira, and the Jira Hostname is correct.</h2>
+    <h2 class="error-status-label">Please go to <a target="_blank" href="options.html" class="error-options-link">Options</a> and make sure you are logged in Jira, and the Jira Hostname is correct.</h2>
   </div>
   <div id="loading" class="hidden">
     <img class="hidden" src="img/spinner-small.gif" aria-hidden="true" />
