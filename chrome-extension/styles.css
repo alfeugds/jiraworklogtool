@@ -134,7 +134,7 @@ body {
     font-size: 14px;
     height: 19px;
     line-height: 1.5em;
-    background-image: url(/ic_delete_black_24dp.png);
+    background-image: url(/img/ic_delete_black_24dp.png);
   }
 
   .open-link-button{
@@ -150,7 +150,7 @@ body {
     font-size: 14px;
     height: 19px;
     line-height: 1.5em;
-    background-image: url(/open_in_new_window.png);
+    background-image: url(/img/open_in_new_window.png);
     background-size: cover;
   }
 
@@ -170,7 +170,7 @@ body {
     background-position: center;
     font-size: 14px;
     line-height: 1.5em;
-    background-image: url(/ic_cloud_upload_black_48dp.png);
+    background-image: url(/img/ic_cloud_upload_black_48dp.png);
   }
 
   .error_status {
