@@ -40,57 +40,57 @@
       <input type="date" id="worklogDate" class="worklog-date-input"/>
       <button id="getWorklogButton" class="get-worklog-date-button">Get Worklog</button>
     </section>
-    <table class="tg "id="worklog-items">
+    <table class="worklog-items-table"id="worklog-items">
       <thead>
         <tr>
-          <th class="tg-yw4l jira-number-column-item">Jira #</th>
-          <th class="tg-yw4l time-spent-column-item">Time Spent</th>
-          <th class="tg-yw4l comment-column-item">Comment</th>
-          <th class="tg-yw4l action-column-item">Action</th>
+          <th class="table-line jira-number-column-item">Jira #</th>
+          <th class="table-line time-spent-column-item">Time Spent</th>
+          <th class="table-line comment-column-item">Comment</th>
+          <th class="table-line action-column-item">Action</th>
         </tr>
       </thead>
       <tbody>
         <tr class='worklog worklog--edited' data-status="edited" data-id="123">
-          <td class="tg-yw4l jira-number-column-item">
+          <td class="table-line jira-number-column-item">
             <input name="jira" type="text" value="CMS-123" class="input--invalid jira-number-input"/>
           </td>
-          <td class="tg-yw4l time-spent-column-item">
+          <td class="table-line time-spent-column-item">
             <input name="timeSpent" type="text" value="2h" class="time-spent-input"/>
           </td>
-          <td class="tg-yw4l comment-column-item">
+          <td class="table-line comment-column-item">
             <input name="comment" type="text" value="fixing layout bug" class="comment-input"/>
           </td>
-          <td class="tg-yw4l action-column-item">
+          <td class="table-line action-column-item">
             <a name="deleteButton" class='delete-button'></a>
             <a target="_blank" href="" class='open-link-button'></a>
           </td>
         </tr>
         <tr class='worklog worklog--deleted' data-status="edited" data-id="123">
-          <td class="tg-yw4l jira-number-column-item">
+          <td class="table-line jira-number-column-item">
             <input name="jira" type="text" value="CMS-123" />
           </td>
-          <td class="tg-yw4l time-spent-column-item">
+          <td class="table-line time-spent-column-item">
             <input name="timeSpent" type="text" value="2h" class="input--invalid"/>
           </td>
-          <td class="tg-yw4l comment-column-item">
+          <td class="table-line comment-column-item">
             <input name="comment" type="text" value="fixing layout bug" />
           </td>
-          <td class="tg-yw4l action-column-item">
+          <td class="table-line action-column-item">
             <a name="deleteButton" class='delete-button'></a>
             <a target="_blank" href="" class='open-link-button'></a>
           </td>
         </tr>
         <tr class='worklog worklog--saved' data-status="edited" data-id="123">
-          <td class="tg-yw4l jira-number-column-item">
+          <td class="table-line jira-number-column-item">
             <input name="jira" type="text" value="CMS-123" />
           </td>
-          <td class="tg-yw4l time-spent-column-item">
+          <td class="table-line time-spent-column-item">
             <input name="timeSpent" type="text" value="2h" />
           </td>
-          <td class="tg-yw4l comment-column-item">
+          <td class="table-line comment-column-item">
             <input name="comment" type="text" value="fixing layout bug" />
           </td>
-          <td class="tg-yw4l action-column-item">
+          <td class="table-line action-column-item">
             <a name="deleteButton" class='delete-button'></a>
             <a target="_blank" href="" class='open-link-button'></a>
           </td>

@@ -174,16 +174,16 @@ window.View.Table = (function () {
 
     var worklogTableRowTemplate = `
     <tr class="worklog {{status-class}}" data-status="{{status}}" data-id="{{logId}}">
-        <td class="tg-yw4l jira-number-column-item">
+        <td class="table-line jira-number-column-item">
             <input name="jira" type="text" value="{{jiraNumber}}" class="jira-number-input" />
         </td>
-        <td class="tg-yw4l time-spent-column-item">
+        <td class="table-line time-spent-column-item">
             <input name="timeSpent" type="text" value="{{timeSpent}}" pattern="(\d+[m]|\d+[h](?:\s\d+[m])?)" class="time-spent-input" />
         </td>
-        <td class="tg-yw4l comment-column-item">
+        <td class="table-line comment-column-item">
             <input name="comment" type="text" value="{{comment}}" class="comment-input" />
         </td>
-        <td class="tg-yw4l action-column-item">
+        <td class="table-line action-column-item">
             <a class='delete-button'></a>
             <a target="_blank" href="{{jiraUrl}}" class='open-link-button {{link-disabled}}'></a>
         </td>

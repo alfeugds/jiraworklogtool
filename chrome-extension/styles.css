@@ -27,12 +27,12 @@ body {
     display: none;
   }
 
-  .tg {
+  .worklog-items-table {
     border-collapse: collapse;
     border-spacing: 0;
   }
 
-  .tg td {
+  .worklog-items-table td {
     font-family: Arial, sans-serif;
     font-size: 14px;
     padding: 5px 5px;
@@ -42,7 +42,7 @@ body {
     word-break: normal;
   }
 
-  .tg th {
+  .worklog-items-table th {
     font-family: Arial, sans-serif;
     font-size: 14px;
     font-weight: bold;
@@ -53,23 +53,23 @@ body {
     word-break: normal;
   }
 
-  .tg .tg-yw4l {
+  .worklog-items-table .table-line {
     vertical-align: top
   }
 
-  .tg .jira-number-column-item {
+  .worklog-items-table .jira-number-column-item {
     max-width: 70px;
   }
 
-  .tg .time-spent-column-item {
+  .worklog-items-table .time-spent-column-item {
     max-width: 90px;
   }
 
-  .tg .comment-column-item {
+  .worklog-items-table .comment-column-item {
     width: 300px;
   }
 
-  .tg input {
+  .worklog-items-table input {
     width: 100%;
     font-size: 12px;
   }
