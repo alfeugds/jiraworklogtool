@@ -2,7 +2,8 @@ const defaultSuccessfulResponse = {
     status: 200,
     contentType: 'application/json;charset=UTF-8',
     headers: {
-        'x-ausername': 'hue@br.com'
+        // 'x-ausername': 'hue@br.com',
+        'x-aaccountid': 'some:token'
     }
 }
 const defaultFailedResponse = {
@@ -25,7 +26,8 @@ const items = {
         "worklogs":[  
             {  
                 "author":{
-                    "key":"hue@br.com"
+                    // "key":"hue@br.com",
+                    "accountId": "some:token"
                 },
                 "comment":"tech onboarding",
                 "started":"2018-01-01T06:00:00.000+0000",
@@ -38,7 +40,8 @@ const items = {
         "worklogs":[  
             {  
                 "author":{
-                    "key":"hue@br.com"
+                    // "key":"hue@br.com",
+                    "accountId": "some:token"
                 },
                 "comment":"tech onboarding 2",
                 "started":"2018-01-01T06:00:00.000+0000",

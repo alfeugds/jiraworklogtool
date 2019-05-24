@@ -70,8 +70,8 @@
             //console.log(config)
             axios(config).then(response => {
                 //TODO: define better way to save user name, which will be used to filter the worklogs
-                let userFromHeader = response.headers['x-ausername'].toLowerCase();
-                user = decodeURIComponent(userFromHeader);
+                
+                setUserFromHeader(response.headers)
                 var data = response.data;
                 resolve(data);
             }).catch(axiosResponse => {
@@ -80,16 +80,31 @@
                     reject('Network error');
                     return;
                 }
-                //console.log(response.data)
+                console.log(response)
                 if (response.status === 429) {
                     reject(`Too many requests to Jira API. Please wait some seconds before making another request.\n\nServer response: ${response.status}(${response.statusText}): ${response.data.errorMessages[0]}`);
                     return;
                 }
-                
+
                 reject(`Server response: ${response.status}(${response.statusText}): ${(response.data ? response.data.errorMessages : 'undefined')}`);
-                
+
             });
         });
+    }
+
+    function setUserFromHeader(headers){
+        let userFromHeader;
+        if(headers['x-aaccountid'])
+            userFromHeader = headers['x-aaccountid'].toLowerCase();
+        else
+            userFromHeader = headers['x-ausername'].toLowerCase();
+
+        user = decodeURIComponent(userFromHeader);
+    }
+
+    function isWorklogFromUser(worklog){
+        return (worklog.author.accountId && worklog.author.accountId.toLowerCase() === (user || jiraOptions.user )) ||
+             ( worklog.author.key && worklog.author.key.toLowerCase() === (jiraOptions.user || user));
     }
 
     function getDetailedWorklogFromIssue(key) {
@@ -132,7 +147,7 @@
                     //filter worklogs by 'started' date and user author
                     var worklogs = response.worklogs.filter((worklog) => {
                         return worklog.started.indexOf(worklogDate) > -1 &&
-                            worklog.author.key === (jiraOptions.user || user);
+                            isWorklogFromUser(worklog);
                     });
                     var promise = getWorklogObjects(key, worklogs);
                     promises.push(promise);
