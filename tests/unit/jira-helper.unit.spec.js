@@ -288,6 +288,18 @@ describe('Jira API Helper', () => {
             
             done();
         })
+        test('returns jira url successfully when jira # is long CMSSSS-321654987', done => {
+            const jiraUrl = jiraHelper.getJiraUrl("CMSSSS-321654987");
+            expect(jiraUrl).toEqual("https://whatever.com/browse/CMSSSS-321654987");
+            
+            done();
+        })        
+        test('returns jira url successfully when jiraname has # CMS2020-123', done => {
+            const jiraUrl = jiraHelper.getJiraUrl("CMS2020-123");
+            expect(jiraUrl).toEqual("https://whatever.com/browse/CMS2020-123");
+            
+            done();
+        })        
         test('fails to return jira URL when jira # is empty', done => {
             const jiraUrl = jiraHelper.getJiraUrl("");
             expect(jiraUrl).toEqual("");

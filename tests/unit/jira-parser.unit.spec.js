@@ -286,5 +286,17 @@ describe('validate fields', () => {
             let result = jiraParser.getInvalidFields(item);
             expect(result).toMatchObject(invalidFields);
         })
+        
+        test('Testing Jirakey Name with Number', () => {
+            let item = {
+                jira: "JIRA2020-123",
+                timeSpent: "1h 45m",
+                comment: "test"
+            },
+            invalidFields = []
+            
+            let result = jiraParser.getInvalidFields(item);
+            expect(result).toMatchObject(invalidFields);
+        })
     })
 })
