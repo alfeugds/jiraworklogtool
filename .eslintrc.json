@@ -1,26 +1,22 @@
 {
     "env": {
         "browser": true,
-        "commonjs": true,
         "es6": true,
-        "node": true
+        "jest": true
+    },
+    "extends": [
+        "standard"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly",
+        "axios": true,
+        "fail": false
     },
     "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "sourceType": "module"
+        "ecmaVersion": 2018
     },
     "rules": {
-        "no-const-assign": "warn",
-        "no-this-before-super": "warn",
-        "no-undef": "warn",
-        "no-unreachable": "warn",
-        "no-unused-vars": "warn",
-        "constructor-super": "warn",
-        "valid-typeof": "warn"
-    },
-    "globals": {
-        "axios": true
+        "no-useless-escape": "warn"
     }
 }

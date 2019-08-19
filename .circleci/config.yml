@@ -6,16 +6,19 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          name: Restore Yarn Package Cache
+          name: Restore Node Package Cache
           keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
+            # when lock file changes, use increasingly general patterns to restore cache
+            - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - node-v1-{{ .Branch }}-
+            - node-v1-
       - run:
           name: Install Dependencies
-          command: yarn install --frozen-lockfile
+          command: npm i
       - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
+          name: Save Node Package Cache
           paths:
-            - ~/.cache/yarn
-      - run: yarn unit
-      - run: yarn lint
+            - ~/usr/local/lib/node_modules  # location depends on npm version
+          key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - run: npm run unit
+      - run: npm run lint
