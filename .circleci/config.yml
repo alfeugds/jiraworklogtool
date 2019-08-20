@@ -18,7 +18,7 @@ jobs:
       - save_cache:
           name: Save Node Package Cache
           paths:
-            - ~/usr/local/lib/node_modules  # location depends on npm version
+            - ~/project/node_modules
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run: npm run unit
       - run: npm run lint
