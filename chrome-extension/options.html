@@ -7,22 +7,23 @@
 <style type="text/css">
     body {
         margin: 10px;
-        white-space: nowrap;
     }
 
     h1 {
         font-size: 15px;
     }
 
-    #container {
+    [id='container'] {
         align-items: center;
         /* display: flex; */
         justify-content: space-between;
-        padding: 20px
+        padding: 20px;
+        max-width: 768px;
+        margin: 0 auto;
     }
-    #container * {
+
+    [id='container'] * {
         align-items: center;
-        /* display: flex;  */
         justify-content: space-between;
         margin: 5px;
         margin-top: 10px;
@@ -38,21 +39,22 @@
         <button id="testConnection">Test Connection</button>
         <br />
         <br />
-        <h4>Basic Authentication</h4>
-        <p>Only needed if connection doesn't work even after logging in on Jira through Chrome, and the Jira API URL is different from the Jira Website you use.</p>
+        <h4>Basic Authentication*</h4>
+        <p>*You probably don't need it. Only fill it if the Jira API URL is different from the Jira Website you use, or if connection doesn't work even after logging in on Jira through Chrome.</p>
         <label for="user">User Name</label>
         <input type="text" id="user" />
         <br />
         <label for="password">Password</label>
         <input type="password" id="password" />
         <br />
-        <h4>App Token</h4>
+        <h4>App Token*</h4>
+        <p>*Fill only if required by your Jira API. Ask your IT department for assistance.</p>
         <label for="token">Token</label>
         <input type="token" id="token" />
-        
+
         <div id="status"></div>
         <button id="save">Save</button>
-    
+
     </div>
     <script src="lib/axios.min.js" defer></script>
     <script src="js/jira-helper.js"></script>

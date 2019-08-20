@@ -1,6 +1,5 @@
 body {
     margin: 10px;
-    white-space: nowrap;
   }
 
   h1 {
@@ -11,8 +10,9 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    display: inline-block;
     max-height: 548px;
+    max-width: 768px;
+    margin: 0 auto;
   }
 
   .container>* {
@@ -30,6 +30,7 @@ body {
   .worklog-items-table {
     border-collapse: collapse;
     border-spacing: 0;
+    width: 100%;
   }
 
   .worklog-items-table td {
@@ -66,7 +67,8 @@ body {
   }
 
   .worklog-items-table .comment-column-item {
-    width: 300px;
+    min-width: 300px;
+    max-width: 500px;
   }
 
   .worklog-items-table input {
@@ -80,7 +82,7 @@ body {
     min-height: 70px;
     font-size: 10px;
   }
-  
+
   .worklog.worklog--edited {
     background-color: #ffffd2;
   }
@@ -126,9 +128,9 @@ body {
     margin: auto;
     width: 20px;
     border: 1px solid #ddd;
-    border-bottom: 1px solid #aaa; 
+    border-bottom: 1px solid #aaa;
     border-right: 1px solid #aaa;
-    background-color: #fff; 
+    background-color: #fff;
     background-repeat: no-repeat;
     background-position: center;
     font-size: 14px;
@@ -142,9 +144,9 @@ body {
     margin: auto;
     width: 20px;
     border: 1px solid #ddd;
-    border-bottom: 1px solid #aaa; 
+    border-bottom: 1px solid #aaa;
     border-right: 1px solid #aaa;
-    background-color: #fff; 
+    background-color: #fff;
     background-repeat: no-repeat;
     background-position: center;
     font-size: 14px;
@@ -163,9 +165,9 @@ body {
     width: 70px;
     height: 50px;
     border: 1px solid #ddd;
-    border-bottom: 1px solid #aaa; 
+    border-bottom: 1px solid #aaa;
     border-right: 1px solid #aaa;
-    background-color: #fff; 
+    background-color: #fff;
     background-repeat: no-repeat;
     background-position: center;
     font-size: 14px;
