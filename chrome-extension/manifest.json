@@ -15,7 +15,6 @@
     "default_title": "Log Work"
   },
   "permissions": [
-    "activeTab",
     "storage",
     "cookies",
     "<all_urls>"
