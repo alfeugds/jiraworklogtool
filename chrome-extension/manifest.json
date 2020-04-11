@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Jira Worklog Tool",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "author": "alfeugds",
   "description": "This extension allows the user to log the work in Jira easily.",
   "homepage_url": "https://github.com/alfeugds/jiraworklogtool",
