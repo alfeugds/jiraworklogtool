@@ -55,6 +55,28 @@ describe('convert worklog text to jira log object', () => {
     const result = jiraParser.parse(text)
     expect(result).toMatchObject(expected)
   })
+
+  test('worklog contains 1d as time spent, space and comma', () => {
+    const text = 'CMS-123 1d 2h 30m ,testing - working on stuff'
+    const expected = {
+      timeSpent: '1d 2h 30m',
+      jira: 'CMS-123',
+      comment: 'testing - working on stuff'
+    }
+    const result = jiraParser.parse(text)
+    expect(result).toMatchObject(expected)
+  })
+
+  test('worklog contains 1d and 30m without hour as time spent, space and comma', () => {
+    const text = 'CMS-123 1d 30m ,testing - working on stuff'
+    const expected = {
+      timeSpent: '1d 30m',
+      jira: 'CMS-123',
+      comment: 'testing - working on stuff'
+    }
+    const result = jiraParser.parse(text)
+    expect(result).toMatchObject(expected)
+  })
 })
 
 describe('timeSpent in text format should return numeric hour', () => {
@@ -99,6 +121,30 @@ describe('timeSpent in text format should return numeric hour', () => {
       const text = '50m'
       const expected = 0.83
       const result = jiraParser.timeSpentToHours(text)
+      expect(result.toFixed(2)).toEqual(expected.toFixed(2))
+    })
+
+    test('1d', () => {
+      const text = '1d'
+      const expected = 8.0
+      const result = jiraParser.timeSpentToHours(text)
+      // assert
+      expect(result.toFixed(2)).toEqual(expected.toFixed(2))
+    })
+
+    test('1d 1h 30m', () => {
+      const text = '1d 1h 30m'
+      const expected = 9.5
+      const result = jiraParser.timeSpentToHours(text)
+      // assert
+      expect(result.toFixed(2)).toEqual(expected.toFixed(2))
+    })
+
+    test('1d 30m', () => {
+      const text = '1d 30m'
+      const expected = 8.5
+      const result = jiraParser.timeSpentToHours(text)
+      // assert
       expect(result.toFixed(2)).toEqual(expected.toFixed(2))
     })
   })

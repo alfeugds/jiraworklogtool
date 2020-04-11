@@ -1,16 +1,23 @@
 var JiraParser = (function () {
-  const hoursAndMinutesRegex = /^(\d+[m]|\d+[h](?:\s\d+[m])?)$/
+  const hoursAndMinutesRegex = /^(\d+[m]|\d+[d](?:(?:\s\d+[h])?(?:\s\d+[m])?)?|\d+[h](?:\s\d+[m])?)$/
   const jiraNumberRegex = /^([a-zA-Z0-9]{1,30}-\d+)$/
-  const worklogTextLineRegex = /\b([a-zA-Z0-9]{1,30}-\d+)?\b.*?\b(\d+[m]|\d+[h](?:\s\d+[m])?)\b[\s\-_;,]*(.+)$/
+  const worklogTextLineRegex = /\b([a-zA-Z0-9]{1,30}-\d+)?\b.*?\b(\d+[m]|\d+[d](?:(?:\s\d+[h])?(?:\s\d+[m])?)?|\d+[h](?:\s\d+[m])?)\b[\s\-_;,]*(.+)$/
 
   function timeSpentToHours (timeSpent) {
     let result = 0
     let match
+    if (timeSpent.indexOf('d') > -1) {
+      match = /\b(\d+)d\b/.exec(timeSpent)
+      if (match) {
+        var d = match[1]
+        result += parseFloat(d.replace('d', '')) * 8
+      }
+    }
     if (timeSpent.indexOf('h') > -1) {
       match = /\b(\d+)h\b/.exec(timeSpent)
       if (match) {
         var h = match[1]
-        result = parseFloat(h.replace('h', ''))
+        result += parseFloat(h.replace('h', ''))
       }
     }
     if (timeSpent.indexOf('m') > -1) {
