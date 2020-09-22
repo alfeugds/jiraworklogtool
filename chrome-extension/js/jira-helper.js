@@ -97,8 +97,18 @@
   }
 
   function isWorklogFromUser (worklog) {
-    return (worklog.author.accountId && worklog.author.accountId.toLowerCase() === (user || jiraOptions.user)) ||
-             (worklog.author.key && worklog.author.key.toLowerCase() === (jiraOptions.user || user))
+    const possibleUserIds = []
+    possibleUserIds.push(worklog.author.accountId)
+    possibleUserIds.push(worklog.author.key)
+    possibleUserIds.push(worklog.author.name)
+
+    for (const possibleUserId of possibleUserIds) {
+      if (possibleUserId && possibleUserId.toLowerCase() === (user || jiraOptions.user)) {
+        return true
+      }
+    }
+
+    return false
   }
 
   function getDetailedWorklogFromIssue (key) {
