@@ -45,7 +45,7 @@
   },
   "repository": "https://github.com/alfeugds/jiraworklogtool.git",
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "axios-mock-adapter": "^1.15.0",
     "retire": "^1.6.0"
   }
