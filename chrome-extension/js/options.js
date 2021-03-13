@@ -18,7 +18,7 @@ function saveOptions (options) {
       status.textContent = 'Options saved.'
       setTimeout(function () {
         status.textContent = ''
-      }, 750)
+      }, 1500)
     }
   )
 }
@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     JiraHelper.testConnection(jiraOptions)
       .then(result => {
         console.info('connection successful', result)
+        saveOptions(getOptionsFromInput())
         alert('Connection [OK]')
       })
       .catch(error => {

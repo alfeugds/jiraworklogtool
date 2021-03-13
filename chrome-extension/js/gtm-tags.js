@@ -13,14 +13,11 @@
         return
       }
       try {
-        var u = new URL(xhr.responseURL)
-        var pathname = u.pathname
-        var origin = u.origin
         var data = {
           event: 'ajaxSuccess',
           eventCategory: 'AJAX',
-          eventAction: origin,
-          eventLabel: xhr.method + ' - ' + pathname
+          eventAction: 'jira',
+          eventLabel: xhr.method
         }
         dataLayer.push(data)
       } catch (e) {
