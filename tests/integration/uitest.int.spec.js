@@ -74,9 +74,9 @@ describe('UI Test', () => {
 
       done()
     })
-    test('POSTs some worklogs')
-    test('PUTs some worklogs')
-    test('DELETEs some worklogs')
+    test.todo('POSTs some worklogs')
+    test.todo('PUTs some worklogs')
+    test.todo('DELETEs some worklogs')
   })
 })
 

@@ -10,7 +10,4 @@ describe('Browser Manager', () => {
       fail(e)
     }
   })
-
-  test('Open extensions page', () => {
-  })
 })

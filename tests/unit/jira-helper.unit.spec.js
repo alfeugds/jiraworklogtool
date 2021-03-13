@@ -144,7 +144,7 @@ describe('Jira API Helper', () => {
         done()
       })
     })
-    test('module fails with invalid options')
+    test.todo('module fails with invalid options')
   })
   describe('getWorklog', () => {
     beforeEach(done => {
@@ -256,19 +256,19 @@ describe('Jira API Helper', () => {
     })
   })
   describe('logWork', () => {
-    test('adds worklog successfully')
-    test('fails to add worklog due to wrong input')
-    test('fails to add worklog due to jira instance error')
+    test.todo('adds worklog successfully')
+    test.todo('fails to add worklog due to wrong input')
+    test.todo('fails to add worklog due to jira instance error')
   })
   describe('updateWorklog', () => {
-    test('updates worklog successfully')
-    test('fails to update worklog due to wrong input')
-    test('fails to update worklog due to jira instance error')
+    test.todo('updates worklog successfully')
+    test.todo('fails to update worklog due to wrong input')
+    test.todo('fails to update worklog due to jira instance error')
   })
   describe('deleteWorklog', () => {
-    test('deletes worklog successfully')
-    test('fails to delete worklog due to wrong input')
-    test('fails to delete worklog due to jira instance error')
+    test.todo('deletes worklog successfully')
+    test.todo('fails to delete worklog due to wrong input')
+    test.todo('fails to delete worklog due to jira instance error')
   })
   describe('getJiraUrl', () => {
     beforeEach(done => {

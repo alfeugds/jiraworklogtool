@@ -60,53 +60,53 @@ window.Controller.LogController = (function (JiraHelper, Model, JiraParser) {
 
         var promise
         switch (item.status) {
-          case 'saved':
-            console.log('item already saved', item)
-            break
-          case 'invalid':
-            break
-          case 'edited':
-            promise = JiraHelper.updateWorklog(item)
-            promise
-              .then(item => {
-                items.splice(items.indexOf(item), 1)
-                console.log('item update', item)
-              })
-              .catch(error => {
-                console.error('controller.save update', error, item)
-              })
-              .then(() => {})
-            promises.push(promise)
-            break
-          case 'new':
-            promise = JiraHelper.logWork(item, date)
-            promise
-              .then(item => {
-                items.splice(items.indexOf(item), 1)
-                console.log('item inserted', item)
-              })
-              .catch(error => {
-                console.error('controller.save insert', error, item)
-              })
-              .then(() => {})
-            promises.push(promise)
-            break
-          case 'deleted':
-            promise = JiraHelper.deleteWorklog(item)
-            promise
-              .then(item => {
-                items.splice(items.indexOf(item), 1)
-                console.log('item deleted', item)
-              })
-              .catch(error => {
-                console.error('controller.save delete', error, item)
-              })
-              .then(() => {})
-            promises.push(promise)
-            break
-          default:
-            console.log('item ignored', item)
-            break
+        case 'saved':
+          console.log('item already saved', item)
+          break
+        case 'invalid':
+          break
+        case 'edited':
+          promise = JiraHelper.updateWorklog(item)
+          promise
+            .then(item => {
+              items.splice(items.indexOf(item), 1)
+              console.log('item update', item)
+            })
+            .catch(error => {
+              console.error('controller.save update', error, item)
+            })
+            .then(() => {})
+          promises.push(promise)
+          break
+        case 'new':
+          promise = JiraHelper.logWork(item, date)
+          promise
+            .then(item => {
+              items.splice(items.indexOf(item), 1)
+              console.log('item inserted', item)
+            })
+            .catch(error => {
+              console.error('controller.save insert', error, item)
+            })
+            .then(() => {})
+          promises.push(promise)
+          break
+        case 'deleted':
+          promise = JiraHelper.deleteWorklog(item)
+          promise
+            .then(item => {
+              items.splice(items.indexOf(item), 1)
+              console.log('item deleted', item)
+            })
+            .catch(error => {
+              console.error('controller.save delete', error, item)
+            })
+            .then(() => {})
+          promises.push(promise)
+          break
+        default:
+          console.log('item ignored', item)
+          break
         }
       }
 
