@@ -175,8 +175,22 @@
     })
   }
 
+  const zeroPad = (num, places) => String(num).padStart(places, '0')
+
+  function getDateInJiraFormat (dateStr) {
+    const date = new Date(dateStr + 'T18:00:00')
+    const nowUTC = date.getUTCFullYear() + '-' +
+    zeroPad((date.getUTCMonth() + 1), 2) + '-' +
+    zeroPad(date.getUTCDate(), 2) + 'T' +
+    zeroPad(date.getUTCHours(), 2) + ':' +
+    zeroPad(date.getUTCMinutes(), 2) + ':' +
+    zeroPad(date.getUTCSeconds(), 2) +
+    '.000+0000'
+    return nowUTC
+  }
+
   function logWork (worklog, date) {
-    worklog.started = date + 'T06:00:00.075+0000' // TODO: refactor to expected date format
+    worklog.started = getDateInJiraFormat(date)
 
     var url = `${jiraOptions.jiraUrl}/rest/api/2/issue/${worklog.jira}/worklog`
     var config = {
@@ -288,7 +302,8 @@
     updateWorklog: updateWorklog,
     deleteWorklog: deleteWorklog,
     testConnection: testConnection,
-    getJiraUrl: getJiraUrl
+    getJiraUrl: getJiraUrl,
+    getDateInJiraFormat
   }
 })(window.chrome)
 

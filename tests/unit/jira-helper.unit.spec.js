@@ -255,6 +255,12 @@ describe('Jira API Helper', () => {
       })
     })
   })
+  describe('getDateInJiraFormat', () => {
+    test('returns date in jira format', () => {
+      const result = jiraHelper.getDateInJiraFormat('2020-01-01')
+      expect(result).toMatch(/2020-01-\d{2}T\d{2}:\d{2}:00\.000\+0000/)
+    })
+  })
   describe('logWork', () => {
     test.todo('adds worklog successfully')
     test.todo('fails to add worklog due to wrong input')
