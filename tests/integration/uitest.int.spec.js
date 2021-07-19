@@ -2,21 +2,22 @@ const puppeteer = require('puppeteer')
 const jiraMock = require('./jira-mock')
 
 const CRX_PATH = `${process.cwd()}/chrome-extension/`
-const CHROME_EXTENSION_URL = 'chrome-extension://ehkgicpgemphledafbkdenjjekkogbmk/'
 
 describe('UI Test', () => {
   describe('popup', () => {
     let browser
+    let extensionInfo
     beforeEach(async () => {
       // browser must be initialized
       browser = await getBrowser()
+      extensionInfo = extensionInfo || await getExtensionInfo(browser)
     })
     afterEach(async () => {
       await browser.close()
     })
     test('Loads successfully with no worklogs', async (done) => {
       try {
-        const popup = await getPopupPage(browser)
+        const popup = await getPopupPage(browser, extensionInfo)
         const errorMessage = await popup.getErrorMessage()
         expect(errorMessage).toEqual('Please go to Options and make sure you are logged in Jira, and the Jira Hostname is correct.')
         await popup.clickOptionsPage()
@@ -35,8 +36,8 @@ describe('UI Test', () => {
     })
     test('Loads successfully with some worklogs', async done => {
       try {
-        await makeSureJiraUrlIsConfigured(browser)
-        const popupPage = await getPopupPage(browser)
+        await makeSureJiraUrlIsConfigured(browser, extensionInfo)
+        const popupPage = await getPopupPage(browser, extensionInfo)
         await popupPage.wait()
         await popupPage.setWorklogDate('01/01/2018')
         const savedJiraArray = await popupPage.getJiraArray()
@@ -54,8 +55,8 @@ describe('UI Test', () => {
     })
     test('Adds some worklogs from text', async done => {
       // given I have the extension opened and with jira configured
-      await makeSureJiraUrlIsConfigured(browser)
-      const popup = await getPopupPage(browser)
+      await makeSureJiraUrlIsConfigured(browser, extensionInfo)
+      const popup = await getPopupPage(browser, extensionInfo)
       await popup.wait()
       // and I select the worklog date as 01/01/2018
       await popup.setWorklogDate('01/01/2018')
@@ -93,8 +94,25 @@ async function getBrowser () {
   })
 }
 
-async function makeSureJiraUrlIsConfigured (browser) {
-  await openOptionsPage(browser)
+async function getExtensionInfo (browser) {
+  const page = await browser.newPage()
+
+  // test get id
+  await page.goto('https://www.google.com/')
+  const extensionId = await page.evaluate(() => document.getElementById('jiraworklog_id').value)
+  const popupUrl = `chrome-extension://${extensionId}/popup.html`
+  const optionsUrl = `chrome-extension://${extensionId}/options.html`
+
+  console.log({ popupUrl })
+  return {
+    extensionId,
+    popupUrl,
+    optionsUrl
+  }
+}
+
+async function makeSureJiraUrlIsConfigured (browser, extensionInfo) {
+  await openOptionsPage(browser, extensionInfo)
   const optionsPage = await getOptionsPage(browser)
   await optionsPage.setValidJiraUrl()
   await optionsPage.clickOnTestconnection()
@@ -102,13 +120,13 @@ async function makeSureJiraUrlIsConfigured (browser) {
   await optionsPage.clickOnSave()
 }
 
-async function openOptionsPage (browser) {
+async function openOptionsPage (browser, extensionInfo) {
   const page = await browser.newPage()
   await page.waitFor(200)
-  return page.goto(`${CHROME_EXTENSION_URL}options.html`)
+  return page.goto(extensionInfo.optionsUrl)
 }
 
-async function getPopupPage (browser) {
+async function getPopupPage (browser, extensionInfo) {
   async function getValueArrayFromInputs (page, selector) {
     return page.evaluate((selector) =>
       Array.from(document.querySelectorAll(selector))
@@ -127,7 +145,7 @@ async function getPopupPage (browser) {
     if (request.url().includes('chrome-extension://')) { request.continue() } else { request.respond(jiraMock.getResponse(request)) }
   })
 
-  await page.goto(`${CHROME_EXTENSION_URL}popup.html`)
+  await page.goto(extensionInfo.popupUrl)
 
   await page.waitFor(300)
 
