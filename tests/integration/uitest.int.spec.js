@@ -86,7 +86,9 @@ async function getBrowser () {
     args: [
       `--disable-extensions-except=${CRX_PATH}`,
       `--load-extension=${CRX_PATH}`,
-      '--user-agent=PuppeteerAgent'
+      '--user-agent=PuppeteerAgent',
+      '--no-sandbox',
+      '--disable-setuid-sandbox'
     ]
   })
 }
