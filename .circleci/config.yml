@@ -20,5 +20,5 @@ jobs:
           paths:
             - ~/project/node_modules
           key: node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
-      - run: npm run unit
       - run: npm run lint
+      - run: npm run test
