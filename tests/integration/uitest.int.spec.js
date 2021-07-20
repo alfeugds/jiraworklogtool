@@ -213,6 +213,7 @@ async function getOptionsPage (browser) {
 
   return {
     setValidJiraUrl: async () => {
+      await page.waitFor(100)
       await page.type('#jiraUrl', 'https://jira.com')
       return page.waitFor(300)
     },

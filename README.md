@@ -60,3 +60,16 @@ If you find any issues or have ideas for new features, feel free to open an issu
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
+## Running UI tests in Windows' wsl 2
+
+install xvfb with
+
+````sh
+sudo apt install xvfb
+````
+
+run the tests
+
+````sh
+xvfb-run npm run test
+````
