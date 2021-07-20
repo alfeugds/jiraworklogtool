@@ -30,6 +30,12 @@ jobs:
             - ~/project/node_modules
           key: node-v2-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run: npm run lint
-      - run: xvfb-run npm run test -- --ci --reporters=default --reporters=jest-junit
+      - run:
+          name: Run tests with JUnit as reporter
+          command: xvfb-run npm run test -- --ci --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
       - store_test_results:
-          path: ./
+          path: ./reports/junit/
+      - store_artifacts:
+          path: ./reports/junit
