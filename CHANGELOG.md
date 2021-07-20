@@ -7,7 +7,7 @@ Infra:
   - running UI tests in CircleCI
   - getting extension ID dynamically to run UI tests
   - [todo] changing build strategy for extension, generate manifest dynamically for tests
-  - [todo] add test result in circleci with jest junit
+  - add test result in circleci with jest junit
 
 Tests:
 

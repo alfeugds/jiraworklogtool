@@ -70,3 +70,6 @@ chrome-extension.zip
 #extension key
 chrome-extension.crx
 chrome-extension.pem
+
+# jest junit
+junit.xml
