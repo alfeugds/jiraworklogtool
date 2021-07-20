@@ -14,14 +14,6 @@
     "default_popup": "temp-popup.html",
     "default_title": "Log Work"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": ["js/content.js"]
-    }
-  ],
   "permissions": [
     "storage",
     "<all_urls>"

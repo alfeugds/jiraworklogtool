@@ -1,5 +1,5 @@
 const puppeteer = require('puppeteer')
-const CRX_PATH = `${process.cwd()}/chrome-extension/`
+const CRX_PATH = `${process.cwd()}/dist/ui-test/chrome-extension/`
 
 module.exports = (() => {
   return {

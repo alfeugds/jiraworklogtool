@@ -73,3 +73,7 @@ chrome-extension.pem
 
 # jest junit
 junit.xml
+
+# dist/build
+
+dist/

@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer')
+const browserManager = require('./browser-manager')
 
 const CRX_PATH = `${process.cwd()}/chrome-extension/`
 const jiraMock = require('./jira-mock')
@@ -8,15 +9,8 @@ console.log(jiraMock);
 
 (async () => {
   const POPUP_PAGE = `${CHROME_EXTENSION_URL}popup.html`
-  const browser = await puppeteer.launch({
-    headless: false, // extensions only supported in full chrome.
-    args: [
-      `--disable-extensions-except=${CRX_PATH}`,
-      `--load-extension=${CRX_PATH}`,
-      '--user-agent=PuppeteerAgent'
-    ]
-    // executablePath: 'C:/Users/Alfeu/Documents/dev/tools/chromedriver.exe'
-  })
+  const browser = await browserManager.getBrowser()
+  const { popupUrl } = await browserManager.getExtensionInfo(browser)
   // ... do some testing ...
 
   // const extensionPage = await browser.newPage();
@@ -27,15 +21,6 @@ console.log(jiraMock);
     console.log(dialog.message())
     await dialog.accept()
   })
-
-  // test get id
-  await page.goto('https://example.com')
-  const extensionId = await page.evaluate(() => document.getElementById('jiraworklog_id').value)
-  const popupUrl = `chrome-extension://${extensionId}/popup.html`
-
-  console.log({ popupUrl })
-
-  // end test
 
   await page.setRequestInterception(true)
   page.on('request', request => {
@@ -51,6 +36,7 @@ console.log(jiraMock);
   // click buttons, test UI elements, etc.
   const errorMessage = await page.evaluate(() => document.querySelector('.error_status h2').textContent)
   console.log(errorMessage)
+  await page.waitFor(200)
   await page.click('h2>a')
   await page.waitFor(1000)
 
@@ -67,6 +53,7 @@ console.log(jiraMock);
     request.respond(jiraMock.getResponse(request))
   })
 
+  await optionsPage.waitFor(500)
   await optionsPage.type('#jiraUrl', 'https://jira.com')
   await optionsPage.click('#testConnection')
   await optionsPage.click('#save')
