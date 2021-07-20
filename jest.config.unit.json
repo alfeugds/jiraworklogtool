@@ -1,4 +1,5 @@
 {
     "testEnvironment": "jsdom",
-    "testRegex": "unit.spec.js"
+    "testRegex": "unit.spec.js",
+    "reporters": [ "default", "jest-junit" ]
 }

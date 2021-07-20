@@ -9,7 +9,7 @@
   "scripts": {
     "unit": "jest -c jest.config.unit.json",
     "integration": "jest -c jest.config.integration.json",
-    "test": "jest -c jest.config.json",
+    "test": "npm run build-test && jest -c jest.config.json",
     "test:watch": "jest -c jest.config.unit.json --watch",
     "test:coverage": "jest -c jest.config.unit.json --coverage",
     "lint": "npm run lint:code && npm run lint:tests",
@@ -20,7 +20,9 @@
     "major": "npm version --no-git-tag-version major && npm run sync-version",
     "minor": "npm version --no-git-tag-version minor && npm run sync-version",
     "patch": "npm version --no-git-tag-version patch && npm run sync-version",
-    "sync-version": "node scripts/sync-version"
+    "sync-version": "node scripts/sync-version",
+    "build-test": "node scripts/build-for-test",
+    "ui-test-playground": "npm run build-test && node tests/integration/test-puppeteer"
   },
   "author": "Alfeu Santos <alfeugds@gmail.com>",
   "license": "MIT",
@@ -37,9 +39,11 @@
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
+    "fs-extra": "^10.0.0",
     "hoek": "4.2.1",
     "jest": "^26.6.3",
     "jest-cli": "^26.6.3",
+    "jest-junit": "^12.2.0",
     "puppeteer": "^1.19.0",
     "sshpk": "1.14.1"
   },
