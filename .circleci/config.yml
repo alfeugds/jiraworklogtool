@@ -5,13 +5,13 @@ jobs:
       - image: circleci/node
     steps:
       - checkout
-      - restore_cache:
-          name: Restore Node Package Cache
-          keys:
-            # when lock file changes, use increasingly general patterns to restore cache
-            - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
-            - node-v1-{{ .Branch }}-
-            - node-v1-
+      # - restore_cache:
+      #     name: Restore Node Package Cache
+      #     keys:
+      #       # when lock file changes, use increasingly general patterns to restore cache
+      #       - node-v1-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      #       - node-v1-{{ .Branch }}-
+      #       - node-v1-
       - run:
           name: Install Dependencies
           command: npm i
