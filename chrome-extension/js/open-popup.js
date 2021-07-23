@@ -1,6 +1,6 @@
 /* global chrome */
 var popupWindow = window.open(
-  chrome.extension.getURL('popup.html'),
+  chrome.runtime.getURL('popup.html'),
   'Jira Worklog Tool',
   'width=610,height=500'
 )
