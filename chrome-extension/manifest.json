@@ -11,7 +11,7 @@
   "options_page": "options.html",
   "action": {
     "default_icon": "img/icon-time-task-512x512.png",
-    "default_popup": "temp-popup.html",
+    "default_popup": "popup.html",
     "default_title": "Log Work"
   },
   "permissions": [

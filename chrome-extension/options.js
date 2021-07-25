@@ -1,3 +1,5 @@
+import './js/jira-helper'
+
 var chrome = window.chrome || {}
 var JiraHelper = window.JiraHelper || {}
 

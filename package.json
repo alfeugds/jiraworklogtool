@@ -2,7 +2,6 @@
   "name": "jira-log",
   "version": "0.5.0",
   "description": "",
-  "main": "jira-parser.js",
   "directories": {
     "test": "tests"
   },
@@ -22,7 +21,9 @@
     "patch": "npm version --no-git-tag-version patch && npm run sync-version",
     "sync-version": "node scripts/sync-version",
     "build-test": "node scripts/build-for-test",
-    "ui-test-playground": "npm run build-test && node tests/integration/test-puppeteer"
+    "ui-test-playground": "npm run build-test && node tests/integration/test-puppeteer",
+    "build": "webpack --mode production",
+    "build-dev": "webpack --mode development"
   },
   "author": "Alfeu Santos <alfeugds@gmail.com>",
   "license": "MIT",
@@ -30,8 +31,15 @@
     "testEnvironment": "jsdom"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.8",
+    "@babel/plugin-transform-runtime": "^7.14.5",
+    "@babel/preset-env": "^7.14.8",
+    "@babel/preset-react": "^7.14.5",
     "archiver": "^2.1.1",
+    "babel-loader": "^8.2.2",
     "chrome-webstore-upload": "^0.2.2",
+    "copy-webpack-plugin": "^9.0.1",
+    "css-loader": "^6.2.0",
     "dotenv": "^4.0.0",
     "eslint": "^6.1.0",
     "eslint-config-standard": "^13.0.1",
@@ -39,18 +47,31 @@
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
+    "file-loader": "^6.2.0",
     "fs-extra": "^10.0.0",
     "hoek": "4.2.1",
+    "html-webpack-plugin": "^5.3.2",
     "jest": "^26.6.3",
     "jest-cli": "^26.6.3",
     "jest-junit": "^12.2.0",
     "puppeteer": "^1.19.0",
-    "sshpk": "1.14.1"
+    "sass": "^1.36.0",
+    "sass-loader": "^12.1.0",
+    "sshpk": "1.14.1",
+    "style-loader": "^3.2.1",
+    "webpack": "^5.46.0",
+    "webpack-cli": "^4.7.2",
+    "write-file-webpack-plugin": "^4.5.1"
   },
   "repository": "https://github.com/alfeugds/jiraworklogtool.git",
   "dependencies": {
+    "@babel/runtime": "^7.14.8",
     "axios": "^0.21.1",
     "axios-mock-adapter": "^1.15.0",
+    "mediator-js": "^0.11.0",
+    "process": "^0.11.10",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "retire": "^1.6.0"
   }
 }

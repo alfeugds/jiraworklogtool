@@ -1,6 +1,7 @@
 /* global mediator chrome */
+import JiraParser from './jira-parser'
 window.Model = {}
-window.Model.WorklogModel = (function (JiraParser) {
+window.Model.WorklogModel = (function () {
   var items = []
   var totalHours = 0.0
 
@@ -110,4 +111,4 @@ window.Model.WorklogModel = (function (JiraParser) {
     updateItemsWithLocalData: updateItemsWithLocalData,
     clearItems: clearItems
   }
-})(window.JiraParser)
+})()

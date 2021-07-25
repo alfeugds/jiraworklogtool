@@ -77,4 +77,5 @@ var JiraParser = (function () {
   }
 })()
 
-if (typeof module !== 'undefined') { module.exports = JiraParser }
+// if (typeof module !== 'undefined') { module.exports = JiraParser }
+export default JiraParser

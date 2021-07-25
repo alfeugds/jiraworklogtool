@@ -1,5 +1,7 @@
+import JiraParser from './jira-parser'
+
 window.Controller = window.Controller || {}
-window.Controller.LogController = (function (JiraHelper, Model, JiraParser) {
+window.Controller.LogController = (function (JiraHelper, Model) {
   'use strict'
   function init () {
     return JiraHelper.init()
@@ -144,4 +146,4 @@ window.Controller.LogController = (function (JiraHelper, Model, JiraParser) {
     init: init,
     getInvalidFields: getInvalidFields
   }
-})(window.JiraHelper, window.Model, window.JiraParser)
+})(window.JiraHelper, window.Model)

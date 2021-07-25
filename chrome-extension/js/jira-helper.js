@@ -1,3 +1,4 @@
+import axios from 'axios'
 (function (chrome) {
   var user = ''
   var headers = {
@@ -307,4 +308,6 @@
   }
 })(window.chrome)
 
-if (typeof module !== 'undefined') { module.exports = window.JiraHelper }
+// FIXME: remove JiraHelper from window, fix unit tests
+// if (typeof module !== 'undefined') { module.exports = window.JiraHelper }
+export default window.JiraHelper

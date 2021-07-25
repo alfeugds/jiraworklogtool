@@ -44,4 +44,5 @@ var updateScript = (function () {
   }
 })()
 
-if (typeof module !== 'undefined') { module.exports = updateScript }
+// if (typeof module !== 'undefined') { module.exports = updateScript }
+export default updateScript
