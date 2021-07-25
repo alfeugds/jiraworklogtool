@@ -1,5 +1,5 @@
 /* global test jest expect describe beforeEach */
-const updateScript = require('../../chrome-extension/js/update-script')
+const { updateScript } = require('../../chrome-extension/js/update-script')
 
 describe('Update Script', () => {
   beforeEach(() => {

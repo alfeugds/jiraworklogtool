@@ -6,7 +6,7 @@ import './js/jira-parser'
 import './js/model'
 import './js/view'
 import './js/controller'
-import updateScript from './js/update-script'
+import { updateScript } from './js/update-script'
 // require('file-loader?name=[name].[ext]!./popup.html')
 // require('./manifest.json')
 

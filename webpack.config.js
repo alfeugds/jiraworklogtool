@@ -48,7 +48,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: './chrome-extension/popup.html' }),
+    // new HtmlWebpackPlugin({ template: './chrome-extension/popup.html' }),
     new CopyPlugin({
       patterns: [
         {

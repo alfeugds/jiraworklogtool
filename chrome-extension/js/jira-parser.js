@@ -1,4 +1,4 @@
-var JiraParser = (function () {
+var createJiraParser = function () {
   const hoursAndMinutesRegex = /^(\d+[m]|\d+[d](?:(?:\s\d+[h])?(?:\s\d+[m])?)?|\d+[h](?:\s\d+[m])?)$/
   const jiraNumberRegex = /^([a-zA-Z0-9]{1,30}-\d+)$/
   const worklogTextLineRegex = /\b([a-zA-Z0-9]{1,30}-\d+)?\b.*?\b(\d+[m]|\d+[d](?:(?:\s\d+[h])?(?:\s\d+[m])?)?|\d+[h](?:\s\d+[m])?)\b[\s\-_;,]*(.+)$/
@@ -75,7 +75,6 @@ var JiraParser = (function () {
     isValidTimeSpentFormat: isValidTimeSpentFormat,
     getInvalidFields: getInvalidFields
   }
-})()
+}
 
-// if (typeof module !== 'undefined') { module.exports = JiraParser }
-export default JiraParser
+export const jiraParser = createJiraParser()

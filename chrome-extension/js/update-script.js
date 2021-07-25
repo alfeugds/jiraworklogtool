@@ -1,5 +1,5 @@
 /* global chrome */
-var updateScript = (function () {
+var createUpdateScript = function () {
   function saveOptions (jiraOptions) {
     return new Promise(resolve => {
       chrome.storage.sync.set(
@@ -42,7 +42,6 @@ var updateScript = (function () {
       })
     }
   }
-})()
+}
 
-// if (typeof module !== 'undefined') { module.exports = updateScript }
-export default updateScript
+export const updateScript = createUpdateScript()

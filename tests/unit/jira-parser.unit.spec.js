@@ -1,4 +1,4 @@
-const jiraParser = require('../../chrome-extension/js/jira-parser')
+const { jiraParser } = require('../../chrome-extension/js/jira-parser')
 
 describe('convert worklog text to jira log object', () => {
   test('worklog contains semicolon and dash', () => {

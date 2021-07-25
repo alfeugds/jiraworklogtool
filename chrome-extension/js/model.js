@@ -1,5 +1,5 @@
 /* global mediator chrome */
-import JiraParser from './jira-parser'
+import { jiraParser } from './jira-parser'
 window.Model = {}
 window.Model.WorklogModel = (function () {
   var items = []
@@ -42,7 +42,7 @@ window.Model.WorklogModel = (function () {
     var total = 0.0
     for (var i = 0; i < items.length; i++) {
       var worklog = items[i]
-      total += JiraParser.timeSpentToHours(worklog.timeSpent)
+      total += jiraParser.timeSpentToHours(worklog.timeSpent)
     }
     totalHours = total
     mediator.trigger('modal.totalHours.update', totalHours)

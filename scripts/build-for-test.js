@@ -1,6 +1,6 @@
-require('dotenv').config();
+require('dotenv').config()
 const fs = require('fs-extra')
-const path = require('path');
+const path = require('path')
 
 const SRC_DIR = path.join(process.cwd(), 'chrome-extension')
 const DIST_DIR = path.join(process.cwd(), 'dist', 'ui-test', 'chrome-extension')
@@ -10,22 +10,22 @@ const manifest = require('../chrome-extension/manifest.json')
 const addContentPermission = (manifest) => {
   return {
     ...manifest,
-    "content_scripts": [
+    content_scripts: [
       {
-        "matches": [
-          "<all_urls>"
+        matches: [
+          '<all_urls>'
         ],
-        "js": ["js/content.js"]
+        js: ['js/content.js']
       }
-    ],
+    ]
   }
 }
 
-fs.removeSync(DIST_DIR)
+// fs.removeSync(DIST_DIR)
 
 fs.ensureDirSync(DIST_DIR)
 
-fs.copySync(SRC_DIR, DIST_DIR)
+fs.copySync(path.join(SRC_DIR, 'js', 'content.js'), path.join(DIST_DIR, 'js', 'content.js'))
 
 console.info('adding content_scripts in manifest.json for testing purposes')
 const testManifest = addContentPermission(manifest)

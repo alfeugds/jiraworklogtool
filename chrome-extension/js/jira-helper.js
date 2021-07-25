@@ -1,5 +1,7 @@
+/* global chrome */
 import axios from 'axios'
-(function (chrome) {
+
+function createJiraHelper () {
   var user = ''
   var headers = {
     'content-type': 'application/json',
@@ -296,7 +298,7 @@ import axios from 'axios'
     })
   }
 
-  window.JiraHelper = {
+  const JiraHelper = {
     init: init,
     getWorklog: getWorklog,
     logWork: logWork,
@@ -306,8 +308,10 @@ import axios from 'axios'
     getJiraUrl: getJiraUrl,
     getDateInJiraFormat
   }
-})(window.chrome)
+  window.JiraHelper = JiraHelper
+  return JiraHelper
+}
 
 // FIXME: remove JiraHelper from window, fix unit tests
-// if (typeof module !== 'undefined') { module.exports = window.JiraHelper }
-export default window.JiraHelper
+
+export const jiraHelper = createJiraHelper()

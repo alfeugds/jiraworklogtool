@@ -1,10 +1,8 @@
 var axios = require('axios')
-var mockAxios = axios.create()
 var MockAdapter = require('axios-mock-adapter')
-// This sets the mock adapter on the default instance
-var mock = new MockAdapter(mockAxios, { delayResponse: 10 })
 
-global.axios = mockAxios
+// This sets the mock adapter on the default instance
+var mock = new MockAdapter(axios)
 
 global.options = {
   jiraOptions: {
@@ -29,7 +27,7 @@ global.chrome = {
   }
 }
 
-function initJiraHelper () {
+async function initJiraHelper (jiraHelper) {
   // arrange
   mock.onGet(/rest\/api\/2\/search/)
     .replyOnce(200,
@@ -44,21 +42,13 @@ function initJiraHelper () {
     )
   global.options.jiraOptions.user = 'hue@br.com'
   // act
-  return jiraHelper.init()
+  await jiraHelper.init()
 }
 
 // module to test
-const jiraHelper = require('../../chrome-extension/js/jira-helper')
+const { jiraHelper } = require('../../chrome-extension/js/jira-helper')
 
 describe('Jira API Helper', () => {
-  beforeEach(() => {
-
-  })
-
-  afterEach(() => {
-
-  })
-
   describe('testConnection', () => {
     test('testConnection works successfully with valid options', done => {
       // arrange
@@ -147,8 +137,8 @@ describe('Jira API Helper', () => {
     test.todo('module fails with invalid options')
   })
   describe('getWorklog', () => {
-    beforeEach(done => {
-      initJiraHelper().then(() => done())
+    beforeEach(async () => {
+      await initJiraHelper(jiraHelper)
     })
     test('returns 2 worklogs successfully', done => {
       mock.onGet(/rest\/api\/2\/search/)
@@ -277,8 +267,8 @@ describe('Jira API Helper', () => {
     test.todo('fails to delete worklog due to jira instance error')
   })
   describe('getJiraUrl', () => {
-    beforeEach(done => {
-      initJiraHelper().then(() => done())
+    beforeEach(async () => {
+      await initJiraHelper(jiraHelper)
     })
     test('returns jira url successfully when jira # is CMS-123', done => {
       const jiraUrl = jiraHelper.getJiraUrl('CMS-123')

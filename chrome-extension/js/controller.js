@@ -1,4 +1,4 @@
-import JiraParser from './jira-parser'
+import { jiraParser } from './jira-parser'
 
 window.Controller = window.Controller || {}
 window.Controller.LogController = (function (JiraHelper, Model) {
@@ -35,7 +35,7 @@ window.Controller.LogController = (function (JiraHelper, Model) {
     for (var i = 0; i < arr.length; i++) {
       var worklogText = arr[i]
       if (worklogText && worklogText.trim()) {
-        result.push(JiraParser.parse(worklogText))
+        result.push(jiraParser.parse(worklogText))
       }
     }
     return result
@@ -135,7 +135,7 @@ window.Controller.LogController = (function (JiraHelper, Model) {
   }
 
   function getInvalidFields (worklog) {
-    return JiraParser.getInvalidFields(worklog)
+    return jiraParser.getInvalidFields(worklog)
   }
 
   return {
