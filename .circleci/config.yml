@@ -18,9 +18,9 @@ jobs:
           name: Restore Node Package Cache
           keys:
             # when lock file changes, use increasingly general patterns to restore cache
-            - node-v2-{{ .Branch }}-{{ checksum "package-lock.json" }}
-            - node-v2-{{ .Branch }}-
-            - node-v2-
+            - node-v3-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - node-v3-{{ .Branch }}-
+            - node-v3-
       - run:
           name: Install Dependencies
           command: npm i
