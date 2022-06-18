@@ -68,10 +68,10 @@ describe('convert worklog text to jira log object', () => {
   })
 
   test('worklog contains 1d and 30m without hour as time spent, space and comma', () => {
-    const text = 'CMS-123 1d 30m ,testing - working on stuff'
+    const text = 'CMS_somejira-123 1d 30m ,testing - working on stuff'
     const expected = {
       timeSpent: '1d 30m',
-      jira: 'CMS-123',
+      jira: 'CMS_somejira-123',
       comment: 'testing - working on stuff'
     }
     const result = jiraParser.parse(text)
@@ -332,6 +332,18 @@ describe('validate fields', () => {
     test('Testing Jirakey Name with Number', () => {
       const item = {
         jira: 'JIRA2020-123',
+        timeSpent: '1h 45m',
+        comment: 'test'
+      }
+      const invalidFields = []
+
+      const result = jiraParser.getInvalidFields(item)
+      expect(result).toMatchObject(invalidFields)
+    })
+
+    test('Testing Jirakey Name with Number', () => {
+      const item = {
+        jira: 'Test_Jira-123',
         timeSpent: '1h 45m',
         comment: 'test'
       }
