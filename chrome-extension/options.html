@@ -37,7 +37,7 @@
         <label for="jiraUrl">Jira Hostname</label>
         <input type="text" id="jiraUrl" />
         <br/>
-        <button id="testConnection">Test Connection</button>
+        <button id="testConnectionJira">Test Connection</button>
         <br />
         <br />
         <h4>Basic Authentication*</h4>
@@ -52,6 +52,20 @@
         <p>*Fill only if required by your Jira API. Ask your IT department for assistance.</p>
         <label for="token">Token</label>
         <input type="token" id="token" />
+        <br />
+        <h4>Outlook Calendar Sync</h4>
+        <p>This will allow you to read events from your calendar. To do so, create an Entra app with implicit grant (token flow) and permissions Calendars.ReadBasic, then fill the fields below.</p>
+        <label for="outlookSyncEnabled">Enable Outlook Sync</label>
+        <input type="checkbox" id="outlookSyncEnabled" />
+        <br />
+        <label for="tenantID">Tenant ID</label>
+        <input type="text" id="tenantID" />
+        <br />
+        <label for="clientID">Client ID</label>
+        <input type="text" id="clientID" />
+        <br/>
+        <button id="testConnectionOutlook">Test Connection</button>
+        <br />
 
         <div id="status"></div>
         <button id="save">Save</button>
@@ -59,6 +73,7 @@
     </div>
     <script src="lib/axios.min.js" defer></script>
     <script src="js/jira-helper.js"></script>
+    <script src="js/outlook-helper.js"></script>
     <script src="js/options.js"></script>
 </body>
 

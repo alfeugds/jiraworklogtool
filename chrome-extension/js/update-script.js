@@ -1,10 +1,11 @@
 /* global chrome */
 var updateScript = (function () {
-  function saveOptions (jiraOptions) {
+  function saveOptions (jiraOptions, outlookOptions) {
     return new Promise(resolve => {
       chrome.storage.sync.set(
         {
-          jiraOptions: jiraOptions
+          jiraOptions: jiraOptions,
+          outlookOptions: outlookOptions
         },
         function () {
           resolve()
@@ -16,19 +17,20 @@ var updateScript = (function () {
     return new Promise(resolve => {
       chrome.storage.sync.get(
         {
-          jiraOptions: {}
+          jiraOptions: {},
+          outlookOptions: {}
         },
         function (options) {
-          resolve(options.jiraOptions)
+          resolve(options.jiraOptions, options.outlookOptions)
         }
       )
     })
   }
   function removePassword () {
     var getPromise = getOptions()
-    var savePromise = getPromise.then((jiraOptions) => {
+    var savePromise = getPromise.then((jiraOptions, outlookOptions) => {
       jiraOptions.password = ''
-      return saveOptions(jiraOptions)
+      return saveOptions(jiraOptions, outlookOptions)
     })
     return savePromise
   }
