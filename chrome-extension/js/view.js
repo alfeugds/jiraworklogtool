@@ -4,6 +4,7 @@ window.View = window.View || {}
 window.View.Main = (function () {
   var worklogDateInput,
     getWorklogButton,
+    getOutlookEventsButton,
     worklogInput,
     addWorklogsButton,
     saveButton,
@@ -16,6 +17,7 @@ window.View.Main = (function () {
       View.Table.init()
 
       getWorklogButton = document.getElementById('getWorklogButton')
+      getOutlookEventsButton = document.getElementById('getOutlookEventsButton')
       worklogInput = document.getElementById('worklog')
       addWorklogsButton = document.getElementById('addWorklogs')
       saveButton = document.getElementById('save')
@@ -63,6 +65,120 @@ window.View.Main = (function () {
             setLoadingStatus(false)
           })
       })
+
+      getOutlookEventsButton.addEventListener('click', () => {
+        let redirectUrl = chrome.identity.getRedirectURL()
+
+        /*global chrome*/
+        chrome.identity.launchWebAuthFlow(
+          {
+            url: 'https://login.microsoftonline.com/9514c5bb-f1dc-4ce8-a6a5-dc12d7d15702/oauth2/v2.0/authorize?' +
+              'response_type=token' +
+              '&response_mode=fragment' +
+              `&client_id=1babeb8a-7ace-4e8d-8f40-a338da4eea29` + // Calender-Read Jira
+              `&redirect_uri=${redirectUrl}` +
+              '&scope=Calendars.ReadBasic',
+            interactive: true
+          },
+          function (responseWithToken) {
+            console.log('Authorization response:', responseWithToken);
+
+            if (chrome.runtime.lastError || !responseWithToken) {
+              console.error('Authorization failed:', chrome.runtime.lastError);
+              return;
+            }
+
+            const token = extractAccessToken(responseWithToken);
+            if (token) {
+              fetchCalendarEntries(token); // Use the access token to fetch calendar entries
+            } else {
+              console.error('Failed to extract access token from response:', responseWithToken);
+            }
+          }
+        );
+      })
+
+      // Utility function to extract the access token from the response
+      function extractAccessToken(responseUrl) {
+        const params = new URLSearchParams(responseUrl.split('#')[1]);
+        return params.get('access_token');
+      }
+
+      async function fetchAllPages(url, accessToken) {
+        let allResults = [];
+
+        async function fetchPage(url) {
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch calendar entries');
+          }
+
+          const data = await response.json();
+          allResults = allResults.concat(data.value);
+
+          if (data['@odata.nextLink']) {
+            await fetchPage(data['@odata.nextLink']);
+          }
+        }
+
+        await fetchPage(url);
+        return allResults;
+      }
+
+      function fetchCalendarEntries(accessToken) {
+        const dateStart = new Date(new Date(worklogDateInput.value).setHours(0, 0, 0, 0));
+        const dateEnd = new Date(new Date(worklogDateInput.value).setHours(23, 59, 59, 999));
+        const url = `https://graph.microsoft.com/v1.0/me/calendar/calendarView?startDateTime=${dateStart.toISOString()}&endDateTime=${dateEnd.toISOString()}`;
+
+        fetchAllPages(url, accessToken)
+        .then(data => {
+          console.log('Calendar events:', data);
+
+          // Sort events by start date
+          data.sort((a, b) => new Date(a.start.dateTime) - new Date(b.start.dateTime));
+
+          // Filter out events based on the specified criteria
+          const filteredData = data.filter(event =>
+            !event.isAllDay &&
+            !event.isCancelled &&
+            event.sensitivity !== 'private' &&
+            event.subject !== 'Mittagspause' &&
+            event.subject !== 'Notizen' &&
+            event.subject !== 'Notes'
+          );
+
+          const worklogItems = filteredData.map(event => {
+            const startTime = new Date(event.start.dateTime);
+            const endTime = new Date(event.end.dateTime);
+            const durationMinutes = (endTime - startTime) / (1000 * 60); // Convert milliseconds to minutes
+            const durationString = durationMinutes >= 60
+              ? `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`
+              : `${durationMinutes}m`;
+            const worklogString = `${event.subject} ${durationString} ${event.subject}`;
+            return worklogString;
+          });
+
+          console.log('Worklog items:', worklogItems);
+
+          setLoadingStatus(true)
+          Controller.LogController.bulkInsert(worklogItems.join('\n')).then(
+            () => {
+              mediator.trigger('view.table.new-worklog.changed', {})
+              setLoadingStatus(false)
+            }
+          )
+        })
+        .catch(error => {
+          console.error('Error fetching calendar entries:', error);
+        });
+      }
 
       addWorklogsButton.addEventListener('click', () => {
         setLoadingStatus(true)
