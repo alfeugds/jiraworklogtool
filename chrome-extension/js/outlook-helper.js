@@ -5,13 +5,17 @@
     outlookOptions = options
   }
 
-  function testConnection () {
-    if (!outlookOptions.outlookSyncEnabled) {
+  function getOutlookOptions () {
+    return outlookOptions
+  }
+
+  function testConnection (options) {
+    if (!options.outlookSyncEnabled) {
       console.log('Outlook sync is disabled')
       return Promise.resolve()
     }
 
-    return getToken();
+    return getToken(options);
   }
 
   function init () {
@@ -22,7 +26,7 @@
         },
         function (items) {
           setOutlookOptions(items.outlookOptions)
-          testConnection()
+          testConnection(items.outlookOptions)
             .then(resolve)
             .catch(reject)
         }
@@ -30,19 +34,20 @@
     })
   }
 
-  function getToken() {
+  function getToken(options = outlookOptions) {
     return new Promise((resolve, reject) => {
-      if (!outlookOptions.tenantID || !outlookOptions.clientID) {
+      if (options.outlookSyncEnabled && (!options.tenantID || !options.clientID)) {
         console.log('Outlook options are not set');
         reject('Outlook options are not set');
+        return;
       }
 
       chrome.identity.launchWebAuthFlow(
         {
-          url: `https://login.microsoftonline.com/${outlookOptions.tenantID}/oauth2/v2.0/authorize?` +
+          url: `https://login.microsoftonline.com/${options.tenantID}/oauth2/v2.0/authorize?` +
             'response_type=token' +
             '&response_mode=fragment' +
-            '&client_id=' + outlookOptions.clientID +
+            '&client_id=' + options.clientID +
             '&redirect_uri=' + chrome.identity.getRedirectURL() +
             '&scope=Calendars.ReadBasic',
           interactive: true
@@ -51,6 +56,7 @@
           console.log('Authorization response:', responseWithToken);
           if (chrome.runtime.lastError || !responseWithToken) {
             reject('Authorization failed: ' + chrome.runtime.lastError);
+            return;
           }
 
           const token = extractAccessToken(responseWithToken);
@@ -61,14 +67,6 @@
           }
         }
       );
-
-      chrome.identity.getAuthToken({ 'interactive': true }, function(token) {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve(token)
-        }
-      })
     })
   }
 
@@ -105,10 +103,10 @@
     return allResults;
   }
 
-  function fetchCalendarEntries(accessToken) {
+  function fetchCalendarEntries(accessToken, worklogDate) {
     return new Promise((resolve, reject) => {
-      const dateStart = new Date(new Date(worklogDateInput.value).setHours(0, 0, 0, 0));
-      const dateEnd = new Date(new Date(worklogDateInput.value).setHours(23, 59, 59, 999));
+      const dateStart = new Date(new Date(worklogDate).setHours(0, 0, 0, 0));
+      const dateEnd = new Date(new Date(worklogDate).setHours(23, 59, 59, 999));
       const url = `https://graph.microsoft.com/v1.0/me/calendar/calendarView?startDateTime=${dateStart.toISOString()}&endDateTime=${dateEnd.toISOString()}`;
 
       fetchAllPages(url, accessToken)
@@ -155,6 +153,7 @@
 
   window.OutlookHelper = {
     init: init,
+    getOutlookOptions: getOutlookOptions,
     testConnection: testConnection,
     getToken: getToken,
     fetchCalendarEntries: fetchCalendarEntries,

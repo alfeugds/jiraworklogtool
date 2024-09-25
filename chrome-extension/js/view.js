@@ -27,6 +27,10 @@ window.View.Main = (function () {
       // initialize date with today's date
       worklogDateInput.value = formatDate(new Date())
 
+      if (OutlookHelper.getOutlookOptions().outlookSyncEnabled) {
+        getOutlookEventsButton.style.display = "inline"
+      }
+
       mediator.on('modal.totalHours.update', totalHours => {
         totalHoursSpan.innerText =
                     parseFloat(totalHours).toFixed(2) + 'h'
@@ -69,7 +73,7 @@ window.View.Main = (function () {
       getOutlookEventsButton.addEventListener('click', () => {
         setLoadingStatus(true)
         OutlookHelper.getToken().then(accessToken => {
-          return OutlookHelper.fetchCalendarEntries(accessToken)
+          return OutlookHelper.fetchCalendarEntries(accessToken, worklogDateInput.value)
         }).then(() => {
           setLoadingStatus(false)
         }).catch(error => {

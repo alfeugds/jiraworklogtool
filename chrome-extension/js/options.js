@@ -90,13 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(jiraOptions)
     JiraHelper.testConnection(jiraOptions)
       .then(result => {
-        console.info('connection successful', result)
+        console.info('connection successful')
         saveOptions(getJiraOptionsFromInput(), getOutlookOptionsFromInput())
         alert('Jira Connection [OK]')
       })
       .catch(error => {
         console.error('connection failed', error)
-        alert('Jira Connection [FAILED]. Please double-check the options.')
+        alert('Jira Connection [FAILED]. Please double-check the options. Error: ' + error)
       })
   })
   document.getElementById('testConnectionOutlook').addEventListener('click', () => {
@@ -104,13 +104,13 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(outlookOptions)
     OutlookHelper.testConnection(outlookOptions)
       .then(result => {
-        console.info('connection successful', result)
+        console.info('connection successful')
         saveOptions(getJiraOptionsFromInput(), getOutlookOptionsFromInput())
         alert('Outlook Connection [OK]')
       })
       .catch(error => {
         console.error('connection failed', error)
-        alert('Outlook Connection [FAILED]. Please double-check the options.')
+        alert('Outlook Connection [FAILED]. Please double-check the options. Error: ' + error)
       })
   })
 })
