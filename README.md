@@ -45,7 +45,7 @@ To sync events from Outlook Calendar to the worklog list, you need to check **En
 You can get these values from the Azure Portal. If you don't have them, please consult your IT department.
 
 For setting up the app in Azure, you can follow the steps below:
-1. Go to the Azure Portal and create a new app registration
+1. Go to the [Azure Portal](https://entra.microsoft.com/) and create a new app registration
 2. In the app registration, go to the **Authentication** section and add:
   - Redirect URI: https://pekbjnkonfmgjfnbpmindidammhgmjji.chromiumapp.org/
   - Implicit grant: Access tokens
