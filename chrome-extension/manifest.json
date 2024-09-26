@@ -2,9 +2,9 @@
   "manifest_version": 3,
   "name": "Jira Worklog Tool",
   "version": "0.6.0",
-  "author": "alfeugds & mashb1t",
+  "author": "alfeugds",
   "description": "This extension allows the user to log the work in Jira easily.",
-  "homepage_url": "https://github.com/mashb1t/jiraworklogtool",
+  "homepage_url": "https://github.com/alfeugds/jiraworklogtool",
   "icons": {
     "128": "img/icon-time-task-512x512.png"
   },
