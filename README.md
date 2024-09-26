@@ -46,10 +46,11 @@ You can get these values from the Azure Portal. If you don't have them, please c
 
 For setting up the app in Azure, you can follow the steps below:
 1. Go to the [Azure Portal](https://entra.microsoft.com/) and create a new app registration
-2. In the app registration, go to the **Authentication** section and add:
+2. Copy the **Tenant ID** and **Client ID** from the app overview to the extension's [options page](chrome-extension://pekbjnkonfmgjfnbpmindidammhgmjji/options.html)
+3. In the app registration, go to the **Authentication** section and add:
   - Redirect URI: https://pekbjnkonfmgjfnbpmindidammhgmjji.chromiumapp.org/
   - Implicit grant: Access tokens
-3. Open **API permissions** and add the Microsoft Graph permission **Calendars.ReadBasic**. Your IT department may need to approve this permission depending on your global account settings, even if it does not require admin consent.
+4. Open **API permissions** and add the Microsoft Graph permission **Calendars.ReadBasic**. Your IT department may need to approve this permission depending on your global account settings, even if it does not require admin consent.
 
 ## Some Images
 
