@@ -27,6 +27,7 @@ You can also omit the Jira # and time spent and add it later.
 * Add, edit and delete worklogs directly from the Chrome Extension;
 * Keep track of how many hours you already spent in the tasks;
 * Supports SAML and Basic Authentication with Jira app token.
+* Also allows to sync events from Outlook Calendar to worklog list for easy logging.
 
 ## Getting Started
 Before using it, you need to do two things:
@@ -38,6 +39,17 @@ After that, click **Test Connection** to make sure the extension can reach Jira 
 If by only providing the Jira Hostname the connection fails, you'll need to configure the **Basic Authentication** with your user and password. Also, depending on the authentication method of the Jira API, you'll also need to provide an app token. If that's the case, please consult your IT department to get one.
 
 *_The extension uses the **Jira Hostname** to build the URL and API calls to the Jira instance like this: **`https://jira.atlassian.com/`**`rest/api/2/search`._
+
+### Outlook integration
+To sync events from Outlook Calendar to the worklog list, you need to check **Enable Outlook Sync** and provide both the **Tenant ID** and **Client ID**.
+You can get these values from the Azure Portal. If you don't have them, please consult your IT department.
+
+For setting up the app in Azure, you can follow the steps below:
+1. Go to the Azure Portal and create a new app registration
+2. In the app registration, go to the **Authentication** section and add:
+  - Redirect URI: https://pekbjnkonfmgjfnbpmindidammhgmjji.chromiumapp.org/
+  - Implicit grant: Access tokens
+3. Open **API permissions** and add the Microsoft Graph permission **Calendars.ReadBasic**. Your IT department may need to approve this permission depending on your global account settings, even if it does not require admin consent.
 
 ## Some Images
 
