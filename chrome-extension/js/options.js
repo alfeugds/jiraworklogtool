@@ -39,7 +39,7 @@ function restoreOptions () {
   )
 }
 
-var jiraUrlInput, userInput, passwordInput, tokenInput, outlookSyncEnabledInput, tenantIDInput, clientIDInput
+var jiraUrlInput, userInput, passwordInput, tokenInput, outlookSyncEnabledInput, tenantIDInput, clientIDInput, filterPrivateEventsInput, filterSubjectsInput
 
 function restoreJiraOptionsToInput (options) {
   jiraUrlInput.value = options.jiraUrl || ''
@@ -49,9 +49,11 @@ function restoreJiraOptionsToInput (options) {
 }
 
 function restoreOutlookOptionsToInput (options) {
-  outlookSyncEnabledInput.checked = options.outlookSyncEnabled || false
+  outlookSyncEnabledInput.checked = options.outlookSyncEnabled
   tenantIDInput.value = options.tenantID || ''
   clientIDInput.value = options.clientID || ''
+  filterPrivateEventsInput.checked = options.filterPrivateEvents
+  filterSubjectsInput.value = options.filterSubjects || 'Lunch Break\nNotes'
 }
 
 function getJiraOptionsFromInput () {
@@ -67,7 +69,9 @@ function getOutlookOptionsFromInput () {
   return {
     outlookSyncEnabled: outlookSyncEnabledInput.checked,
     tenantID: tenantIDInput.value,
-    clientID: clientIDInput.value
+    clientID: clientIDInput.value,
+    filterSubjects: filterSubjectsInput.value,
+    filterPrivateEvents: filterPrivateEventsInput.checked
   }
 }
 
@@ -81,6 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
   outlookSyncEnabledInput = document.getElementById('outlookSyncEnabled')
   tenantIDInput = document.getElementById('tenantID')
   clientIDInput = document.getElementById('clientID')
+  filterPrivateEventsInput = document.getElementById('filterPrivateEvents')
+  filterSubjectsInput = document.getElementById('filterSubjects')
 
   document.getElementById('save').addEventListener('click', () => {
     saveOptions(getJiraOptionsFromInput(), getOutlookOptionsFromInput())

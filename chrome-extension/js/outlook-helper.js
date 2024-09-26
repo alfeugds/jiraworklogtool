@@ -103,7 +103,7 @@
     return allResults;
   }
 
-  function fetchCalendarEntries(accessToken, worklogDate) {
+  function fetchCalendarEntries(accessToken, worklogDate, options = outlookOptions) {
     return new Promise((resolve, reject) => {
       const dateStart = new Date(new Date(worklogDate).setHours(0, 0, 0, 0));
       const dateEnd = new Date(new Date(worklogDate).setHours(23, 59, 59, 999));
@@ -116,14 +116,14 @@
         // Sort events by start date
         data.sort((a, b) => new Date(a.start.dateTime) - new Date(b.start.dateTime));
 
+        const filterSubjects = options.filterSubjects.split('\n');
+
         // Filter out events based on the specified criteria
         const filteredData = data.filter(event =>
           !event.isAllDay &&
           !event.isCancelled &&
-          event.sensitivity !== 'private' &&
-          event.subject !== 'Mittagspause' &&
-          event.subject !== 'Notizen' &&
-          event.subject !== 'Notes'
+          (!options.filterPrivateEvents || event.sensitivity !== 'private') &&
+          !filterSubjects.includes(event.subject)
         );
 
         const worklogItems = filteredData.map(event => {
