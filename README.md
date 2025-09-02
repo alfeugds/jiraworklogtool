@@ -1,7 +1,15 @@
-# Jira Worklog Tool
+# Jira Worklog Tool [Archived]
+
+> [!WARNING]
+> This repo is no longer being maintained and is currently archived.
+> If you are interested in maintaining it, feel free to fork it. Send your actively maintained fork to `alfeu.gds+jiraworklogtool@gmail.com` and I can link it in this README for future reference.
+
+
 [Download from Chrome Web Store](https://chrome.google.com/webstore/detail/jira-worklog-tool/pekbjnkonfmgjfnbpmindidammhgmjji)
 
 [![CircleCI](https://circleci.com/gh/alfeugds/jiraworklogtool.svg?style=svg)](https://circleci.com/gh/alfeugds/jiraworklogtool)
+
+
 
 A simple Chrome Extension that allows adding worklogs in Jira easily.
 Logging your time in Jira doesn't need to be a pain anymore. If you already keep track of your tasks in a TODO list from a text file, then all you need to do is to adapt your list items to the below intuitive format:
