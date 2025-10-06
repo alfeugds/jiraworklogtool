@@ -2,13 +2,14 @@
 
 > [!WARNING]
 > This repo is no longer being maintained and is currently archived.
-> If you are interested in maintaining it, feel free to fork it. Send your actively maintained fork to `alfeu.gds+jiraworklogtool@gmail.com` and I can link it in this README for future reference.
+> Please see the below fork(s) for an actively maintained version of the tool.
+> If you are interested in maintaining your own version, feel free to fork it. Send your actively maintained fork to `alfeu.gds+jiraworklogtool@gmail.com` and I can link it in this README for future reference.
 
+# Active forks:
 
-[Download from Chrome Web Store](https://chrome.google.com/webstore/detail/jira-worklog-tool/pekbjnkonfmgjfnbpmindidammhgmjji)
-
-[![CircleCI](https://circleci.com/gh/alfeugds/jiraworklogtool.svg?style=svg)](https://circleci.com/gh/alfeugds/jiraworklogtool)
-
+| Fork      | Chrome Web Store Listing      |
+| ------------- | ------------- |
+| https://github.com/DiegoVAReis/jiraworkloghelper | [link](https://chromewebstore.google.com/detail/jira-worklog-helper/ghaalgapncgkjoecjdkcodieakmcdllc) |
 
 
 A simple Chrome Extension that allows adding worklogs in Jira easily.
@@ -102,3 +103,9 @@ sudo apt install xvfb
 ````sh
 xvfb-run npm run test
 ````
+
+----
+
+Old Chrome Web Store listing for historical purposes (not working anymore): https://chrome.google.com/webstore/detail/jira-worklog-tool/pekbjnkonfmgjfnbpmindidammhgmjji
+
+[![CircleCI](https://circleci.com/gh/alfeugds/jiraworklogtool.svg?style=svg)](https://circleci.com/gh/alfeugds/jiraworklogtool)
